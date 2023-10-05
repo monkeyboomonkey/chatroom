@@ -1,13 +1,15 @@
 import { Server } from "socket.io";
 import { createServer } from "http";
+import express from 'express';
 
-const httpServer = createServer();
+const app = express();
+const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {origin: "*"}
 });
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log(`a user connected with socket id: ${socket.id}`);
 
     socket.on('message', (message) =>     {
         console.log(message);
