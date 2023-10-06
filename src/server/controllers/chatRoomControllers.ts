@@ -18,8 +18,11 @@ export function getAllUsers(req: Request, res: Response, next: NextFunction): vo
 
   })
   .catch(e => {
-    console.log(e);
-    return next(e)
+    return next('failed to getAllUsers')
   })
 }
 
+export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err);
+  res.status(500).send(err);
+};

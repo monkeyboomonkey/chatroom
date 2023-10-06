@@ -4,7 +4,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { router } from './routes/api.js';
-
+import { errorHandler } from './controllers/chatRoomControllers.js';
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -14,6 +14,7 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.resolve(__dirname, '../client')));
 app.use('/api', router);
+app.use(errorHandler);
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
