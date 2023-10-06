@@ -2,4 +2,8 @@ node_modules/
 dist/
 .idea/
 .vscode/
+<<<<<<< HEAD
 .env
+=======
+.env
+>>>>>>> dev

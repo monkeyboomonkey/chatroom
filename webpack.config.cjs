@@ -8,7 +8,7 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "dist", "client"),
-    publicPath: path.resolve(__dirname, "dist", "client"),
+    publicPath: '/' // needs to be project root for HtmlWebpackPlugin, ./ does not work
   },
   module: {
     rules: [
@@ -41,7 +41,8 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       title: "custom template",
-      template: "./src/client/index.html",
+      template: "src/client/index.html",
+      // template: "./src/client/index.html",
     }),
   ],
 };
