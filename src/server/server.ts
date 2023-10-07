@@ -4,7 +4,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { router } from './routes/api.js';
-import { errorHandler } from './controllers/chatRoomControllers.js';
+import { errorHandler } from './controllers/userControllers.js';
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

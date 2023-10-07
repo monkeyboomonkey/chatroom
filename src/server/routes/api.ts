@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getAllUsers, registerUser, userLogIn, deleteUser, updateUser } from '../controllers/chatRoomControllers.js'
+import { getAllUsers, registerUser, userLogIn, deleteUser, updateUser } from '../controllers/userControllers.js'
 
 export const router = express.Router();
 
