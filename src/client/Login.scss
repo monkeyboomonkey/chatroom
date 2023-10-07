@@ -1,0 +1,28 @@
+h1 {
+    color: rgb(11, 12, 11);
+}
+
+body {
+    background-color: rgb(92, 230, 193);
+}
+
+.login-wrapper {
+    margin: 5px;
+    display: flex;
+    justify-content: left;
+    align-items: left;
+}
+
+.signup-wrapper {
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: left;
+}
+
+.bttn {
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
