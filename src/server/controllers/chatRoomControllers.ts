@@ -14,6 +14,21 @@ const db = drizzle(client);
 
 import {Express, Request, Response, NextFunction} from 'express';
 
+export function deleteUser(req: Request, res: Response, next: NextFunction): void {
+  db.delete(users).where(eq(users.username, String(req.query.username))).returning()
+  .then(user => {
+    if(user.length){
+      return next()
+    }
+    else{
+      return next('No user to delete')
+    }
+  })
+  .catch(e => {
+    return next('failed to deleteUser');
+  })
+}
+
 export function userLogIn(req: Request, res: Response, next: NextFunction): void {
   const {username, password} = req.body;
   
