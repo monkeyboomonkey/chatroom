@@ -7,7 +7,7 @@ function Log() {
     const navigate = useNavigate();
 
     return (
-        <div className="loginmainwindow">
+        <div className="login-main-window">
             <button className="bttn" onClick={() => navigate("/login")}>
                 Log In
             </button>

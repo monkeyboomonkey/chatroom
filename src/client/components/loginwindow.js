@@ -3,16 +3,22 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 
 
 function Login() {
-    const handleSubmit = async e => {
-        console.log("Login submitted")
-    }
+
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
+
+    const handleLogin = async e => {
+        const loginData = {
+            username: username,
+            password: password
+        }
+        console.log(loginData)
+    }
 
     return (
         <div className="login-wrapper">
             {/* <h1>Login</h1> */}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleLogin}>
                 <label>
                     <p>Username</p>
                     <input type="text" onChange={el => setUserName(el.target.value)} />
@@ -22,7 +28,7 @@ function Login() {
                     <input type="password" onChange={el => setPassword(el.target.value)} />
                 </label>
                 <div>
-                    <button type="submit">Submit</button>
+                    <button className="bttn" onClick={handleLogin}>Log in</button>
                 </div>
             </form>
 
