@@ -11,5 +11,18 @@ export function createJWT(req: Request, res: Response, next: NextFunction): void
 }
 
 export function verifyJWT(req: Request, res: Response, next: NextFunction): void {
-  
+  console.log(Object.keys(res))
+  // req.headers.cookie finds the cookies thru postman
+  //console.log(req.headers.cookie)
+
+  // const theCookies = req.headers.cookie || res;
+
+  //console.log('the cookie: ', jwtCookie)
+
+  //const token = req.headers.cookie ? req.headers.cookie : '';
+
+  // console.log('the token is', token)
+
+  // jwt.verify(jwtCookie, String(process.env.JWT_SECRET))
+  return next();
 }
