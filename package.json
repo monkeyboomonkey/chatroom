@@ -9,7 +9,8 @@
     "all": "concurrently \"npm run serve\" \"npm run dev\"",
     "dev": "nodemon --exec node --loader ts-node/esm src/server/server.ts",
     "build": "webpack",
-    "serve": "webpack-dev-server"
+    "serve": "webpack-dev-server",
+    "tailwind": "tailwindcss build src/client/Login.scss -o src/public/style.scss"
   },
   "keywords": [],
   "author": "",
@@ -43,6 +44,7 @@
     "sass": "^1.68.0",
     "sass-loader": "^13.3.2",
     "style-loader": "^3.3.3",
+    "tailwindcss": "^3.3.3",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.2.2",

@@ -8,16 +8,21 @@ function Log() {
 
     return (
         <div className="login-main-window">
-            <button className="bttn" onClick={() => navigate("/login")}>
-                Log In
-            </button>
-            <button className="bttn" onClick={() => navigate("/signup")}>
-                Sign Up
-            </button>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-            </Routes>
+            <div className="button-window">
+                <button className="bttn" onClick={() => navigate("/login")}>
+                    Log In
+                </button>
+                <button className="bttn" onClick={() => navigate("/signup")}>
+                    Sign Up
+                </button>
+            </div>
+            <div className="routes-window">
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                </Routes>
+            </div>
+
         </div>
 
 
