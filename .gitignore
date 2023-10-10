@@ -3,3 +3,5 @@ dist/
 .idea/
 .vscode/
 .env
+drizzle/
+drizzle.config.ts
