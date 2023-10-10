@@ -7,19 +7,21 @@ function Login() {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
 
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
+        e.preventDefault();
         const loginData = {
             username: username,
             password: password
         }
-        console.log(loginData)
-        return fetch('http://localhost:3001/userlogin', {
+
+        const loginuser = await fetch('http://localhost:3001/api/userlogin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(loginData)
         })
+        console.log("Login Successful")
     }
 
     return (

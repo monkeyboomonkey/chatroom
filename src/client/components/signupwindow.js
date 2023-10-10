@@ -9,23 +9,29 @@ function Signup() {
     const [lastName, setLastName] = useState();
     const [email, setEmail] = useState();
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+
+        e.preventDefault();
         const signupData = {
-            firstName: firstName,
-            lastName: lastName,
+            fn: firstName,
+            ln: lastName,
             email: email,
             username: username,
             password: password
         }
-        console.log(signupData)
-        return fetch('http://localhost:3001/registeruser', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(signupData)
-        })
+        try {
+            const result = await fetch('http://localhost:3001/api/registeruser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(signupData)
+            })
 
+            
+        } catch (error) {
+            console.log(error.message);
+        }
 
     }
 
