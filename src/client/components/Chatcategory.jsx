@@ -8,7 +8,7 @@ const socket = io('ws://localhost:3001');
 //     console.log(`receiving data from server...`);
 // });
 
-function Chatcategory() {
+function Chatcategory(props) {
     // socket.on('switchroom', (data) => {
     //     console.log(`receiving data from server...`);
     // });
