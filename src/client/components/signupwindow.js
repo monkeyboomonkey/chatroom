@@ -9,7 +9,7 @@ function Signup() {
     const [lastName, setLastName] = useState();
     const [email, setEmail] = useState();
 
-    const handleSubmit = async e => {
+    const handleSubmit = async () => {
         const signupData = {
             firstName: firstName,
             lastName: lastName,
@@ -18,6 +18,14 @@ function Signup() {
             password: password
         }
         console.log(signupData)
+        return fetch('http://localhost:3001/registeruser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(signupData)
+        })
+
 
     }
 

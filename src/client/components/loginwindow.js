@@ -7,12 +7,19 @@ function Login() {
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
 
-    const handleLogin = async e => {
+    const handleLogin = async () => {
         const loginData = {
             username: username,
             password: password
         }
         console.log(loginData)
+        return fetch('http://localhost:3001/userlogin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(loginData)
+        })
     }
 
     return (
