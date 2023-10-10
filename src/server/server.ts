@@ -16,10 +16,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors())
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.resolve(__dirname, "../client")));
+// app.use(express.static(path.resolve(__dirname, "../client")));
 app.use("/api", router);
 app.use(errorHandler);
 
