@@ -4,7 +4,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
   mode: "development",
   devtool: "eval-source-map",
-  entry: "./src/client/index.ts",
+  entry: {
+    main: "./src/client/index.js",
+    login: "./src/client/login.js",
+  },
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "dist", "client"),
@@ -19,7 +22,20 @@ module.exports = {
           loader: "babel-loader",
         },
       },
+      {
+        test: /\.(sa|sc|c)ss$/, // styles files
+        use: ["style-loader", "css-loader", "sass-loader"],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        use: {
+          loader: 'url-loader',
+        },
+      },
     ],
+  },
+  resolve: {
+    extensions: ['.js', '.jsx', '.json']
   },
   devServer: {
     static: {
@@ -40,9 +56,16 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "custom template",
+      filename: 'index.html',
       template: "src/client/index.html",
-      // template: "./src/client/index.html",
+      chunks: ['main'],
+      // inject: false
     }),
+    new HtmlWebpackPlugin({
+      filename: 'login.html',
+      template: "src/client/login.html",
+      chunks: ['login'],
+      // inject: false
+    })
   ],
 };
