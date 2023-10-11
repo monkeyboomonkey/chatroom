@@ -59,6 +59,9 @@ export function userLogIn(req: Request, res: Response, next: NextFunction): void
   .then(user => {
     if(user.length){
       if(compareSync(password, String(user[0].password))){
+        res.header('Access-Control-Allow-Origin', 'http://localhost:8080/');
+        res.header('Vary', 'Origin');
+
         res.locals.user = user[0]
         return next();
       }
@@ -112,9 +115,6 @@ export function getAllUsers(req: Request, res: Response, next: NextFunction): vo
     return next('failed to getAllUsers');
   })
 }
-
-
-
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction):void => {
   console.error(err);
