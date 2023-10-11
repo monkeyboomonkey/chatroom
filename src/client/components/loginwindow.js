@@ -20,7 +20,9 @@ function Login() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(loginData),
-            credentials: 'include'
+            credentials: 'include',
+            mode: "cors",
+
         })
         console.log("Login Successful")
     }

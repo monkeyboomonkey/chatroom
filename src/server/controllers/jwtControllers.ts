@@ -5,9 +5,11 @@ import dotenv from 'dotenv';
 dotenv.config(); 
 
 export function createJWT(req: Request, res: Response, next: NextFunction): void {
+  
   const token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), {expiresIn: 60});
   // res.cookie("jwt", token, {httpOnly: true, secure: true})
   res.cookie("jwt", token, {httpOnly: true})
+  // res.cookie("jwt", token)
 
   return next();
 }

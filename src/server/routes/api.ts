@@ -12,7 +12,7 @@ export const router = express.Router();
 // intend to add verifyJWT before deleteUser because it is a user operation
 router.get('/getallusers', getAllUsers, (req: Request, res: Response):void => {res.status(200).json(res.locals.allUsers)});
 router.post('/registeruser', registerUser, (req: Request, res: Response):void => {res.status(200).json('user registered')});
-router.post('/userlogin', userLogIn, createJWT, WenzhenTestJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.user)});
+router.post('/userlogin', userLogIn, createJWT, WenzhenTestJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.user);});
 router.delete('/deleteuser', deleteUser, (req: Request, res: Response):void => {res.status(200).json('user deleted')});
 router.patch('/updateuser', userLogIn, updateUser, (req: Request, res: Response):void => {res.status(200).json(res.locals.user)});
 
