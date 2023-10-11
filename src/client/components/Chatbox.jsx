@@ -1,10 +1,8 @@
 import React from "react";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import '../styles/style.css';
 import Chatboxheader from "./Chatboxheader";
 
-// import { io } from "socket.io-client";
-// const socket = io('ws://localhost:3001');
 
 function Chatbox(props) {
     // const [roomName, setRoomName] = useState('');
@@ -20,14 +18,29 @@ function Chatbox(props) {
         messageDiv.innerText = message;
         chatDisplayRef.current.appendChild(messageDiv);
         messageContentRef.current.value = '';
+        props.socket.emit('message', {
+            username: `${props.socket.id}`, message: message
+        })
     }
+    useEffect(() => {
+        props.socket.on('message', (data) => {
+            console.log("From props.socket.on")
+            console.log(data.message);
+            const receivedMessageDiv = document.createElement('div');
+            receivedMessageDiv.innerText = `${data.message.username}: ${data.message.message}`;
+            console.log("ChatDisplayRef.current")
+            console.log(chatDisplayRef.current);
+            chatDisplayRef.current.appendChild(receivedMessageDiv);
+        }, [])
+
+    })
     return (
         <div>
             {/* {props.roomName && <h3>Welcome to room #{props.roomName}!</h3>} */}
             <Chatboxheader roomName={props.roomName} />
             <div className="chatDisplay" ref={chatDisplayRef}></div>
             <div className="chatControl">
-                <textarea type="text" className="messageContent" ref={messageContentRef}/>
+                <textarea type="text" className="messageContent" ref={messageContentRef} />
                 <button className="sendBtn" onClick={handleSendBtnClicked}>Send</button>
             </div>
         </div>
