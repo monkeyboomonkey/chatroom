@@ -24,4 +24,4 @@ router.post('/addchatroom', verifyJWT, addChatroom, createJWT, (req: Request, re
 // Chatlog routes
 // intend to add verifyJWT before and createJWT(renew JWT) after addChatlog and getAllChatlogs because they are user operations
 router.post('/addchatlog', addChatlog, (req: Request, res: Response):void => {res.status(200).json(res.locals.chatlog)});
-router.get('/getallchatlogs', getAllChatlogs, (req: Request, res: Response):void => {res.status(200).json(res.locals.chatlogs_in_chatroom)});
+router.post('/getallchatlogs', getAllChatlogs, (req: Request, res: Response):void => {res.status(200).json(res.locals.chatlogs_in_chatroom)});
