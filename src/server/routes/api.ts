@@ -11,7 +11,7 @@ export const router = express.Router();
 // intend to add createJWT(renew JWT) after userLogIn, verifyJWT before and createJWT(renewJWT) after updateUser in '/updateuser' because it is a user operation
 // intend to add verifyJWT before deleteUser because it is a user operation
 router.get('/getallusers', getAllUsers, (req: Request, res: Response):void => {res.status(200).json(res.locals.allUsers)});
-router.post('/registeruser', registerUser, (req: Request, res: Response):void => {res.status(200).json('user registered')});
+router.post('/registeruser', registerUser, createJWT, (req: Request, res: Response):void => {res.status(200).json('user registered')});
 router.post('/userlogin', userLogIn, createJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.user);});
 router.delete('/deleteuser', verifyJWT, deleteUser, (req: Request, res: Response):void => {res.status(200).json('user deleted')});
 router.patch('/updateuser', verifyJWT, updateUser, createJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.user)});
@@ -23,5 +23,17 @@ router.post('/addchatroom', verifyJWT, addChatroom, createJWT, (req: Request, re
 
 // Chatlog routes
 // intend to add verifyJWT before and createJWT(renew JWT) after addChatlog and getAllChatlogs because they are user operations
-router.post('/addchatlog', addChatlog, (req: Request, res: Response):void => {res.status(200).json(res.locals.chatlog)});
+router.post('/addchatlog', verifyJWT, addChatlog, createJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.chatlog)});
 router.get('/getallchatlogs', getAllChatlogs, (req: Request, res: Response):void => {res.status(200).json(res.locals.chatlogs_in_chatroom)});
+
+// route just for verification, if needed
+  // currently just responds with a boolean if the user is verified or not
+router.get('/verify', verifyJWT, createJWT, 
+  (req: Request, res: Response):void => {
+    let variableStatus = 500;
+    if (res.locals.verify) {
+      variableStatus = 200;
+    }
+    res.status(variableStatus).json(res.locals.verify)
+  }
+)
