@@ -20,9 +20,3 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction): void
   //     verify JWT using user_id
 
 }
-
-// just for testing purpose
-export function WenzhenTestJWT(req: Request, res: Response, next: NextFunction): void {
-  console.log(req.cookies) //req.cookies is good with CORS config, cookie is in request header
-  return next()
-}
