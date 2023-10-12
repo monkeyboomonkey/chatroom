@@ -54,11 +54,7 @@ export function deleteUser(req: Request, res: Response, next: NextFunction): voi
 
 export function userLogIn(req: Request, res: Response, next: NextFunction): void {
   const {username, password} = req.body;
-  // res.set('Access-Control-Allow-Credentials', 'true');
 
-  // res.set('Access-Control-Allow-Origin', 'http://localhost:8080');
-  // console.log(res.get('Access-Control-Allow-Origin'))
-  // res.set('Vary', 'Origin');
   db.select().from(users).where(eq(users.username, username))
   .then(user => {
     if(user.length){
