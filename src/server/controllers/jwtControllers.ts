@@ -41,7 +41,7 @@ export function createJWT(req: Request, res: Response, next: NextFunction): void
 export function verifyJWT(req: Request, res: Response, next: NextFunction): void {
   try { 
     jwt.verify(req.cookies.jwt, String(process.env.JWT_SECRET));
-    // res.locals.verify = true;
+    res.locals.verify = true;
     return next();
   } catch { 
     // torn between sending something thru res.locals so the frontend can know
