@@ -18,13 +18,13 @@ router.patch('/updateuser', verifyJWT, updateUser, createJWT, (req: Request, res
 
 // Chatroom routes
 // intend to add verifyJWT before and createJWT(renew JWT) after addchatroom because it is a user operation
-router.get('/getallchatrooms', getAllChatrooms, (req: Request, res: Response):void => {res.status(200).json(res.locals.allChatrooms)});
+router.get('/getallchatrooms', verifyJWT, getAllChatrooms, createJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.allChatrooms)});
 router.post('/addchatroom', verifyJWT, addChatroom, createJWT, (req: Request, res: Response):void => {res.status(200).json('chatroom added')});
 
 // Chatlog routes
 // intend to add verifyJWT before and createJWT(renew JWT) after addChatlog and getAllChatlogs because they are user operations
 router.post('/addchatlog', verifyJWT, addChatlog, createJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.chatlog)});
-router.get('/getallchatlogs', getAllChatlogs, (req: Request, res: Response):void => {res.status(200).json(res.locals.chatlogs_in_chatroom)});
+router.get('/getallchatlogs', verifyJWT, getAllChatlogs, createJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.chatlogs_in_chatroom)});
 
 // route just for verification, if needed
   // currently just responds with a boolean if the user is verified or not
