@@ -4,7 +4,7 @@ import Chatcategory from "./Chatcategory";
 import Chatbox from "./Chatbox";
 import "../styles/style.css";
 // const socket = io('ws://localhost:3001');
-import { SocketContext } from "./Context";
+import { SocketContext } from "../Context";
 
 function Chatboard() {
   const { socket } = useContext(SocketContext);
