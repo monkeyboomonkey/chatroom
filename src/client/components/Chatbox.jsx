@@ -12,28 +12,30 @@ function Chatbox(props) {
     //     console.log(`receiving data from server...`);
     //     setRoomName(data);
     // });
+    console.log("chatbox refresh")
     const handleSendBtnClicked = () => {
         const message = messageContentRef.current.value;
-        const messageDiv = document.createElement('div');
-        messageDiv.innerText = message;
-        chatDisplayRef.current.appendChild(messageDiv);
-        messageContentRef.current.value = '';
+        // const messageDiv = document.createElement('div');
+        // messageDiv.innerText = message;
+        // chatDisplayRef.current.appendChild(messageDiv);
+        // messageContentRef.current.value = '';
         props.socket.emit('message', {
             username: `${props.socket.id}`, message: message
         })
+        console.log("Socket pushed")
     }
     useEffect(() => {
         props.socket.on('message', (data) => {
-            console.log("From props.socket.on")
-            console.log(data.message);
+            console.log("Socket pulled")
             const receivedMessageDiv = document.createElement('div');
             receivedMessageDiv.innerText = `${data.message.username}: ${data.message.message}`;
-            console.log("ChatDisplayRef.current")
-            console.log(chatDisplayRef.current);
-            chatDisplayRef.current.appendChild(receivedMessageDiv);
-        }, [])
 
-    })
+
+            chatDisplayRef.current.appendChild(receivedMessageDiv);
+
+        })
+        console.log("Useffect Refresh")
+    }, [])
     return (
         <div>
             {/* {props.roomName && <h3>Welcome to room #{props.roomName}!</h3>} */}
