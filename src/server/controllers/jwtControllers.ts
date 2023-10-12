@@ -13,7 +13,12 @@ export function createJWT(req: Request, res: Response, next: NextFunction): void
 }
 
 export function verifyJWT(req: Request, res: Response, next: NextFunction): void {
-  
+  // if(user_id is given)
+
+  //     verify JWT using user_id
+  // else       search db for (req.query.username)->user_id
+  //     verify JWT using user_id
+
 }
 
 // just for testing purpose
