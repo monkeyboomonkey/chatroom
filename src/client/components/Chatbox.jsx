@@ -18,21 +18,20 @@ function Chatbox(props) {
         // const messageDiv = document.createElement('div');
         // messageDiv.innerText = message;
         // chatDisplayRef.current.appendChild(messageDiv);
-        // messageContentRef.current.value = '';
-        props.socket.emit('message', {
-            username: `${props.socket.id}`, message: message
-        })
-        console.log("Socket pushed")
+        messageContentRef.current.value = '';
+        if (message.length > 0){
+            props.socket.emit('message', {
+                username: `${props.socket.id.substring(0,4)}`, message: message
+            })
+            console.log("Socket pushed")
+        }
     }
     useEffect(() => {
         props.socket.on('message', (data) => {
             console.log("Socket pulled")
             const receivedMessageDiv = document.createElement('div');
             receivedMessageDiv.innerText = `${data.message.username}: ${data.message.message}`;
-
-
             chatDisplayRef.current.appendChild(receivedMessageDiv);
-
         })
         console.log("Useffect Refresh")
     }, [])

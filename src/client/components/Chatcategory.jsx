@@ -1,29 +1,27 @@
 import React from "react";
 import Chatroom from "./Chatroom";
-
-import { io } from "socket.io-client";
-const socket = io('ws://localhost:3001');
-
-// socket.on('switchroom', (data) => {
-//     console.log(`receiving data from server...`);
-// });
+import { useEffect } from "react";
 
 function Chatcategory(props) {
-    // socket.on('switchroom', (data) => {
-    //     console.log(`receiving data from server...`);
-    // });
-    const fakeChatrooms = [1,2,3,4,5,6];
+    useEffect(() => {
+        props.socket.on('rooms', (data) => {
+            console.log(data);
+        })
+
+    }, [])
+
     const handleSwitchRoomEvent = (id) => {
         console.log(`Switching to room: ${id}`);
         // socket.emit('switchroom', id);
-        socket.emit('joinRoom', id);
+        props.handleSwitchRoom(id);
+        props.socket.emit('joinRoom', id);
     }
+    
     return (
         <div>
             <h3>Let's chat!!!</h3>
-            <div className="mainChatboard">
-                {fakeChatrooms.map((chatroom, index) => <Chatroom key={index} id={chatroom} switchRoom={handleSwitchRoomEvent}/>)}
-                
+            <div className="allChatCategories">
+                {props.categories.map((chatroom, index) => <Chatroom key={index} id={chatroom} switchRoom={handleSwitchRoomEvent}/>)}
             </div>
         </div>
     );
