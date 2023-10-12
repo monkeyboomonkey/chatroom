@@ -1,5 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
-    background: greenyellow;
+    background-color: rgb(199, 202, 174);
 }
 
 .chatDisplay {
