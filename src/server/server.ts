@@ -20,6 +20,7 @@ app.use(express.json());
 const whitelist = [
   undefined,
   "http://localhost:8080",
+  undefined
 ];
 const corsOptions = {
   credentials: true, // This is important.
