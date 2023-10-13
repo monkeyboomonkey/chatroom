@@ -27,6 +27,7 @@ export function getAllChatrooms(req: Request, res: Response, next: NextFunction)
 
 export async function addChatroom(req: Request, res: Response, next: NextFunction): Promise<void> {
   const { chatroom_name } = req.body;
+
   const foundChatroom_name = await db.select().from(chatrooms).where(eq(chatrooms.chatroom_name, chatroom_name));
   if(!foundChatroom_name.length){
     try{

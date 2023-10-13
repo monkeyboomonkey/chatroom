@@ -5,6 +5,7 @@ import { addChatlog, getAllChatlogs } from '../controllers/chatlogControllers.js
 
 import { createJWT, verifyJWT } from '../controllers/jwtControllers.js'
 
+
 export const router = express.Router();
 
 // User routes
@@ -16,12 +17,15 @@ router.post('/userlogin', userLogIn, createJWT, (req: Request, res: Response):vo
 router.delete('/deleteuser', verifyJWT, deleteUser, (req: Request, res: Response):void => {res.status(200).json('user deleted')});
 router.patch('/updateuser', verifyJWT, updateUser, createJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.user)});
 
+
 // Chatroom routes
 // intend to add verifyJWT before and createJWT(renew JWT) after addchatroom because it is a user operation
 router.get('/getallchatrooms', getAllChatrooms, (req: Request, res: Response):void => {res.status(200).json(res.locals.allChatrooms)});
 router.post('/addchatroom', verifyJWT, addChatroom, createJWT, (req: Request, res: Response):void => {res.status(200).json('chatroom added')});
 
+
 // Chatlog routes
 // intend to add verifyJWT before and createJWT(renew JWT) after addChatlog and getAllChatlogs because they are user operations
 router.post('/addchatlog', addChatlog, (req: Request, res: Response):void => {res.status(200).json(res.locals.chatlog)});
 router.post('/getallchatlogs', getAllChatlogs, (req: Request, res: Response):void => {res.status(200).json(res.locals.chatlogs_in_chatroom)});
+
