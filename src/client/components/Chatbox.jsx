@@ -1,11 +1,13 @@
 import React from "react";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 import '../styles/style.css';
 import Chatboxheader from "./Chatboxheader";
+import { SocketContext } from "../Context";
 
 
 function Chatbox(props) {
     // const [roomName, setRoomName] = useState('');
+    const { socket } = useContext(SocketContext);
     const chatDisplayRef = useRef(null);
     const messageContentRef = useRef(null);
     // socket.on('switchroom', (data) => {
@@ -20,14 +22,14 @@ function Chatbox(props) {
         // chatDisplayRef.current.appendChild(messageDiv);
         messageContentRef.current.value = '';
         if (message.length > 0){
-            props.socket.emit('message', {
-                username: `${props.socket.id.substring(0,4)}`, message: message
+            socket.emit('message', {
+                username: `${socket.id.substring(0,4)}`, message: message
             })
             console.log("Socket pushed")
         }
     }
     useEffect(() => {
-        props.socket.on('message', (data) => {
+        socket.on('message', (data) => {
             console.log("Socket pulled")
             const receivedMessageDiv = document.createElement('div');
             receivedMessageDiv.innerText = `${data.message.username}: ${data.message.message}`;
