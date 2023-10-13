@@ -18,6 +18,7 @@ import * as chatServer from "./websockets/events.js";
 const app = express();
 app.use(express.json());
 const whitelist = [
+  undefined,
   "http://localhost:8080",
 ];
 const corsOptions = {
@@ -29,10 +30,6 @@ const corsOptions = {
 };
 app.use(express.urlencoded({ extended: true }));
 
-// use this when testing /userlogin with postman
-// app.use(cors())
-
-// use this when testing with frontend
 app.use(cors(corsOptions))
 app.use(cookieParser());
 
