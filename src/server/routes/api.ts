@@ -8,7 +8,7 @@ import { createJWT, verifyJWT } from '../controllers/jwtControllers.js'
 export const router = express.Router();
 
 // User routes
-// intend to add createJWT(renew JWT) after userLogIn, verifyJWT before and createJWT(renewJWT) after updateUser in '/updateuser' because it is a user operation
+// intend to add verifyJWT before and createJWT(renew JWT) after userLogIn, updateUser in '/updateuser' because it is a user operation
 // intend to add verifyJWT before deleteUser because it is a user operation
 router.get('/getallusers', getAllUsers, (req: Request, res: Response):void => {res.status(200).json(res.locals.allUsers)});
 router.post('/registeruser', registerUser, createJWT, (req: Request, res: Response):void => {res.status(200).json('user registered')});
