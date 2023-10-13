@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, Link, BrowserRouter } from "react-router-dom";
+// import Login from "./Loginwindow.js";
+import Signup from "./Signup.js";
+import Main from "./Main.js";
 
-function Login() {
+function Log() {
+    const navigate = useNavigate();
 
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
     const [userinfo, setUserinfo] = useState({});
-
     const handleLogin = async (e) => {
         e.preventDefault();
         const loginData = {
@@ -31,11 +34,13 @@ function Login() {
             })
     }
 
-    // const test = () => {
-    //     console.log(userinfo)
-    // }
+    function signup() {
+        navigate("/signup")
+    }
+
     return (
 
+        <div className="login-main-window">
             <div className="login-wrapper">
                 <form onSubmit={handleLogin}>
                     <label>
@@ -46,12 +51,23 @@ function Login() {
                         <p>Password</p>
                         <input type="password" onChange={el => setPassword(el.target.value)} />
                     </label>
-                    <div>
+                    <span>
                         <button className="bttn" onClick={handleLogin}>Log in</button>
-                    </div>
+                        <button className="bttn" onClick={signup}>Sign up</button>
+                    </span>
                 </form>
             </div>
-    )
+            <div className="routes-window">
+                <Routes>
+                    <Route path="/signup" element={<Signup />} />
+                </Routes>
+            </div>
+
+        </div>
+
+
+    );
 }
 
-export default Login;
+
+export default Log;

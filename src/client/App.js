@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, useNavigate, BrowserRouter } from "react-router-dom";
-// import Login from "./components/loginwindow.js";
-// import Signup from "./components/signupwindow.js";
-import Chatboard from "./components/Chatboard.jsx";
-
+import { Route, Routes, useNavigate, Link, BrowserRouter } from "react-router-dom";
+import Main from "./components/Main.js";
+import Login from "./components/Login.js";
+import Signup from "./components/Signup.js";
+import './styles/App.scss'
 
 function App() {
   const navigate = useNavigate();
   // checks to see if verified user exists; redirects to login page if no user exists
   const [user, setUser] = useState({});
+
+
+  function login() {
+    navigate("/login")
+  }
 
   function loginCheck() {
     fetch('http://localhost:3001/api/verifyuser', {
@@ -20,7 +25,9 @@ function App() {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.user === undefined) login()
+        if (data.user !== undefined) {
+          login()
+        }
         console.log(data.user)
       })
   }
@@ -28,25 +35,30 @@ function App() {
     loginCheck()
   }, []);
 
-  // "routes" to redirect users
-  function login() {
-    return window.location.href = "login.html"
-  }
-  function profile() {
-    return window.location.href = "profile.html"
-  }
+
 
   return (
     <>
-
+      <nav>
+        <ul>
+          <li>
+            <Link to="/">Main</Link>
+          </li>
+          <li>
+            <Link to="/login">Login</Link>
+          </li>
+          <li>
+            <Link to="/signup">Sign Up</Link>
+          </li>
+        </ul>
+      </nav>
       <div className="loginmainwindow">
-        <h1>Main Window</h1>
-        <button className="btn" onClick={login}>Go to Login Window</button>
-        <button className="btn" onClick={loginCheck}>Check</button>
-        <button className="btn" onClick={profile}>Go to Profile</button>
+        <h1>BooMonkeyBoo</h1>
       </div>
       <Routes>
-        <Route path="/" element={<Chatboard />} />
+        <Route path="/" element={<Main />} />
+        <Route path="/login/*" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
 
     </>
