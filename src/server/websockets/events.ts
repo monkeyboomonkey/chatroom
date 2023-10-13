@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { getUsersInRoom } from "./users.js";
+import { getActiveRooms } from "./rooms.js";
 
 export function listen(io: Server) {
   io.on("connection", (socket) => {
@@ -18,6 +19,7 @@ export function listen(io: Server) {
      * Client LISTENS:
      * "message" - a chat message in lobby or room
      * "systemMessage" - user joins or leaves room
+     * "room" - array of all current room names
      */
 
     /**
@@ -25,7 +27,9 @@ export function listen(io: Server) {
      */
     socket.username = "anonymous";
     socket.room = "lobby";
+
     console.log(`a user connected with socket id: ${socket.id}`);
+    socket.emit('rooms', getActiveRooms(io));
 
     /**
      * Upon connection, user will join the lobby room by default
@@ -91,8 +95,12 @@ export function listen(io: Server) {
         // send list of connected users in room
         const roster = await getUsersInRoom(io, socket);
         io.to(socket.room).emit("roomUsers", roster);
+
+        // send updated list of rooms to all users as an array
+        io.emit('rooms', getActiveRooms(io));
       } catch (e) {
         console.log(e.message);
+
       }
     });
 
