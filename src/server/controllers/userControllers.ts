@@ -20,13 +20,25 @@ export async function updateUser(req: Request, res: Response, next: NextFunction
   const foundNewUsername = await db.select().from(users).where(and(eq(users.username, newusername), ne(users.userid, userid)));
   const foundNewEmail = await db.select().from(users).where(and(eq(users.email, newemail), ne(users.userid, userid)));
   if(!foundNewUsername.length && !foundNewEmail.length){
-    try{
-      const newUser = await db.update(users).set({ fn: newfn, ln: newln, email: newemail, username: newusername, password: hashSync(newpassword, 10) }).where(eq(users.userid, userid)).returning();
-      res.locals.user = newUser[0];
-      return next();
+    if(newpassword){
+      try{
+        const newUser = await db.update(users).set({ fn: newfn, ln: newln, email: newemail, username: newusername, password: hashSync(newpassword, 10) }).where(eq(users.userid, userid)).returning();
+        res.locals.user = newUser[0];
+        return next();
+      }
+      catch(e){
+        return next('failed to updateUser');
+      }
     }
-    catch(e){
-      return next('failed to updateUser');
+    else{
+      try{
+        const newUser = await db.update(users).set({ fn: newfn, ln: newln, email: newemail, username: newusername }).where(eq(users.userid, userid)).returning();
+        res.locals.user = newUser[0];
+        return next();
+      }
+      catch(e){
+        return next('failed to updateUser');
+      }
     }
   }
   else if(foundNewUsername.length){

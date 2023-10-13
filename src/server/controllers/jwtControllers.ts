@@ -53,5 +53,4 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction): void
     return next('error verifying your login') 
     // return next();
   };
-
 }
