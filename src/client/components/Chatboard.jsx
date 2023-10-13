@@ -3,8 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import Chatcategory from "./Chatcategory";
 import Chatbox from "./Chatbox";
 import "../styles/style.css";
-// const socket = io('ws://localhost:3001');
 import { SocketContext } from "../Context";
+import { ChatDataList } from "./ChatList/ChatDataList";
 
 function Chatboard() {
   const { socket } = useContext(SocketContext);
@@ -51,6 +51,11 @@ function Chatboard() {
     <>
       <div className="chatboard">
         <div className="chatCategory">
+          <ChatDataList
+            categories={categories}
+            setCategories={setCategories}
+            setRoomName={setRoomName}
+          />
           <div className="chatCategoryList">
             <Chatcategory
               handleSwitchRoom={handleSwitchRoom}
