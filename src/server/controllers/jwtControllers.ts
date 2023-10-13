@@ -18,5 +18,6 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction): void
   //     verify JWT using user_id
   // else       search db for (req.query.username)->user_id
   //     verify JWT using user_id
-
+  // temp setup for testing purpose
+  return next();
 }

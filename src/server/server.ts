@@ -18,6 +18,7 @@ import * as chatServer from "./websockets/events.js";
 const app = express();
 app.use(express.json());
 const whitelist = [
+  undefined,
   "http://localhost:8080",
 ];
 const corsOptions = {
