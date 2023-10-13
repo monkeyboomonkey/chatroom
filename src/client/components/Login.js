@@ -32,6 +32,9 @@ function Log() {
                 const newUserinfo = { ...data }
                 setUserinfo(newUserinfo);
             })
+            .then(() => {
+                navigate("/")
+            })
     }
 
     function signup() {
@@ -40,28 +43,27 @@ function Log() {
 
     return (
 
-        <div className="login-main-window">
-            <div className="login-wrapper">
-                <form onSubmit={handleLogin}>
-                    <label>
-                        <p>Username</p>
-                        <input type="text" onChange={el => setUserName(el.target.value)} />
-                    </label>
-                    <label>
-                        <p>Password</p>
-                        <input type="password" onChange={el => setPassword(el.target.value)} />
-                    </label>
-                    <span>
-                        <button className="bttn" onClick={handleLogin}>Log in</button>
-                        <button className="bttn" onClick={signup}>Sign up</button>
-                    </span>
-                </form>
-            </div>
-            <div className="routes-window">
+        <div className="login-wrapper">
+
+            <form onSubmit={handleLogin}>
+                <label>
+                    <p>Username</p>
+                    <input type="text" onChange={el => setUserName(el.target.value)} />
+                </label>
+                <label>
+                    <p>Password</p>
+                    <input type="password" onChange={el => setPassword(el.target.value)} />
+                </label>
+                <span>
+                    <button className="bttn" onClick={handleLogin}>Log in</button>
+                    <button className="bttn" onClick={signup}>Sign up</button>
+                </span>
+            </form>
+            <></>
                 <Routes>
                     <Route path="/signup" element={<Signup />} />
                 </Routes>
-            </div>
+
 
         </div>
 

@@ -15,33 +15,36 @@ function App() {
     navigate("/login")
   }
 
-  function loginCheck() {
-    fetch('http://localhost:3001/api/verifyuser', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      mode: "cors",
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.user !== undefined) {
-          login()
-        }
-        console.log(data.user)
-      })
-  }
-  useEffect(() => {
-    loginCheck()
-  }, []);
+  // function loginCheck() {
+  //   fetch('http://localhost:3001/api/verifyuser', {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     mode: "cors",
+  //   })
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       if (data.user === undefined) {
+  //         login()
+  //       }
+  //       console.log(data.user)
+  //     })
+  // }
+  // useEffect(() => {
+  //   loginCheck()
+  // }, []);
+
+
+
 
 
 
   return (
     <>
       <nav>
-        <ul>
-          <li>
+        {/* <ul> */}
+        {/* <li>
             <Link to="/">Main</Link>
           </li>
           <li>
@@ -50,7 +53,12 @@ function App() {
           <li>
             <Link to="/signup">Sign Up</Link>
           </li>
-        </ul>
+        </ul> */}
+        <span>
+          <Link to="/">Main</Link>
+          <Link to="/login">Login</Link>
+          <Link to="/signup">Sign Up</Link>
+        </span>
       </nav>
       <div className="loginmainwindow">
         <h1>BooMonkeyBoo</h1>

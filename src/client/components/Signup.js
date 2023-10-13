@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, useNavigate } from "react-router-dom";
-
+import Login from "./Login.js";
 
 function Signup() {
     const [username, setUsername] = useState();
@@ -9,6 +9,7 @@ function Signup() {
     const [lastName, setLastName] = useState();
     const [email, setEmail] = useState();
 
+    const navigate = useNavigate();
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -27,8 +28,8 @@ function Signup() {
                 },
                 body: JSON.stringify(signupData)
             })
+            navigate("/login")
 
-            
         } catch (error) {
             console.log(error.message);
         }
@@ -63,7 +64,9 @@ function Signup() {
                     <button className="bttn" onClick={handleSubmit}>Submit</button>
                 </div>
             </form>
-
+            <Routes>
+                <Route path="/login" element={<Login />} />
+            </Routes>
         </div>
 
     )
