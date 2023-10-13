@@ -1,14 +1,14 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from "react-router-dom";
-import Log from './Log.js';
-import "./styles/Login.scss";
+import Profile from './Prof.js';
+import "./styles/Profile.scss";
 
-const root = createRoot(document.getElementById('log'));
+const root = createRoot(document.getElementById('profile'));
 root.render(
     // <React.StrictMode>
     <BrowserRouter>
-        <Log />
+        <Profile />
     </BrowserRouter>
     // </React.StrictMode>
 );

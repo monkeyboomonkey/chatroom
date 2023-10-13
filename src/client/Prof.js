@@ -3,17 +3,17 @@ import { Route, Routes, useNavigate, BrowserRouter } from "react-router-dom";
 import Login from "./components/Loginwindow.js";
 import Signup from "./components/Signupwindow.js";
 
-function Log() {
+function Profile() {
     const navigate = useNavigate();
 
     return (
         <div className="login-main-window">
             <div className="button-window">
                 <button className="bttn" onClick={() => navigate("/login")}>
-                    Log In
+                    Update
                 </button>
                 <button className="bttn" onClick={() => navigate("/signup")}>
-                    Sign Up
+                    Delete
                 </button>
             </div>
             <div className="routes-window">
@@ -30,4 +30,4 @@ function Log() {
 }
 
 
-export default Log;
+export default Profile;

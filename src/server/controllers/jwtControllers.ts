@@ -1,19 +1,20 @@
 import jwt from 'jsonwebtoken';
-import {Express, Request, Response, NextFunction} from 'express';
-import dotenv from 'dotenv'; 
+import { Express, Request, Response, NextFunction } from 'express';
+import dotenv from 'dotenv';
 
-dotenv.config(); 
+dotenv.config();
 
 export function createJWT(req: Request, res: Response, next: NextFunction): void {
-  
-  const token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), {expiresIn: 60});
-  res.cookie("jwt", token, {httpOnly: true})
+
+  const token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), { expiresIn: 60 });
+  res.cookie("jwt", token, { httpOnly: true })
 
   return next();
 }
 
 export function verifyJWT(req: Request, res: Response, next: NextFunction): void {
-  
+  res.locals.user = {user: 'test', name: 'Joe'}
+  return next()
 }
 
 // just for testing purpose

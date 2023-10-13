@@ -6,17 +6,43 @@ import Chatboard from './components/Chatboard.jsx';
 
 function App() {
   const navigate = useNavigate();
-    function login() {
-        return window.location.href = "login.html"
-    }
+  // checks to see if verified user exists; redirects to login page if no user exists
+  function loginCheck() {
+    fetch('http://localhost:3001/api/verifyuser', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      mode: "cors",
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.user === undefined) login()
+        console.log(data.user)
+      })
+  }
+  useEffect(() => {
+    loginCheck()
+  }, []);
+
+  // "routes" to redirect users
+  function login() {
+    return window.location.href = "login.html"
+  }
+  function profile() {
+    return window.location.href = "profile.html"
+  }
+
   return (
     <>
       <div className="loginmainwindow">
-          <h1>Main Window</h1>
-          <button className="btn" onClick={login}>Go to Login Window</button>
+        <h1>Main Window</h1>
+        <button className="btn" onClick={login}>Go to Login Window</button>
+        <button className="btn" onClick={loginCheck}>Check</button>
+        <button className="btn" onClick={profile}>Go to Profile</button>
       </div>
       <Routes>
-        <Route path="/" element={<Chatboard/>} />
+        <Route path="/" element={<Chatboard />} />
       </Routes>
     </>
   )

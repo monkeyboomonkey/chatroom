@@ -6,7 +6,7 @@ function Login() {
 
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
-
+    const [userinfo, setUserinfo] = useState({});
     const handleLogin = async (e) => {
         e.preventDefault();
         const loginData = {
@@ -14,7 +14,7 @@ function Login() {
             password: password
         }
 
-        const loginuser = await fetch('http://localhost:3001/api/userlogin', {
+        fetch('http://localhost:3001/api/userlogin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -24,9 +24,12 @@ function Login() {
             mode: "cors",
 
         })
-        console.log("Login Successful")
+            .then(response => response.json())
+            .then(data => {
+                const newUserinfo = { ...data }
+                setUserinfo(newUserinfo);
+            })
     }
-
     return (
         <div className="login-wrapper">
             {/* <h1>Login</h1> */}
