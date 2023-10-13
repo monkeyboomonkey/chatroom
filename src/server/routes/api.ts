@@ -12,7 +12,7 @@ export const router = express.Router();
 // intend to add verifyJWT before and createJWT(renew JWT) after userLogIn, updateUser in '/updateuser' because it is a user operation
 // intend to add verifyJWT before deleteUser because it is a user operation
 router.get('/getallusers', getAllUsers, (req: Request, res: Response):void => {res.status(200).json(res.locals.allUsers)});
-router.post('/registeruser', registerUser, createJWT, (req: Request, res: Response):void => {res.status(200).json('user registered')});
+router.post('/registeruser', registerUser, (req: Request, res: Response):void => {res.status(200).json('user registered')});
 router.post('/userlogin', userLogIn, createJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.user);});
 router.delete('/deleteuser', verifyJWT, deleteUser, (req: Request, res: Response):void => {res.status(200).json('user deleted')});
 router.patch('/updateuser', verifyJWT, updateUser, createJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.user)});
