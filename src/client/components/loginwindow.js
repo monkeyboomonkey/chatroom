@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, useNavigate } from "react-router-dom";
 
-
 function Login() {
 
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
     const [userinfo, setUserinfo] = useState({});
+
     const handleLogin = async (e) => {
         e.preventDefault();
         const loginData = {
@@ -28,26 +28,37 @@ function Login() {
             .then(data => {
                 const newUserinfo = { ...data }
                 setUserinfo(newUserinfo);
+
             })
     }
-    return (
-        <div className="login-wrapper">
-            {/* <h1>Login</h1> */}
-            <form onSubmit={handleLogin}>
-                <label>
-                    <p>Username</p>
-                    <input type="text" onChange={el => setUserName(el.target.value)} />
-                </label>
-                <label>
-                    <p>Password</p>
-                    <input type="password" onChange={el => setPassword(el.target.value)} />
-                </label>
-                <div>
-                    <button className="bttn" onClick={handleLogin}>Log in</button>
-                </div>
-            </form>
 
-        </div>
+
+    const test = () => {
+        console.log(userinfo)
+    }
+    return (
+
+            <div className="login-wrapper">
+                {/* <h1>Login</h1> */}
+
+                <form onSubmit={handleLogin}>
+
+                    <label>
+                        <p>Username</p>
+                        <input type="text" onChange={el => setUserName(el.target.value)} />
+                    </label>
+                    <label>
+                        <p>Password</p>
+                        <input type="password" onChange={el => setPassword(el.target.value)} />
+                    </label>
+                    <div>
+                        <button className="bttn" onClick={handleLogin}>Log in</button>
+                        <button className="bttn" onClick={test}>Test</button>
+                    </div>
+
+                </form>
+
+            </div>
 
     )
 

@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Route, Routes, useNavigate, BrowserRouter } from "react-router-dom";
 // import Login from "./components/loginwindow.js";
 // import Signup from "./components/signupwindow.js";
-import Chatboard from './components/Chatboard.jsx';
+import Chatboard from "./components/Chatboard.jsx";
+
 
 function App() {
   const navigate = useNavigate();
   // checks to see if verified user exists; redirects to login page if no user exists
+  const [user, setUser] = useState({});
+
   function loginCheck() {
     fetch('http://localhost:3001/api/verifyuser', {
       method: 'GET',
@@ -35,6 +38,7 @@ function App() {
 
   return (
     <>
+
       <div className="loginmainwindow">
         <h1>Main Window</h1>
         <button className="btn" onClick={login}>Go to Login Window</button>
@@ -44,6 +48,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Chatboard />} />
       </Routes>
+
     </>
   )
 }
