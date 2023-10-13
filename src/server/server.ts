@@ -30,10 +30,6 @@ const corsOptions = {
 };
 app.use(express.urlencoded({ extended: true }));
 
-// use this when testing /userlogin with postman
-// app.use(cors())
-
-// use this when testing with frontend
 app.use(cors(corsOptions))
 app.use(cookieParser());
 
