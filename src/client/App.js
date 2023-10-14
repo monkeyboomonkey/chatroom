@@ -12,11 +12,12 @@ import Signup from "./components/Signup.js";
 import Profile from "./components/Profile.js";
 import Update from "./components/Update.js";
 import "./styles/App.scss";
-import { UserContext } from "./Context.js";
+import { StateContext } from "./Context.js";
 
 function App() {
   // User object to pass as a context provider
-  const [user, setUser] = useState("default");
+  const [user, setUser] = useState("anonymous");
+  const StateValues = {userState: [user, setUser]}
 
   const navigate = useNavigate();
   // checks to see if verified user exists; redirects to login page if no user exists
@@ -50,7 +51,7 @@ function App() {
     <div
     // style={{ backgroundImage: `url("https://gifdb.com/images/high/aesthetic-anime-pixelated-background-bnuuk8wf00lrrcvf.gif")`}}
     >
-      <UserContext.Provider value={UserContextValues}>
+      <StateContext.Provider value={StateValues}>
         <Routes>
           <Route path="/" element={<Main />} />
           <Route
@@ -67,7 +68,7 @@ function App() {
             element={<Update setUser={setUser} user={user} />}
           />
         </Routes>
-      </UserContext.Provider>
+      </StateContext.Provider>
     </div>
   );
 }

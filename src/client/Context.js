@@ -21,5 +21,5 @@ socket.on('message', (data) => {
 })
 
 
-export const UserContext = createContext();
+export const StateContext = createContext();
 console.log("Context Imported");

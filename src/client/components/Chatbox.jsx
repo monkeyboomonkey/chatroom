@@ -2,7 +2,7 @@ import React from "react";
 import { useRef, useState, useEffect, useContext } from "react";
 import '../styles/style.css';
 import Chatboxheader from "./Chatboxheader";
-import { SocketContext } from "../Context";
+import { SocketContext, StateContext } from "../Context";
 
 
 function Chatbox(props) {
@@ -10,6 +10,8 @@ function Chatbox(props) {
     const { socket } = useContext(SocketContext);
     const chatDisplayRef = useRef(null);
     const messageContentRef = useRef(null);
+    const { userState } = useContext(StateContext);
+    const [user, setUser] = userState;
     // socket.on('switchroom', (data) => {
     //     console.log(`receiving data from server...`);
     //     setRoomName(data);
@@ -22,9 +24,9 @@ function Chatbox(props) {
         // messageDiv.innerText = message;
         // chatDisplayRef.current.appendChild(messageDiv);
         messageContentRef.current.value = '';
-        if (message.length > 0){
+        if (message.trim().length > 0){
             socket.emit('message', {
-                username: `${socket.id.substring(0,4)}`, message: message
+                username: user.username ? user.username : "anonymous", message: message
             })
             console.log("Socket pushed")
         }
