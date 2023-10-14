@@ -3,7 +3,7 @@ import { getAllUsers, registerUser, userLogIn, deleteUser, updateUser } from '..
 import { getAllChatrooms, addChatroom } from '../controllers/chatroomControllers.js'
 import { addChatlog, getAllChatlogs } from '../controllers/chatlogControllers.js'
 
-import { createJWT, verifyJWT } from '../controllers/jwtControllers.js'
+import { createJWT, verifyJWT, deleteJWT } from '../controllers/jwtControllers.js'
 
 
 export const router = express.Router();
@@ -14,9 +14,9 @@ export const router = express.Router();
 router.get('/getallusers', getAllUsers, (req: Request, res: Response):void => {res.status(200).json(res.locals.allUsers)});
 router.post('/registeruser', registerUser, (req: Request, res: Response):void => {res.status(200).json('user registered')});
 router.post('/userlogin', userLogIn, createJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.user);});
-router.delete('/deleteuser', verifyJWT, deleteUser, (req: Request, res: Response):void => {res.status(200).json('user deleted')});
+router.delete('/deleteuser', verifyJWT, deleteUser, deleteJWT, (req: Request, res: Response):void => {res.status(200).json('user deleted')});
 router.patch('/updateuser', verifyJWT, updateUser, createJWT, (req: Request, res: Response):void => {res.status(200).json(res.locals.user)});
-
+router.delete('/userlogout', deleteJWT,  (req: Request, res: Response):void => {res.status(200).json('user logged out')})
 
 // Chatroom routes
 // intend to add verifyJWT before and createJWT(renew JWT) after addchatroom because it is a user operation
