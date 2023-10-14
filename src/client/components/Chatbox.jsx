@@ -9,8 +9,6 @@ function Chatbox(props) {
     // const [roomName, setRoomName] = useState('');
     // const isRerender = useRef(false);
     const { socket } = useContext(SocketContext);
-    // const userState = useContext(UserContext);
-    // console.log(userState);
 
     const chatDisplayRef = useRef(null);
     const messageContentRef = useRef(null);
@@ -29,6 +27,7 @@ function Chatbox(props) {
             socket.emit('message', {
                 // username: `props.username`, message: message
                 username: props.user.username ? props.user.username : "anonymous", message: message
+
             })
             console.log("Socket pushed")
         }
