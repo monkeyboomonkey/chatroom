@@ -5,6 +5,7 @@ import '../styles/Profile.scss'
 
 function Update(props) {
     const navigate = useNavigate();
+    const [userid, setUserID] = useState(props.user.userid);
     const [username, setUsername] = useState(props.user.username);
     const [password, setPassword] = useState();
     const [firstName, setFirstName] = useState(props.user.fn);
@@ -27,22 +28,33 @@ function Update(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const updateData = {
-            fn: firstName,
-            ln: lastName,
-            email: email,
-            username: username,
-            password: password
+            userid: userid,
+            newfn: firstName,
+            newln: lastName,
+            newemail: email,
+            newusername: username
+            // newpassword: password
         }
         try {
-            const result = await fetch('http://localhost:3001/api/updateuser', {
-                method: 'POST',
+            fetch('http://localhost:3001/api/updateuser', {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(updateData)
             })
-            console.log('Update complete')
-            console.log(props.user)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Update complete')
+                    console.log(data)
+                    const newUserinfo = { ...data }
+                    props.setUser(newUserinfo);
+                })
+                .then(() => {
+                    navigate("/profile")
+                })
+
+
 
         } catch (error) {
             console.log(error.message);

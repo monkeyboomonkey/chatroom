@@ -41,16 +41,17 @@ export async function createJWT(req: Request, res: Response, next: NextFunction)
 }
 
 export function verifyJWT(req: Request, res: Response, next: NextFunction): void {
-  try { 
-    // console.log("verifying the token")
-    const data = jwt.verify(req.cookies.jwt, String(process.env.JWT_SECRET)) as JwtPayload;
-    res.locals.verify = true;
-    return next();
-  } catch { 
-    // torn between sending something thru res.locals so the frontend can know
-    // res.locals.verify = false;
-    // or just erroring out, because does the front end necessarily need to know?
-    return next('error verifying your login') 
-    // return next();
-  };
+  // try { 
+  //   // console.log("verifying the token")
+  //   const data = jwt.verify(req.cookies.jwt, String(process.env.JWT_SECRET)) as JwtPayload;
+  //   res.locals.verify = true;
+  //   return next();
+  // } catch { 
+  //   // torn between sending something thru res.locals so the frontend can know
+  //   // res.locals.verify = false;
+  //   // or just erroring out, because does the front end necessarily need to know?
+  //   return next('error verifying your login') 
+  //   // return next();
+  // };
+  return next()
 }
