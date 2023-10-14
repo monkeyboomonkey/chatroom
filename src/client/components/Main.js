@@ -11,19 +11,21 @@ import Update from "./Update.js";
 function Main() {
     const navigate = useNavigate();
     // function loginCheck() {
-    //     fetch('http://localhost:3001/api/verifyuser', {
+    //     console.log('attempt fetch')
+    //     fetch('http://localhost:3001/api/verify', {
     //         method: 'GET',
     //         headers: {
     //             'Content-Type': 'application/json'
     //         },
+    //         credentials: 'include',
     //         mode: "cors",
     //     })
     //         .then(response => response.json())
     //         .then(data => {
-    //             if (data.user !== undefined) {
-    //                 login()
-    //             }
-    //             console.log(data.user)
+    //             // if (data.user !== undefined) {
+    //             //     login()
+    //             // }
+    //             console.log(data)
     //         })
     // }
     // useEffect(() => {
