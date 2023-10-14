@@ -18,7 +18,7 @@ dotenv.config();
 export async function createJWT(req: Request, res: Response, next: NextFunction): Promise<void> {
   // if accessing from logging in, aka the only time we have the id naturally
   if (res.locals.user && res.locals.user.userid) {
-    res.locals.token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), { expiresIn: 60 });
+    res.locals.token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), { expiresIn: 300 });
   } else {
     // accessing from just the username
     const { username } = req.body;
@@ -28,7 +28,7 @@ export async function createJWT(req: Request, res: Response, next: NextFunction)
     const foundUser = await db.select().from(users).where(eq(users.username, username)).catch()
     //console.log("found user: ", user)
     if (foundUser.length) {
-      res.locals.token = jwt.sign({ userid: foundUser[0].userid }, String(process.env.JWT_SECRET), { expiresIn: 60 });
+      res.locals.token = jwt.sign({ userid: foundUser[0].userid }, String(process.env.JWT_SECRET), { expiresIn: 300 });
       //console.log('token set: ', res.locals.token)
     } else {
       // cannot find user
@@ -47,7 +47,7 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction): void
     return next();
   } catch {
     // torn between sending something thru res.locals so the frontend can know
-    // res.locals.verify = false;
+    res.locals.verify = false;
     // or just erroring out, because does the front end necessarily need to know?
     return next('error verifying your login')
     // return next();
