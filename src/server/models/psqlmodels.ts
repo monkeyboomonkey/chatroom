@@ -16,7 +16,7 @@ export const chatrooms = pgTable("chatrooms", {
 });
 
 export const chatlogs = pgTable("chatlogs", {
-	chatroomId: uuid("chatroom_id").notNull().references(() => chatrooms.chatroom_id),
+	chatroom_id: uuid("chatroom_id").notNull().references(() => chatrooms.chatroom_id),
 	timestamp: timestamp("timestamp", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 	message: text("message"),
 	userid: uuid("userid").notNull().references(() => users.userid),
