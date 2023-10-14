@@ -6,16 +6,16 @@ dotenv.config();
 
 // need to call createJWT, as it refreshes our token;
   // in registering, logging in, updating profile, messaging & creating a chatroom...
-export async function createJWT(req: Request, res: Response, next: NextFunction): Promise<void> {
+export function createJWT(req: Request, res: Response, next: NextFunction): void {
   // if accessing from logging in, aka the only time we have the id naturally
   if (res.locals.user && res.locals.user.userid) {
     res.locals.token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), {expiresIn: 60});
+    res.cookie("jwt", res.locals.token, {httpOnly: true})
+    return next();
   } else {
     return next('error with token creation')
   }
   //console.log("cookie added: ", res.locals.token)
-  res.cookie("jwt", res.locals.token, {httpOnly: true})
-  return next();
 }
 
 export function verifyJWT(req: Request, res: Response, next: NextFunction): void {
