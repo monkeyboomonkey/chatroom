@@ -15,10 +15,12 @@ import "./styles/App.scss";
 import { UserContext } from "./Context.js";
 
 function App() {
+  // User object to pass as a context provider
+  const [user, setUser] = useState("default");
+
   const navigate = useNavigate();
   // checks to see if verified user exists; redirects to login page if no user exists
-  const [user, setUser] = useState({});
-  const UserContextValues = { userState: [user, setUser] };
+
 
   function login() {
     navigate("/login");
