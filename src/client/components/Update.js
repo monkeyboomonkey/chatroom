@@ -41,6 +41,9 @@ function Update(props) {
                 },
                 body: JSON.stringify(updateData)
             })
+            console.log('Update complete')
+            console.log(props.user)
+
         } catch (error) {
             console.log(error.message);
         }
@@ -48,7 +51,6 @@ function Update(props) {
 
     return (
         <div class="card-container">
-            <span class="pro">PRO</span>
             <img class="round" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpaiczmKCa_Gd7MeORuu_nN7mUxR9we2h5Xc3sY-ZAjYBwhz0knH63sq77l9BM6GULDmE&usqp=CAU" alt="user" />
             <div class="nuform">
                 <form onSubmit={handleSubmit}>
@@ -70,14 +72,14 @@ function Update(props) {
                 </form>
             </div>
             <div class="buttons">
-                <button class="primary">
+                <button class="primary" onClick={handleSubmit}>
                     Submit
                 </button>
                 <button class="primary ghost" onClick={toProfile}>
-                    Back
+                    Return
                 </button>
             </div>
-            <div class="skills">
+            <div class="interests">
                 <h6>Interests</h6>
                 <ul>
                     <li>UI / UX</li>

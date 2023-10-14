@@ -46,7 +46,6 @@ function Profile(props) {
 
     return (
         <div class="card-container">
-            <span class="pro">PRO</span>
             <img class="round" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpaiczmKCa_Gd7MeORuu_nN7mUxR9we2h5Xc3sY-ZAjYBwhz0knH63sq77l9BM6GULDmE&usqp=CAU" alt="user" />
             <h3>{fullName}</h3>
             <h6>{emailAddress}</h6>
@@ -55,10 +54,10 @@ function Profile(props) {
                     Update
                 </button>
                 <button class="primary ghost" onClick={test}>
-                    Delete
+                    Options
                 </button>
             </div>
-            <div class="skills">
+            <div class="interests">
                 <h6>Interests</h6>
                 <ul>
                     <li>UI / UX</li>

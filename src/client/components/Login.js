@@ -17,24 +17,29 @@ function Log(props) {
             password: password
         }
 
-        fetch('http://localhost:3001/api/userlogin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(loginData),
-            credentials: 'include',
-            mode: "cors",
+        try {
+            fetch('http://localhost:3001/api/userlogin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loginData),
+                credentials: 'include',
+                mode: "cors",
 
-        })
-            .then(response => response.json())
-            .then(data => {
-                const newUserinfo = { ...data }
-                props.setUser(newUserinfo);
             })
-            .then(() => {
-                navigate("/")
-            })
+                .then(response => response.json())
+                .then(data => {
+                    const newUserinfo = { ...data }
+                    props.setUser(newUserinfo);
+                })
+                .then(() => {
+                    navigate("/")
+                })
+        } catch {
+            console.log(error.message);
+            signup();
+        }
     }
 
     function signup() {
@@ -57,7 +62,7 @@ function Log(props) {
                     <button onClick={handleLogin}>Log in</button>
                     <p class="message">Not registered? <Link to="/signup">Create an account</Link></p>
                 </form>
-                
+
                 {/* <Routes>
                     <Route path="/signup" element={<Signup />} />
                 </Routes> */}
