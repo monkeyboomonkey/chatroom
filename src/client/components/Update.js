@@ -41,7 +41,9 @@ function Update(props) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(updateData)
+                body: JSON.stringify(updateData),
+                credentials: 'include',
+                mode: "cors",
             })
                 .then(response => response.json())
                 .then(data => {
