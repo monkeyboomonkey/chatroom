@@ -10,27 +10,27 @@ import Update from "./Update.js";
 
 function Main() {
     const navigate = useNavigate();
-    // function loginCheck() {
-    //     console.log('attempt fetch')
-    //     fetch('http://localhost:3001/api/verify', {
-    //         method: 'GET',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         credentials: 'include',
-    //         mode: "cors",
-    //     })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             // if (data.user !== undefined) {
-    //             //     login()
-    //             // }
-    //             console.log(data)
-    //         })
-    // }
-    // useEffect(() => {
-    //     loginCheck()
-    // }, []);
+    function loginCheck() {
+        console.log('attempt fetch')
+        fetch('http://localhost:3001/api/verify', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            mode: "cors",
+        })
+            .then(response => response.json())
+            .then(data => {
+                // if (data.user !== undefined) {
+                //     login()
+                // }
+                console.log('this is', data)
+            })
+    }
+    useEffect(() => {
+        loginCheck()
+    }, []);
 
     // // "routes" to redirect users
     function login() {
