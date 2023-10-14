@@ -13,7 +13,7 @@ function Chatboard() {
   const chatBoxRef = useRef(null);
   const newRoomDivRef = useRef(null);
   const newRoomText = useRef(null);
-  const [categories, setCategories] = useState([1, 2, 3, 4, 5, 6]);
+  const [categories, setCategories] = useState([]);
 
   // listen for active rooms and set rooms/categories
   useEffect(() => {
