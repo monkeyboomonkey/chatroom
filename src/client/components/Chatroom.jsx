@@ -6,7 +6,7 @@ function Chatroom(props) {
     const handleChatroomClicked = () => {
         console.log('Chatroom clicked!!!');
         const allChatRooms = document.querySelectorAll('.chatroom');
-        for(const chatroom of allChatRooms) {
+        for (const chatroom of allChatRooms) {
             chatroom.classList.remove('activeRoom');
             // chatroom.disabled = false;
             console.log(chatroom)
@@ -17,7 +17,7 @@ function Chatroom(props) {
     }
     return (
         <div className="chatroom" onClick={handleChatroomClicked} ref={chatRoomRef}>
-            <h3>I'm the Chatroom #{props.id}</h3>
+            <h3>Room #{props.id}</h3>
         </div>
     );
 }
