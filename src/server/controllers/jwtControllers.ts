@@ -2,15 +2,6 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import {Express, Request, Response, NextFunction} from 'express';
 import dotenv from 'dotenv'; 
 
-// next 8 lines just for createJWT to access data base
-import { drizzle } from 'drizzle-orm/postgres-js'
-import { eq, lt, gte, ne, and } from "drizzle-orm";
-import postgres from 'postgres'
-import { users } from '../models/psqlmodels.js'
-const connectionString = String(process.env.POSTGRES_URI)
-const client = postgres(connectionString)
-const db = drizzle(client);
-
 dotenv.config(); 
 
 // need to call createJWT, as it refreshes our token;
@@ -20,20 +11,7 @@ export async function createJWT(req: Request, res: Response, next: NextFunction)
   if (res.locals.user && res.locals.user.userid) {
     res.locals.token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), {expiresIn: 60});
   } else {
-  // accessing from just the username
-    const { username } = req.body;
-    //console.log("username: ", username);
-    // switched from using .then & .catch, as to be more DRY with token setting
-      // and to fix and error where server would crash upon incorrect info
-    const foundUser = await db.select().from(users).where(eq(users.username, username)).catch()
-    //console.log("found user: ", user)
-    if(foundUser.length){
-      res.locals.token = jwt.sign({ userid: foundUser[0].userid }, String(process.env.JWT_SECRET), {expiresIn: 60});
-      //console.log('token set: ', res.locals.token)
-    } else{
-      // cannot find user
-      return next('User does not exist, possible db error')
-    }
+    return next('error with token creation')
   }
   //console.log("cookie added: ", res.locals.token)
   res.cookie("jwt", res.locals.token, {httpOnly: true})
@@ -45,6 +23,7 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction): void
     // console.log("verifying the token")
     const data = jwt.verify(req.cookies.jwt, String(process.env.JWT_SECRET)) as JwtPayload;
     res.locals.verify = true;
+    res.locals.user = { "userid": data.userid }
     return next();
   } catch { 
     // torn between sending something thru res.locals so the frontend can know
