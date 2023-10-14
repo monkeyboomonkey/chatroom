@@ -38,23 +38,23 @@ function Main() {
         navigate("/login")
     }
 
-    useEffect(() => {
-        console.log("Running useeffect")
-        fetch('http://localhost:3001/api/verifyuser', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            mode: "cors",
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.user === undefined) {
-                    navigate("/login")
-                }
-                console.log(data.user)
-            })
-    }, [navigate]);
+    // useEffect(() => {
+    //     console.log("Running useeffect")
+    //     fetch('http://localhost:3001/api/verifyuser', {
+    //         method: 'GET',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         mode: "cors",
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             if (data.user === undefined) {
+    //                 navigate("/login")
+    //             }
+    //             console.log(data.user)
+    //         })
+    // }, [navigate]);
 
 
     return (

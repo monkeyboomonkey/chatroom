@@ -7,6 +7,8 @@ import Profile from "./components/Profile.js";
 import Update from "./components/Update.js";
 import './styles/App.scss'
 
+
+
 function App() {
   const navigate = useNavigate();
   // checks to see if verified user exists; redirects to login page if no user exists
