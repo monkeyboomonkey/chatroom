@@ -5,6 +5,7 @@ import Chatbox from "./Chatbox";
 import "../styles/style.css";
 import { SocketContext } from "../Context";
 import { ChatDataList } from "./ChatList/ChatDataList";
+import Navbar from "./Navbar";
 
 function Chatboard() {
   const { socket } = useContext(SocketContext);
@@ -49,6 +50,7 @@ function Chatboard() {
   };
   return (
     <>
+      <Navbar />
       <div className="chatboard">
         <div className="chatCategory">
           <ChatDataList
@@ -62,9 +64,9 @@ function Chatboard() {
               categories={categories}
             />
           </div>
-          <div>
+          {/* <div>
             <button onClick={handleNewRoomClicked}>New room</button>
-          </div>
+          </div> */}
         </div>
         <div className="chatBox" ref={chatBoxRef}>
           <Chatbox roomName={roomName} />

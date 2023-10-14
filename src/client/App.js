@@ -15,10 +15,10 @@ function App() {
 
   return (
     <>
-      <div className="loginmainwindow">
+      {/* <div className="loginmainwindow">
           <h1>Main Window</h1>
           <button className="btn" onClick={login}>Go to Login Window</button>
-      </div>
+      </div> */}
       <Routes>
         <Route path="/" element={<Chatboard/>} />
       </Routes>

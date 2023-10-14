@@ -14,7 +14,7 @@ function Chatcategory(props) {
 
   return (
     <div>
-      <h3>Let's chat!!!</h3>
+      <h3>All active rooms</h3>
       <div className="allChatCategories">
         {props.categories.map((chatroom, index) => (
           <Chatroom
