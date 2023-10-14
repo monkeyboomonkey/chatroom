@@ -5,17 +5,28 @@ import { SocketContext } from "../Context";
 
 function Chatcategory(props) {
   const { socket } = useContext(SocketContext);
-  const handleSwitchRoomEvent = (id) => {
+  const handleSwitchRoomEvent = (id, currentRoom, allChatRooms) => {
     console.log(`Switching to room: ${id}`);
+    console.log('currentRoom, allChatRooms: ', currentRoom, allChatRooms);
     // socket.emit('switchroom', id);
-    props.handleSwitchRoom(id);
+    for(const chatroom of allChatRooms) {
+        chatroom.classList.remove('activeRoom');
+        // chatroom.disabled = false;
+        console.log(chatroom)
+    }
+    const activeRoom = document.getElementById(`${props.roomName}`);
+    console.log('activeRoom: ', activeRoom);
+    activeRoom.classList.add('activeRoom');
+    activeRoom.disabled = true;
+    console.log('~~~>>>currentRoom, allChatRooms: ', currentRoom, allChatRooms);
+    props.handleSwitchRoom(id, currentRoom, allChatRooms);
     socket.emit("joinRoom", id);
   };
 
   return (
-    <div>
+    <div className="chatCategoryDiv">
       <h3>All active rooms</h3>
-      <div className="allChatCategories">
+      {props.categories.length ? <div className="allChatCategories">
         {props.categories.map((chatroom, index) => (
           <Chatroom
             key={index}
@@ -23,7 +34,8 @@ function Chatcategory(props) {
             switchRoom={handleSwitchRoomEvent}
           />
         ))}
-      </div>
+      </div> : <h4><i>---------No active rooms---------</i></h4>}
+      
     </div>
   );
 }

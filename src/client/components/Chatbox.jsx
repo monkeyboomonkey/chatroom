@@ -32,20 +32,30 @@ function Chatbox(props) {
         socket.on('message', (data) => {
             console.log("Socket pulled")
             const receivedMessageDiv = document.createElement('div');
+            console.log('data.message.message: ', data.message.message);
+            if(!data.message.message) {
+                return;
+            }
             // receivedMessageDiv.innerText = `${data.message.username}: ${data.message.message}`;
             receivedMessageDiv.classList.add('userMessage');
             receivedMessageDiv.innerHTML = `<span class='usernameDisplay'>${data.message.username}</span> <span class='messageDisplay'>${data.message.message}</span>`;
             chatDisplayRef.current.appendChild(receivedMessageDiv);
+            chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight;
         })
         console.log("Useffect Refresh")
-    }, [])
+    }, []);
+    const handleEnterPressed = (e) => {
+        if(e.key === 'Enter') {
+            handleSendBtnClicked();
+        }
+    }
     return (
         <div>
             {/* {props.roomName && <h3>Welcome to room #{props.roomName}!</h3>} */}
             <Chatboxheader roomName={props.roomName} />
             <div className="chatDisplay" ref={chatDisplayRef}></div>
             {props.roomName === '' ? '' : <div className="chatControl">
-                <textarea type="text" className="messageContent" ref={messageContentRef} />
+                <textarea type="text" className="messageContent" ref={messageContentRef} onKeyDown={handleEnterPressed}/>
                 <button className="sendBtn" onClick={handleSendBtnClicked}>Send</button>
             </div>}
         </div>

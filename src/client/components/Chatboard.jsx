@@ -13,30 +13,40 @@ function Chatboard() {
   const chatBoxRef = useRef(null);
   const newRoomDivRef = useRef(null);
   const newRoomText = useRef(null);
-  const [categories, setCategories] = useState([1, 2, 3, 4, 5, 6]);
+  const [categories, setCategories] = useState([]);
+  // const [activeRoom, setActiveRoom] = useState('');
 
   // listen for active rooms and set rooms/categories
   useEffect(() => {
     socket.on("rooms", (data) => {
       console.log(data);
-      setCategories(data);
+      setCategories(data.slice(1));
       console.log(categories);
     });
-  });
+  }, []);
 
   const [roomName, setRoomName] = useState("");
-  const handleSwitchRoom = (roomName) => {
-    console.log("Handling switch rooooooooom");
+  const handleSwitchRoom = (roomName, currentRoom, allChatRooms) => {
+    console.log('currentRoom, allChatRooms: ', currentRoom, allChatRooms);
     const chatBoxDiv = chatBoxRef.current;
     const chatBoxDisplay = chatBoxDiv.querySelector(".chatDisplay");
     chatBoxDisplay.innerText = "";
-    console.log("> > > chatBoxDisplay.value: ", chatBoxDisplay.value);
-    console.log("> > > chatBoxDisplay: ", chatBoxDisplay);
-    console.log(">>> chatBoxDiv: ", chatBoxDiv);
+    // if (!allChatRooms) {
+    //   allChatRooms = document.querySelectorAll('.chatroom');
+    // }
+    // console.log('~!~ allChatRooms after: ', allChatRooms);
+    // if(!currentRoom) {
+    //   currentRoom = document.getElementById(`${roomName}`);
+    // }
+    // console.log(';;;;; currentRoom after: ', currentRoom);
+    // for(const chatroom of allChatRooms) {
+    //   chatroom.classList.remove('activeRoom');
+    //   console.log(chatroom)
+    // }
+    // currentRoom.classList.add('activeRoom');
+    socket.emit("joinRoom", roomName);
+    // setActiveRoom(roomName);
     setRoomName(roomName);
-  };
-  const handleNewRoomClicked = () => {
-    newRoomDivRef.current.style.display = "block";
   };
   const handleNewRoomFormSubmit = (e) => {
     const newRoomName = newRoomText.current.value;
@@ -57,16 +67,15 @@ function Chatboard() {
             categories={categories}
             setCategories={setCategories}
             setRoomName={setRoomName}
+            handleSwitchRoom={handleSwitchRoom}
           />
           <div className="chatCategoryList">
             <Chatcategory
               handleSwitchRoom={handleSwitchRoom}
               categories={categories}
+              roomName={roomName}
             />
           </div>
-          {/* <div>
-            <button onClick={handleNewRoomClicked}>New room</button>
-          </div> */}
         </div>
         <div className="chatBox" ref={chatBoxRef}>
           <Chatbox roomName={roomName} />

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { SocketContext } from "../../Context";
 
-export function ChatDataList({ categories }) {
+export function ChatDataList({ categories, handleSwitchRoom }) {
   const { socket } = useContext(SocketContext);
   console.log("ChatDataList Categories");
   console.log(categories);
@@ -19,6 +19,7 @@ export function ChatDataList({ categories }) {
     const selectedRoom = roomForm.value;
     console.log("Selected room ", selectedRoom);
     socket.emit("joinRoom", selectedRoom);
+    handleSwitchRoom(selectedRoom);
     roomForm.value = "";
   };
 
@@ -28,9 +29,9 @@ export function ChatDataList({ categories }) {
         <div>
           <label for="chatroom-choice">Choose or create a topic:</label>
         </div>
-        <div>
+        <div className="newTopicDiv">
           <input list="browsers" id="roomName" name="Room" />
-          <input type="submit" value="Join"></input>
+          <input type="submit" value="Join" />
         </div>
       </form>
       <datalist id="browsers">{generateRoomList(categories)}</datalist>
