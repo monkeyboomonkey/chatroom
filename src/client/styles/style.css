@@ -2,6 +2,10 @@ body {
     background-color: rgb(199, 202, 174);
 }
 
+#root {
+    width: 90%;
+}
+
 .navbar {
     display: flex;
     justify-content: space-between;
