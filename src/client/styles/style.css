@@ -189,3 +189,27 @@ li {
 .activeRoom {
     background: lightskyblue;
 }
+
+.topicDiv {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+#roomName {
+    width: 70%;
+    border-radius: 6px;
+    border: none;
+    padding-left: 6px;
+}
+
+.topicDiv > input[type=submit] {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+}
+
+.topicDiv > input[type=submit]:hover {
+    cursor: pointer;
+    background: #cef6f9;
+}

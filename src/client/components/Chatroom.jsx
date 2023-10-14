@@ -17,7 +17,7 @@ function Chatroom(props) {
     }
     return (
         <div className="chatroom" onClick={handleChatroomClicked} ref={chatRoomRef}>
-            <h3>I'm the Chatroom #{props.id}</h3>
+            <h3>#{props.id}</h3>
         </div>
     );
 }
