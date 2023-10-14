@@ -1,6 +1,29 @@
 import React from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
 
 function Navbar() {
+    const navigate = useNavigate();
+    const logout = () => {
+        fetch('http://localhost:3001/api/userlogout', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            mode: "cors",
+        })
+        login()
+    }
+
+    function login() {
+        navigate("/login")
+    }
+    function profile() {
+        navigate("/profile")
+    }
+
+
+
 
     return (
         <nav className="navbar">
@@ -9,8 +32,8 @@ function Navbar() {
             </div>
             <div className="rightNav">
                 <ul>
-                    <li>Profile</li>
-                    <li>Log out</li>
+                    <button className="navButton" onClick={profile}>Profile</button>
+                    <button className="navButton" onClick={logout}>Log Out</button>
                 </ul>
             </div>
         </nav>

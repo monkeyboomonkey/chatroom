@@ -7,7 +7,9 @@ import { SocketContext } from "../Context";
 
 function Chatbox(props) {
     // const [roomName, setRoomName] = useState('');
+    // const isRerender = useRef(false);
     const { socket } = useContext(SocketContext);
+
     const chatDisplayRef = useRef(null);
     const messageContentRef = useRef(null);
     // socket.on('switchroom', (data) => {
@@ -21,9 +23,10 @@ function Chatbox(props) {
         // messageDiv.innerText = message;
         // chatDisplayRef.current.appendChild(messageDiv);
         messageContentRef.current.value = '';
-        if (message.length > 0){
+        if (message.length > 0) {
             socket.emit('message', {
-                username: `${socket.id.substring(0,4)}`, message: message
+                // username: `props.username`, message: message
+                username: `${socket.id.substring(0, 4)}`, message: message
             })
             console.log("Socket pushed")
         }
@@ -35,6 +38,10 @@ function Chatbox(props) {
             // receivedMessageDiv.innerText = `${data.message.username}: ${data.message.message}`;
             receivedMessageDiv.classList.add('userMessage');
             receivedMessageDiv.innerHTML = `<span class='usernameDisplay'>${data.message.username}</span> <span class='messageDisplay'>${data.message.message}</span>`;
+            if (!chatDisplayRef.current) {
+                chatDisplayRef.current = document.createElement('div');
+                chatDisplayRef.current.classList.add('chatDisplay');
+            }
             chatDisplayRef.current.appendChild(receivedMessageDiv);
         })
         console.log("Useffect Refresh")

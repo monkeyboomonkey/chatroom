@@ -10,27 +10,30 @@ import Update from "./Update.js";
 
 function Main() {
     const navigate = useNavigate();
-    // function loginCheck() {
-    //     console.log('attempt fetch')
-    //     fetch('http://localhost:3001/api/verify', {
-    //         method: 'GET',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         credentials: 'include',
-    //         mode: "cors",
-    //     })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             // if (data.user !== undefined) {
-    //             //     login()
-    //             // }
-    //             console.log(data)
-    //         })
-    // }
-    // useEffect(() => {
-    //     loginCheck()
-    // }, []);
+    console.log("initial load")
+    function loginCheck() {
+        console.log('attempt fetch')
+        try {
+            fetch('http://localhost:3001/api/verify', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                mode: "cors",
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data !== true) login();
+                    console.log("This is " + data)
+                })
+        } catch {
+            login();
+        }
+    }
+    useEffect(() => {
+        loginCheck()
+    }, []);
 
     // // "routes" to redirect users
     function login() {
@@ -39,7 +42,7 @@ function Main() {
 
     return (
         <>
-            <nav>
+            {/* <nav>
                 <span>
                     <Link to="/">Main</Link>
                     <Link to="/login">Login</Link>
@@ -47,7 +50,7 @@ function Main() {
                     <Link to="/profile">Profile</Link>
                     <Link to="/update">Update</Link>
                 </span>
-            </nav>
+            </nav> */}
             <Routes>
                 <Route path="/" element={<Chatboard />} />
                 <Route path="/login/*" element={<Login />} />
