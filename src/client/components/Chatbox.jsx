@@ -2,7 +2,7 @@ import React from "react";
 import { useRef, useState, useEffect, useContext } from "react";
 import '../styles/style.css';
 import Chatboxheader from "./Chatboxheader";
-import { SocketContext } from "../Context";
+import { SocketContext, UserContext } from "../Context";
 
 
 function Chatbox(props) {
@@ -26,7 +26,8 @@ function Chatbox(props) {
         if (message.length > 0) {
             socket.emit('message', {
                 // username: `props.username`, message: message
-                username: `${socket.id.substring(0, 4)}`, message: message
+                username: props.user.username ? props.user.username : "anonymous", message: message
+
             })
             console.log("Socket pushed")
         }

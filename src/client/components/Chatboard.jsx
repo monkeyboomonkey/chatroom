@@ -7,7 +7,7 @@ import { SocketContext } from "../Context";
 import { ChatDataList } from "./ChatList/ChatDataList";
 import Navbar from "./Navbar";
 
-function Chatboard() {
+function Chatboard(props) {
   const { socket } = useContext(SocketContext);
 
   const chatBoxRef = useRef(null);
@@ -69,7 +69,7 @@ function Chatboard() {
           </div> */}
         </div>
         <div className="chatBox" ref={chatBoxRef}>
-          <Chatbox roomName={roomName} />
+          <Chatbox roomName={roomName} user={props.user}/>
         </div>
       </div>
       <div ref={newRoomDivRef} className="newRoomDiv">
