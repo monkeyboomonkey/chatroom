@@ -26,7 +26,7 @@ export function ChatDataList({ categories }) {
     <div>
       <form onSubmit={handleSubmit}>
         <div>
-          <label for="chatroom-choice">Choose a topic:</label>
+          <label for="chatroom-choice">Choose or create a topic:</label>
         </div>
         <div>
           <input list="browsers" id="roomName" name="Room" />

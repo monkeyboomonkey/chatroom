@@ -1,31 +1,70 @@
-import React, { useState, useEffect, createContext } from "react";
-import { Route, Routes, useNavigate, BrowserRouter } from "react-router-dom";
-// import Login from "./components/loginwindow.js";
-// import Signup from "./components/signupwindow.js";
-import Chatboard from "./components/Chatboard.jsx";
-import { StateContext } from "./Context.js";
+import React, { useState, useEffect } from "react";
+import {
+  Route,
+  Routes,
+  useNavigate,
+  Link,
+  BrowserRouter,
+} from "react-router-dom";
+import Main from "./components/Main.js";
+import Login from "./components/Login.js";
+import Signup from "./components/Signup.js";
+import Profile from "./components/Profile.js";
+import Update from "./components/Update.js";
+import "./styles/App.scss";
 
 function App() {
   // User object to pass as a context provider
   const [user, setUser] = useState("default");
 
   const navigate = useNavigate();
+  // checks to see if verified user exists; redirects to login page if no user exists
+
   function login() {
-    return (window.location.href = "login.html");
+    navigate("/login");
   }
 
+  // function loginCheck() {
+  //   fetch('http://localhost:3001/api/verifyuser', {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     mode: "cors",
+  //   })
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       if (data.user === undefined) {
+  //         login()
+  //       }
+  //       console.log(data.user)
+  //     })
+  // }
+  // useEffect(() => {
+  //   loginCheck()
+  // }, []);
+
   return (
-    <StateContext.Provider value={{ userState: [user, setUser] }}>
-      <div className="loginmainwindow">
-        <h1>Main Window</h1>
-        <button className="btn" onClick={login}>
-          Go to Login Window
-        </button>
-      </div>
+    <div
+    // style={{ backgroundImage: `url("https://gifdb.com/images/high/aesthetic-anime-pixelated-background-bnuuk8wf00lrrcvf.gif")`}}
+    >
       <Routes>
-        <Route path="/" element={<Chatboard />} />
+        <Route path="/" element={<Main />} />
+        <Route
+          path="/login/*"
+          element={<Login setUser={setUser} user={user} />}
+        />
+        <Route path="/signup/*" element={<Signup />} />
+        <Route
+          path="/profile/*"
+          element={<Profile setUser={setUser} user={user} />}
+        />
+        <Route
+          path="/update/*"
+          element={<Update setUser={setUser} user={user} />}
+        />
       </Routes>
-    </StateContext.Provider>
+    </div>
   );
 }
 

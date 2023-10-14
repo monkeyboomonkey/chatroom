@@ -6,7 +6,8 @@ module.exports = {
   devtool: "eval-source-map",
   entry: {
     main: "./src/client/index.js",
-    login: "./src/client/login.js",
+    // login: "./src/client/login.js",
+    // profile: "./src/client/profile.js"
   },
   output: {
     filename: "[name].bundle.js",
@@ -61,11 +62,17 @@ module.exports = {
       chunks: ['main'],
       // inject: false
     }),
-    new HtmlWebpackPlugin({
-      filename: 'login.html',
-      template: "src/client/login.html",
-      chunks: ['login'],
-      // inject: false
-    })
+    // new HtmlWebpackPlugin({
+    //   filename: 'login.html',
+    //   template: "src/client/login.html",
+    //   chunks: ['login'],
+    //   // inject: false
+    // }),
+    // new HtmlWebpackPlugin({
+    //   filename: 'profile.html',
+    //   template: "src/client/profile.html",
+    //   chunks: ['profile'],
+    //   // inject: false
+    // })
   ],
 };
