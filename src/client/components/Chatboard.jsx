@@ -19,7 +19,7 @@ function Chatboard() {
   useEffect(() => {
     socket.on("rooms", (data) => {
       console.log(data);
-      setCategories(data);
+      setCategories(data.slice(1));
       console.log(categories);
     });
   });
@@ -57,6 +57,7 @@ function Chatboard() {
             categories={categories}
             setCategories={setCategories}
             setRoomName={setRoomName}
+            handleSwitchRoom={handleSwitchRoom}
           />
           <div className="chatCategoryList">
             <Chatcategory
