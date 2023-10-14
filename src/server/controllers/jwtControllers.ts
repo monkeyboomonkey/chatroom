@@ -57,5 +57,6 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction): void
 
 export function deleteJWT(req: Request, res: Response, next: NextFunction): void {
   res.clearCookie('jwt')
+  res.locals.user = null;
   return next();
 }
