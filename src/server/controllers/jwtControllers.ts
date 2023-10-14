@@ -27,7 +27,7 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction): void
     return next();
   } catch { 
     // torn between sending something thru res.locals so the frontend can know
-    // res.locals.verify = false;
+    res.locals.verify = false;
     // or just erroring out, because does the front end necessarily need to know?
     return next('error verifying your login') 
     // return next();

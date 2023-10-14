@@ -129,5 +129,9 @@ export function getAllUsers(req: Request, res: Response, next: NextFunction): vo
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction):void => {
   console.error(err);
-  res.status(500).send(err);
+  if (res.locals.verify === false) {
+    res.status(401).json({ status: false })
+  } else {
+    res.status(500).send(err);
+  }
 };
