@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.js";
 import { SocketContext, socket } from "./Context.js";
 
+console.log("INDEX.JS")
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>

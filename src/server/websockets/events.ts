@@ -2,6 +2,10 @@ import { Server, Socket } from "socket.io";
 import { getUsersInRoom } from "./users.js";
 import { getActiveRooms } from "./rooms.js";
 
+interface MessageEvent {
+  message: string;
+  username: string;
+}
 export function listen(io: Server) {
   io.on("connection", (socket) => {
     /**
@@ -29,7 +33,7 @@ export function listen(io: Server) {
     socket.room = "lobby";
 
     console.log(`a user connected with socket id: ${socket.id}`);
-    socket.emit('rooms', getActiveRooms(io));
+    socket.emit("rooms", getActiveRooms(io));
 
     /**
      * Upon connection, user will join the lobby room by default
@@ -97,10 +101,9 @@ export function listen(io: Server) {
         io.to(socket.room).emit("roomUsers", roster);
 
         // send updated list of rooms to all users as an array
-        io.emit('rooms', getActiveRooms(io));
+        io.emit("rooms", getActiveRooms(io));
       } catch (e) {
         console.log(e.message);
-
       }
     });
 
@@ -117,9 +120,10 @@ export function listen(io: Server) {
      *  message: string
      * }
      */
-    socket.on("message", (message: string) => {
+    socket.on("message", (message: MessageEvent) => {
       // push message to a database with timestamp and room name
-      console.log(`${socket.username} said ${message}`);
+      console.log(`${message.username} said `);
+      console.log(message);
 
       const response = {
         username: socket.username,

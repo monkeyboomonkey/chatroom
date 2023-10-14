@@ -15,6 +15,7 @@ function Chatbox(props) {
     //     setRoomName(data);
     // });
     console.log("chatbox refresh")
+    console.log(props.roomName)
     const handleSendBtnClicked = () => {
         const message = messageContentRef.current.value;
         // const messageDiv = document.createElement('div');
@@ -29,14 +30,6 @@ function Chatbox(props) {
         }
     }
     useEffect(() => {
-        socket.on('message', (data) => {
-            console.log("Socket pulled")
-            const receivedMessageDiv = document.createElement('div');
-            // receivedMessageDiv.innerText = `${data.message.username}: ${data.message.message}`;
-            receivedMessageDiv.classList.add('userMessage');
-            receivedMessageDiv.innerHTML = `<span class='usernameDisplay'>${data.message.username}</span> <span class='messageDisplay'>${data.message.message}</span>`;
-            chatDisplayRef.current.appendChild(receivedMessageDiv);
-        })
         console.log("Useffect Refresh")
     }, [])
     return (

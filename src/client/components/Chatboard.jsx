@@ -18,9 +18,7 @@ function Chatboard() {
   // listen for active rooms and set rooms/categories
   useEffect(() => {
     socket.on("rooms", (data) => {
-      console.log(data);
       setCategories(data);
-      console.log(categories);
     });
   });
 
