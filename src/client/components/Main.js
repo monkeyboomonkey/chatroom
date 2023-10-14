@@ -8,7 +8,7 @@ import Signup from "./Signup.js";
 import Profile from "./Profile.js";
 import Update from "./Update.js";
 
-function Main() {
+function Main(props) {
     const navigate = useNavigate();
     console.log("initial load")
     function loginCheck() {
@@ -52,7 +52,7 @@ function Main() {
                 </span>
             </nav> */}
             <Routes>
-                <Route path="/" element={<Chatboard />} />
+                <Route path="/" element={<Chatboard user={props.user} />} />
                 <Route path="/login/*" element={<Login />} />
                 <Route path="/signup/*" element={<Signup />} />
                 <Route path="/profile/*" element={<Profile />} />
