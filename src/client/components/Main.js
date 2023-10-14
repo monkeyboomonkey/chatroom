@@ -4,6 +4,9 @@ import { Route, Routes, useNavigate, Link, BrowserRouter } from "react-router-do
 // import Signup from "./components/signupwindow.js";
 import Chatboard from "./Chatboard.jsx";
 import Login from "./Login.js";
+import Signup from "./Signup.js";
+import Profile from "./Profile.js";
+import Update from "./Update.js";
 
 function Main() {
     const navigate = useNavigate();
@@ -55,18 +58,24 @@ function Main() {
 
 
     return (
-        <>
-
-            <div className="loginmainwindow">
-                <button className="btn" onClick={login}>Go to Login Window</button>
-                {/* <button className="btn" onClick={loginCheck}>Check</button> */}
-            </div>
+        <div>
+            <nav>
+                <span>
+                    <Link to="/">Main</Link>
+                    <Link to="/login">Login</Link>
+                    <Link to="/signup">Sign Up</Link>
+                    <Link to="/profile">Profile</Link>
+                    <Link to="/update">Update</Link>
+                </span>
+            </nav>
             <Routes>
                 <Route path="/" element={<Chatboard />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/login/*" element={<Login />} />
+                <Route path="/signup/*" element={<Signup />} />
+                <Route path="/profile/*" element={<Profile />} />
+                <Route path="/update/*" element={<Update />} />
             </Routes>
-
-        </>
+        </div>
     )
 }
 

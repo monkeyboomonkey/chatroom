@@ -3,6 +3,8 @@ import { Route, Routes, useNavigate, Link, BrowserRouter } from "react-router-do
 import Main from "./components/Main.js";
 import Login from "./components/Login.js";
 import Signup from "./components/Signup.js";
+import Profile from "./components/Profile.js";
+import Update from "./components/Update.js";
 import './styles/App.scss'
 
 function App() {
@@ -36,40 +38,21 @@ function App() {
   // }, []);
 
 
-
-
-
-
   return (
-    <>
-      <nav>
-        {/* <ul> */}
-        {/* <li>
-            <Link to="/">Main</Link>
-          </li>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/signup">Sign Up</Link>
-          </li>
-        </ul> */}
-        <span>
-          <Link to="/">Main</Link>
-          <Link to="/login">Login</Link>
-          <Link to="/signup">Sign Up</Link>
-        </span>
-      </nav>
-      <div className="loginmainwindow">
-        <h1>BooMonkeyBoo</h1>
-      </div>
+    <div
+    // style={{ backgroundImage: `url("https://gifdb.com/images/high/aesthetic-anime-pixelated-background-bnuuk8wf00lrrcvf.gif")`}}
+    >
+
+
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/login/*" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/login/*" element={<Login setUser={setUser} user={user} />} />
+        <Route path="/signup/*" element={<Signup />} />
+        <Route path="/profile/*" element={<Profile setUser={setUser} user={user} />} />
+        <Route path="/update/*" element={<Update setUser={setUser} user={user} />} />
       </Routes>
 
-    </>
+    </div>
   )
 }
 

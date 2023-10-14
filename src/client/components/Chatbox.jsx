@@ -21,9 +21,9 @@ function Chatbox(props) {
         // messageDiv.innerText = message;
         // chatDisplayRef.current.appendChild(messageDiv);
         messageContentRef.current.value = '';
-        if (message.length > 0){
+        if (message.length > 0) {
             socket.emit('message', {
-                username: `${socket.id.substring(0,4)}`, message: message
+                username: `${socket.id.substring(0, 4)}`, message: message
             })
             console.log("Socket pushed")
         }
@@ -38,7 +38,7 @@ function Chatbox(props) {
         console.log("Useffect Refresh")
     }, [])
     return (
-        <div>
+        <div className="chatbox">
             {/* {props.roomName && <h3>Welcome to room #{props.roomName}!</h3>} */}
             <Chatboxheader roomName={props.roomName} />
             <div className="chatDisplay" ref={chatDisplayRef}></div>

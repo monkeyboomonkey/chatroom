@@ -4,12 +4,12 @@ import { Route, Routes, useNavigate, Link, BrowserRouter } from "react-router-do
 import Signup from "./Signup.js";
 import Main from "./Main.js";
 
-function Log() {
+function Log(props) {
     const navigate = useNavigate();
 
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
-    const [userinfo, setUserinfo] = useState({});
+    // const [userinfo, setUserinfo] = useState({});
     const handleLogin = async (e) => {
         e.preventDefault();
         const loginData = {
@@ -30,7 +30,7 @@ function Log() {
             .then(response => response.json())
             .then(data => {
                 const newUserinfo = { ...data }
-                setUserinfo(newUserinfo);
+                props.setUser(newUserinfo);
             })
             .then(() => {
                 navigate("/")
@@ -44,27 +44,25 @@ function Log() {
     return (
 
         <div className="login-wrapper">
-
-            <form onSubmit={handleLogin}>
-                <label>
-                    <p>Username</p>
-                    <input type="text" onChange={el => setUserName(el.target.value)} />
-                </label>
-                <label>
-                    <p>Password</p>
-                    <input type="password" onChange={el => setPassword(el.target.value)} />
-                </label>
-                <span>
-                    <button className="bttn" onClick={handleLogin}>Log in</button>
-                    <button className="bttn" onClick={signup}>Sign up</button>
-                </span>
-            </form>
-            <></>
-                <Routes>
+            <div className="form">
+                <form onSubmit={handleLogin}>
+                    <label>
+                        <p>Username</p>
+                        <input type="text" onChange={el => setUserName(el.target.value)} />
+                    </label>
+                    <label>
+                        <p>Password</p>
+                        <input type="password" onChange={el => setPassword(el.target.value)} />
+                    </label>
+                    <button onClick={handleLogin}>Log in</button>
+                    <p class="message">Not registered? <Link to="/signup">Create an account</Link></p>
+                </form>
+                
+                {/* <Routes>
                     <Route path="/signup" element={<Signup />} />
-                </Routes>
+                </Routes> */}
 
-
+            </div>
         </div>
 
 

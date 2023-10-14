@@ -3,54 +3,95 @@ h1 {
 }
 
 body {
-    background-color: rgb(199, 202, 174);
+    // background-color: rgb(199, 202, 174);
+    background-image: url("https://gifdb.com/images/high/aesthetic-anime-pixelated-background-bnuuk8wf00lrrcvf.gif");
+    background-size: 100%;
 }
 
 .login-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    margin-left: 20px;
-    margin-right: 20px;
+    width: 360px;
+    padding: 3% 0 0;
+    margin: auto;
+    // background-image: url("https://gifdb.com/images/high/aesthetic-anime-pixelated-background-bnuuk8wf00lrrcvf.gif");
+    // background-size: 100%;
 }
 
 .signup-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    margin-left: 20px;
-    margin-right: 20px;
+    width: 360px;
+    padding: 3% 0 0;
+    margin: auto;
+    // background-image: url("https://gifdb.com/images/high/aesthetic-anime-pixelated-background-bnuuk8wf00lrrcvf.gif");
+    // background-size: 100%;
 }
+
+.profile-wrapper {
+    width: 360px;
+    padding: 3% 0 0;
+    margin: auto;
+}
+
+.chatbox {
+    position: relative;
+    background: #FFFFFF;
+    max-width: 400px;
+    max-height: 600px;
+    margin: 0 auto 30px;
+    padding: 20px;
+}
+
+.chatdisplay {
+    position: relative;
+    background: #b97272;
+    max-width: 300px;
+    max-height: 500px;
+    margin: 0 auto 30px;
+    padding: 20px;
+}
+
+.form {
+    position: relative;
+    z-index: 1;
+    background: #FFFFFF;
+    max-width: 360px;
+    margin: 0 auto 100px;
+    padding: 45px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.form input {
+    font-family: Montserrat, sans-serif;
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.form button {
+    font-family: Montserrat, sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    background: #03BFCB;
+    width: 100%;
+    border: 0;
+    padding: 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
+}
+
 
 .bttn {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 5px;
-}
-
-.login-main-window {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px;
-    // height: 50px;
-    // width: 100%;
-    border-style: groove;
-
-}
-
-.button-window {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    margin: 5px;
-    // border-style: groove;
 }
 
 .routes-window {
