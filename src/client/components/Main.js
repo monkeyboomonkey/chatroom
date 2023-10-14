@@ -10,9 +10,6 @@ import Update from "./Update.js";
 
 function Main() {
     const navigate = useNavigate();
-    // checks to see if verified user exists; redirects to login page if no user exists
-    // const [user, setUser] = useState({});
-
     // function loginCheck() {
     //     fetch('http://localhost:3001/api/verifyuser', {
     //         method: 'GET',
@@ -38,27 +35,8 @@ function Main() {
         navigate("/login")
     }
 
-    // useEffect(() => {
-    //     console.log("Running useeffect")
-    //     fetch('http://localhost:3001/api/verifyuser', {
-    //         method: 'GET',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         mode: "cors",
-    //     })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             if (data.user === undefined) {
-    //                 navigate("/login")
-    //             }
-    //             console.log(data.user)
-    //         })
-    // }, [navigate]);
-
-
     return (
-        <div>
+        <>
             <nav>
                 <span>
                     <Link to="/">Main</Link>
@@ -75,7 +53,7 @@ function Main() {
                 <Route path="/profile/*" element={<Profile />} />
                 <Route path="/update/*" element={<Update />} />
             </Routes>
-        </div>
+        </>
     )
 }
 
