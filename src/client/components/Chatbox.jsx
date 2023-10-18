@@ -48,7 +48,7 @@ function Chatbox(props) {
         console.log("Useffect Refresh")
     }, [])
     return (
-        <div>
+        <div className="innerChatBox">
             {/* {props.roomName && <h3>Welcome to room #{props.roomName}!</h3>} */}
             <Chatboxheader roomName={props.roomName} />
             <div className="chatDisplay" ref={chatDisplayRef}></div>
