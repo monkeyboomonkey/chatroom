@@ -1,30 +1,13 @@
 import React from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthProvider.jsx";
 
 function Navbar() {
     const navigate = useNavigate();
-    const logout = () => {
-        fetch('http://localhost:3001/api/userlogout', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            mode: "cors",
-        })
-        login()
-    }
-
-    function login() {
-        navigate("/login")
-    }
+    const { logout } = useAuth();
     function profile() {
         navigate("/profile")
     }
-
-
-
-
     return (
         <nav className="navbar">
             <div className="leftNav">

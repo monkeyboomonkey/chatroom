@@ -3,7 +3,8 @@ import { getUsersInRoom } from "./users.js";
 import { getActiveRooms } from "./rooms.js";
 
 export function listen(io: Server) {
-  io.on("connection", (socket: Socket) => {
+  io.on("connection", (socket) => {
+    console.log(`a user connected with socket id: ${socket.id}`);
     /**
      * Event types:
      * Client SENDS:
@@ -28,9 +29,6 @@ export function listen(io: Server) {
     socket.username = socket.handshake.query.username?.toString() || "anonymous";
     socket.room = "lobby";
 
-    console.log(`a user connected with socket id: ${socket.id}`);
-    socket.emit('rooms', getActiveRooms(io));
-
     /**
      * Upon connection, user will join the lobby room by default
      */
@@ -39,7 +37,14 @@ export function listen(io: Server) {
     io.to("lobby").emit(
       "systemMessage",
       `${socket.id.substring(0, 2)} has joined the lobby`
-    );
+      );
+
+    socket.emit('rooms', getActiveRooms(io));
+
+    socket.on("disconnect", () => {
+      console.log(`user disconnected with socket id: ${socket.id}`);
+      socket.disconnect(true);
+    });
 
     /** Register username
      * Args:

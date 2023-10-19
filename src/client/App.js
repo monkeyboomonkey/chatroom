@@ -7,6 +7,7 @@ import Profile from "./components/Profile.js";
 import Update from "./components/Update.js";
 import './styles/App.scss'
 import { UserContext } from './Context.js';
+import AuthProvider from './components/AuthProvider.jsx';
 
 
 
@@ -44,20 +45,17 @@ function App() {
 
 
   return (
-    <div
-    // style={{ backgroundImage: `url("https://gifdb.com/images/high/aesthetic-anime-pixelated-background-bnuuk8wf00lrrcvf.gif")`}}
-    >
-
-    <UserContext.Provider value={userValues}>
-      <Routes>
-        <Route path="/" element={<Main setUser={setUser} user={user}/>} />
-        <Route path="/login/*" element={<Login setUser={setUser} user={user} />} />
-        <Route path="/signup/*" element={<Signup />} />
-        <Route path="/profile/*" element={<Profile setUser={setUser} user={user} />} />
-        <Route path="/update/*" element={<Update setUser={setUser} user={user} />} />
-      </Routes>
-    </UserContext.Provider>
-    </div>
+    <AuthProvider>
+      <UserContext.Provider value={userValues}>
+        <Routes>
+          <Route path="/" element={<Main setUser={setUser} user={user}/>} />
+          <Route path="/login/*" element={<Login setUser={setUser} user={user} />} />
+          <Route path="/signup/*" element={<Signup />} />
+          <Route path="/profile/*" element={<Profile setUser={setUser} user={user} />} />
+          <Route path="/update/*" element={<Update setUser={setUser} user={user} />} />
+        </Routes>
+      </UserContext.Provider>
+    </AuthProvider>
   )
 }
 

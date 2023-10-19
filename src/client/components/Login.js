@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Route, Routes, useNavigate, Link, BrowserRouter } from "react-router-dom";
-// import Login from "./Loginwindow.js";
-import Signup from "./Signup.js";
-import Main from "./Main.js";
+import React, { useState } from 'react';
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthProvider.jsx";
 
 function Log(props) {
     const navigate = useNavigate();
-
+    const { login } = useAuth();
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
-    // const [userinfo, setUserinfo] = useState({});
     const handleLogin = async (e) => {
         e.preventDefault();
         const loginData = {
@@ -34,8 +31,8 @@ function Log(props) {
                     props.setUser(newUserinfo);
                 })
                 .then(() => {
-                    navigate("/")
-                })
+                    login();
+                });
         } catch {
             console.log(error.message);
             signup();
@@ -55,7 +52,7 @@ function Log(props) {
                     <input placeholder='Username' type="text" onChange={el => setUserName(el.target.value)} />
                     <input placeholder='Password' type="password" onChange={el => setPassword(el.target.value)} />
                     <button onClick={handleLogin}>Log in</button>
-                    <p class="message">Not registered? <Link to="/signup">Create an account</Link></p>
+                    <p className="message">Not registered? <Link to="/signup">Create an account</Link></p>
                 </form>
             </div>
         </div>
