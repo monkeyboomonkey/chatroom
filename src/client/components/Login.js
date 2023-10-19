@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, useNavigate, Link, BrowserRouter } from "react-router-dom";
 // import Login from "./Loginwindow.js";
-import Signup from "./Signup.js";
-import Main from "./Main.js";
+// import Signup from "./Signup.js";
+// import Main from "./Main.js";
 
 function Log(props) {
     const navigate = useNavigate();
@@ -38,12 +38,8 @@ function Log(props) {
                 })
         } catch {
             console.log(error.message);
-            signup();
+            navigate("/signup");
         }
-    }
-
-    function signup() {
-        navigate("/signup")
     }
 
     return (
@@ -62,11 +58,6 @@ function Log(props) {
                     <button onClick={handleLogin}>Log in</button>
                     <p class="message">Not registered? <Link to="/signup">Create an account</Link></p>
                 </form>
-
-                {/* <Routes>
-                    <Route path="/signup" element={<Signup />} />
-                </Routes> */}
-
             </div>
         </div>
 
