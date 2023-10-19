@@ -48,7 +48,7 @@ function App() {
     // style={{ backgroundImage: `url("https://gifdb.com/images/high/aesthetic-anime-pixelated-background-bnuuk8wf00lrrcvf.gif")`}}
     >
 
-    <UserContext.Provider values={userValues}>
+    <UserContext.Provider value={userValues}>
       <Routes>
         <Route path="/" element={<Main setUser={setUser} user={user}/>} />
         <Route path="/login/*" element={<Login setUser={setUser} user={user} />} />

@@ -9,7 +9,7 @@ import Navbar from "./Navbar";
 
 function Chatboard(props) {
   const { socket } = useContext(SocketContext);
-
+  socket.connect();
   const chatBoxRef = useRef(null);
   const newRoomDivRef = useRef(null);
   const newRoomText = useRef(null);

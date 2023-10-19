@@ -3,7 +3,7 @@ import { getUsersInRoom } from "./users.js";
 import { getActiveRooms } from "./rooms.js";
 
 export function listen(io: Server) {
-  io.on("connection", (socket) => {
+  io.on("connection", (socket: Socket) => {
     /**
      * Event types:
      * Client SENDS:
@@ -25,7 +25,7 @@ export function listen(io: Server) {
     /**
      * State Variables
      */
-    socket.username = "anonymous";
+    socket.username = socket.handshake.query.username?.toString() || "anonymous";
     socket.room = "lobby";
 
     console.log(`a user connected with socket id: ${socket.id}`);
