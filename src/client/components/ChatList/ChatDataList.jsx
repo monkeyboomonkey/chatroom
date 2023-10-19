@@ -30,7 +30,7 @@ export function ChatDataList({ categories }) {
         </div>
         <div>
           <input list="browsers" id="roomName" name="Room" />
-          <input type="submit" value="Join"></input>
+          <input id="joinRoomButton" type="submit" value="Join"></input>
         </div>
       </form>
       <datalist id="browsers">{generateRoomList(categories)}</datalist>

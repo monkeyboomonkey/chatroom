@@ -50,23 +50,13 @@ function Log(props) {
 
         <div className="login-wrapper">
             <div className="form">
+                <h1>Login</h1>
                 <form onSubmit={handleLogin}>
-                    <label>
-                        <p>Username</p>
-                        <input type="text" onChange={el => setUserName(el.target.value)} />
-                    </label>
-                    <label>
-                        <p>Password</p>
-                        <input type="password" onChange={el => setPassword(el.target.value)} />
-                    </label>
+                    <input placeholder='Username' type="text" onChange={el => setUserName(el.target.value)} />
+                    <input placeholder='Password' type="password" onChange={el => setPassword(el.target.value)} />
                     <button onClick={handleLogin}>Log in</button>
                     <p class="message">Not registered? <Link to="/signup">Create an account</Link></p>
                 </form>
-
-                {/* <Routes>
-                    <Route path="/signup" element={<Signup />} />
-                </Routes> */}
-
             </div>
         </div>
 
