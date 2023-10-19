@@ -3,14 +3,16 @@ import { SocketContext } from "../../Context";
 
 export function ChatDataList({ categories }) {
   const { socket } = useContext(SocketContext);
-  console.log("ChatDataList Categories");
-  console.log(categories);
+  console.log("ChatDataList Categories", categories);
 
   const generateRoomList = (rooms) => {
+    const roomList = [<option key={"lobby"} value="lobby"></option>];
     if (rooms) {
-      return rooms.map((r, i) => <option value={r} key={i}></option>);
+      rooms.forEach((room, indx) => {
+        roomList.push(<option key={indx} value={room}>{room}</option>);
+      });
     }
-    return <option value="lobby"></option>;
+    return roomList
   };
 
   const handleSubmit = (e) => {

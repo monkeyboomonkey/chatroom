@@ -180,8 +180,20 @@ li {
     border: 2px solid #000000;
 }
 
+@keyframes move-from-offscreen-left {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0%);
+    }
+}
+
 .chatControl {
     height: 15vh;
+    animation: move-from-offscreen-left 0.8s ease-in-out;
 }
 
 .chatDisplay::-webkit-scrollbar {
@@ -243,6 +255,17 @@ li {
     display: none;
 }
 
+@keyframes move-up {
+    0% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+}
+
 .userMessage {
     background: rgba(85, 85, 85, 0.4);
     border: 1px solid black;
@@ -252,6 +275,8 @@ li {
     gap: 10px;
     border-radius: 10px;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    animation: move-up 0.3s ease-in-out;
+    animation-fill-mode: forwards;
 }
 
 .usernameDisplay {

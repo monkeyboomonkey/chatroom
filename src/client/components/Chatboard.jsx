@@ -12,16 +12,22 @@ function Chatboard(props) {
   const chatBoxRef = useRef(null);
   const newRoomDivRef = useRef(null);
   const newRoomText = useRef(null);
-  const [categories, setCategories] = useState([1, 2, 3, 4, 5, 6]);
-
+  const [categories, setCategories] = useState(["lobby"]);
   // listen for active rooms and set rooms/categories
   useEffect(() => {
-    socket.on("rooms", (data) => {
-      console.log(data);
+    const handleRoomsData = (data) => {
+      console.log("Rooms Data:", data);
       setCategories(data);
-      console.log(categories);
-    });
-  });
+    };
+
+    socket.on("rooms", handleRoomsData);
+
+    // Cleanup the socket listener when the component unmounts
+    return () => {
+      socket.off("rooms", handleRoomsData);
+    };
+  }, []);
+
 
   const [roomName, setRoomName] = useState("");
   const handleSwitchRoom = (roomName) => {
@@ -63,9 +69,6 @@ function Chatboard(props) {
               categories={categories}
             />
           </div>
-          {/* <div>
-            <button onClick={handleNewRoomClicked}>New room</button>
-          </div> */}
         </div>
         <div className="chatBox" ref={chatBoxRef}>
           <Chatbox roomName={roomName} user={props.user}/>

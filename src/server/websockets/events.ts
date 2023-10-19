@@ -4,7 +4,6 @@ import { getActiveRooms } from "./rooms.js";
 
 export function listen(io: Server) {
   io.on("connection", (socket) => {
-    console.log(`a user connected with socket id: ${socket.id}`);
     /**
      * Event types:
      * Client SENDS:
@@ -16,14 +15,15 @@ export function listen(io: Server) {
      *    returns "systemMessage" with text
      * "leaveRoom"
      *    returns "systemMessage" with text
-     *
-     * Client LISTENS:
-     * "message" - a chat message in lobby or room
-     * "systemMessage" - user joins or leaves room
-     * "room" - array of all current room names
-     */
-
-    /**
+    *
+    * Client LISTENS:
+    * "message" - a chat message in lobby or room
+    * "systemMessage" - user joins or leaves room
+    * "room" - array of all current room names
+    */
+   console.log(`a user connected with socket id: ${socket.id}`);
+   
+   /**
      * State Variables
      */
     socket.username = socket.handshake.query.username?.toString() || "anonymous";
@@ -33,13 +33,13 @@ export function listen(io: Server) {
      * Upon connection, user will join the lobby room by default
      */
     // Join room=lobby by default
-    socket.join("lobby");
     io.to("lobby").emit(
       "systemMessage",
       `${socket.id.substring(0, 2)} has joined the lobby`
-      );
+    );
 
-    socket.emit('rooms', getActiveRooms(io));
+    const activeRooms: string[] = getActiveRooms(io);
+    socket.emit('rooms', activeRooms.length ? activeRooms : ['lobby']);
 
     socket.on("disconnect", () => {
       console.log(`user disconnected with socket id: ${socket.id}`);
