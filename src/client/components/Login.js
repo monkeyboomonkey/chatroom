@@ -35,12 +35,8 @@ function Log(props) {
                 });
         } catch {
             console.log(error.message);
-            signup();
+            navigate("/signup");
         }
-    }
-
-    function signup() {
-        navigate("/signup")
     }
 
     return (
