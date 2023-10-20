@@ -1,9 +1,9 @@
 import React from 'react';
 import Chatboard from "./Chatboard.jsx";
 
-function Main(props) {
+function Main({ user }) {
     return (
-        <Chatboard user={props.user} />
+        <Chatboard user={user} />
     )
 }
 

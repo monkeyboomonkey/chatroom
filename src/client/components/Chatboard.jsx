@@ -54,7 +54,7 @@ function Chatboard(props) {
     // setCategories(updatedCategories);
   };
   return (
-    <>
+    <div>
       <Navbar />
       <div className="chatboard">
         <div className="chatCategory">
@@ -84,7 +84,7 @@ function Chatboard(props) {
           />
         </form>
       </div>
-    </>
+    </div>
   );
 }
 

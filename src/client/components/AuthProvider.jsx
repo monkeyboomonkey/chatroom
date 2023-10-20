@@ -39,6 +39,7 @@ const AuthProvider = ({ children }) => {
         console.log("Connected to server:", socket.connected);
       });
     }
+
     return () => {
       socket.disconnect();
       socket.off("connect", () => {
