@@ -8,11 +8,16 @@ import Update from "./components/Update.js";
 import './styles/App.scss'
 import { UserContext } from './Context.js';
 import AuthProvider from './components/AuthProvider.jsx';
+import { useDispatch } from 'react-redux';
+import { userLogin } from "./chatroomReducer";
 
 function App() {
+  console.log('running')
+  const dispatch = useDispatch();
+  dispatch(userLogin({fn: 'fn', ln:'ln', userid:'userid', email:'email', password:'password', username:'testusername'}));
   const [user, setUser] = useState({});
   const userValues = [user, setUser]
-  console.log("rerendering app")
+
   return (
     <BrowserRouter>
       <AuthProvider>

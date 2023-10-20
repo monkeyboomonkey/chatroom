@@ -76,4 +76,7 @@ module.exports = {
     //   // inject: false
     // })
   ],
+  resolve: {
+    extensions: ['', '.ts', '.tsx', '.js', '.jsx', '.scss'],
+  },
 };

@@ -1,8 +1,8 @@
-// import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-// import { configureStore } from '@reduxjs/toolkit'
-import pkg from '@reduxjs/toolkit';
+import * as pkg from '@reduxjs/toolkit';
 const { createSlice, configureStore, current } = pkg;
+// import type { Dispatch } from 'redux';
+// import { useDispatch } from 'react-redux';
 
 interface User {
   userid: string;
@@ -40,7 +40,7 @@ const chatroomSlice = createSlice({
   reducers: {
     userLogin(state, action: PayloadAction<User>) {
       state.user = action.payload;
-      // console.log(current(state));
+      console.log(current(state));
     },
     userLogout(state) {
       state.user = null;
