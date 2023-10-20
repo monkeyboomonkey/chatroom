@@ -7,29 +7,8 @@ const AuthProvider = ({ children }) => {
   const [authStatus, dangerouslySetAuthStatus] = useState(localStorage.getItem("authStatus"));
   const { socket } = useContext(SocketContext);
   const navigate = useNavigate();
-  
-  useEffect(() => {
-    try {
-      fetch('http://localhost:3001/api/verify', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        mode: "cors",
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Verification response is: " + data)
-        if (data !== true) {
-          localStorage.setItem("authStatus", false);
-          navigate("/login")
-        }
-      });
-    } catch {
-      navigate("/login")
-    }
 
+  useEffect(() => {
     if (authStatus && !socket.connected) {
       socket.connect();
       socket.on("connect", () => {
@@ -37,20 +16,20 @@ const AuthProvider = ({ children }) => {
       });
       socket.on("disconnect", () => {
         console.log("Connected to server:", socket.connected);
+        socket.off("connect", () => {
+          console.log("Connected to server:", socket.connected);
+        });
+        socket.off("disconnect", () => {
+          console.log("Connected to server:", socket.connected);
+        });
       });
     }
 
     return () => {
       socket.disconnect();
-      socket.off("connect", () => {
-        console.log("Connected to server:", socket.connected);
-      });
-      socket.off("disconnect", () => {
-        console.log("Connected to server:", socket.connected);
-      });
     }
   }, []);
-  
+
   const logout = async () => {
     await fetch('http://localhost:3001/api/userlogout', {
       method: 'DELETE',
@@ -63,12 +42,6 @@ const AuthProvider = ({ children }) => {
     socket.disconnect();
     dangerouslySetAuthStatus(false);
     localStorage.removeItem("authStatus");
-    socket.off("connect", () => {
-      console.log("Connected to server");
-    });
-    socket.off("disconnect", () => {
-      console.log("Disconnected from server");
-    });
     navigate("/login")
   }
 

@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import { useState, useEffect, useRef } from "react";
-import Chatcategory from "./Chatcategory";
-import Chatbox from "./Chatbox";
+import Chatcategory from "./Chatcategory.jsx";
+import Chatbox from "./Chatbox.jsx";
 import "../styles/style.css";
 import { SocketContext } from "../Context";
-import { ChatDataList } from "./ChatList/ChatDataList";
-import Navbar from "./Navbar";
+import { ChatDataList } from "./ChatList/ChatDataList.jsx";
+import Navbar from "./Navbar.jsx";
 
 function Chatboard(props) {
   const { socket } = useContext(SocketContext);

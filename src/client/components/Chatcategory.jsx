@@ -1,6 +1,6 @@
 import React from "react";
-import Chatroom from "./Chatroom";
-import { useEffect, useContext } from "react";
+import Chatroom from "./Chatroom.jsx";
+import { useContext } from "react";
 import { SocketContext } from "../Context";
 
 function Chatcategory(props) {

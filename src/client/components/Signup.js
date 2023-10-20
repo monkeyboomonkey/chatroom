@@ -21,7 +21,7 @@ function Signup() {
             password: password
         }
         try {
-            const result = await fetch('http://localhost:3001/api/registeruser', {
+            await fetch('http://localhost:3001/api/registeruser', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

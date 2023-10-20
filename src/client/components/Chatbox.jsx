@@ -1,7 +1,7 @@
 import React from "react";
-import { useRef, useState, useEffect, useContext } from "react";
+import { useRef, useEffect, useContext } from "react";
 import '../styles/style.css';
-import Chatboxheader from "./Chatboxheader";
+import Chatboxheader from "./Chatboxheader.jsx";
 import { SocketContext } from "../Context";
 
 function Chatbox(props) {

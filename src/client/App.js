@@ -15,17 +15,17 @@ function App() {
   console.log("rerendering app")
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <UserContext.Provider value={userValues}>
-          <Routes>
-            <Route path="/" element={<Main setUser={setUser} user={user}/>} />
-            <Route path="/login/*" element={<Login setUser={setUser} user={user} />} />
-            <Route path="/signup/*" element={<Signup />} />
-            <Route path="/profile/*" element={<Profile setUser={setUser} user={user} />} />
-            <Route path="/update/*" element={<Update setUser={setUser} user={user} />} />
-          </Routes>
-        </UserContext.Provider>
-      </AuthProvider>
+        <AuthProvider>
+          <UserContext.Provider value={userValues}>
+            <Routes>
+              <Route path="/login/*" element={<Login setUser={setUser} user={user} />} />
+              <Route path="/signup/*" element={<Signup />} />
+              <Route path="/" element={<Main user={user} />} />
+              <Route path="/profile/*" element={<Profile setUser={setUser} user={user} />} />
+              <Route path="/update/*" element={<Update setUser={setUser} user={user} />} />
+            </Routes>
+          </UserContext.Provider>
+        </AuthProvider>
     </BrowserRouter>
   )
 }

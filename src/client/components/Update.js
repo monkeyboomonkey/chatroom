@@ -111,7 +111,6 @@ function Update(props) {
                 </button>
             </div>
         </div>
-
     )
 
 }
