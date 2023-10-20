@@ -14,5 +14,6 @@ export function getActiveRooms(io: Server) {
   } catch (error) {
     console.error("An error occurred getting the rooms");
     console.error(error.message);
+    return [];
   }
 }
