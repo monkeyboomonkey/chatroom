@@ -11,6 +11,7 @@ dotenv.config();
 const connectionString = String(process.env.POSTGRES_URI)
 const client = postgres(connectionString)
 const db = drizzle(client);
+const result = await db.select().from(users);
 
 import { Express, Request, Response, NextFunction } from 'express';
 

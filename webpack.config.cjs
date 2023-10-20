@@ -22,6 +22,9 @@ module.exports = {
         use: {
           loader: "babel-loader",
         },
+        resolve: {
+          fullySpecified: false,
+        },
       },
       {
         test: /\.(sa|sc|c)ss$/, // styles files
@@ -35,9 +38,7 @@ module.exports = {
       },
     ],
   },
-  resolve: {
-    extensions: ['.js', '.jsx', '.json']
-  },
+
   devServer: {
     static: {
       publicPath: "/", // URL mapped to folder
