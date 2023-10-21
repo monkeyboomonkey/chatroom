@@ -32,6 +32,7 @@ export async function addChatroom(req: Request, res: Response, next: NextFunctio
   if(!foundChatroom_name.length){
     try{
       await db.insert(chatrooms).values({ chatroom_name })
+      res.locals.chatroom_name = chatroom_name;
       return next();
     }
     catch(e){

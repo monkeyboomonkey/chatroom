@@ -17,7 +17,6 @@ import { Express, Request, Response, NextFunction } from 'express';
 
 export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   const { userid, newfn, newln, newemail, newusername, newpassword } = req.body;
-
   const foundNewUsername = await db.select().from(users).where(and(eq(users.username, newusername), ne(users.userid, userid)));
   const foundNewEmail = await db.select().from(users).where(and(eq(users.email, newemail), ne(users.userid, userid)));
   if (!foundNewUsername.length && !foundNewEmail.length) {
@@ -94,7 +93,7 @@ export function userLogIn(req: Request, res: Response, next: NextFunction): void
 export async function registerUser(req: Request, res: Response, next: NextFunction): Promise<void> {
 
   const { fn, ln, username, email, password } = req.body;
-
+  res.locals = {username:username}
   const foundUsername = await db.select().from(users).where(eq(users.username, username));
   const foundEmail = await db.select().from(users).where(eq(users.email, email));
 
