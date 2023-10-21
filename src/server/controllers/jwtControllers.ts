@@ -40,11 +40,19 @@ export async function createJWT(req: Request, res: Response, next: NextFunction)
   return next();
 }
 
-export function verifyJWT(req: Request, res: Response, next: NextFunction): void {
+export async function verifyJWT(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const data = jwt.verify(req.cookies.jwt, String(process.env.JWT_SECRET));
-    res.locals.verify = true;
-    return next();
+    
+    if (typeof data === 'object' && 'userid' in data) {
+      const user = await db.select().from(users).where(eq(users.userid, String(data.userid)));
+      res.locals.username = user[0].username;
+      res.locals.verify = true;
+      return next();
+    } else {
+      res.locals.verify = false;
+      throw new Error('Invalid JWT payload');
+    }
   } catch {
     // torn between sending something thru res.locals so the frontend can know
     res.locals.verify = false;

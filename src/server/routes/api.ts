@@ -37,6 +37,6 @@ router.get('/verify', verifyJWT,
     if (res.locals.verify) {
       variableStatus = 200;
     }
-    res.status(variableStatus).json(res.locals.verify)
+    res.status(variableStatus).json(res.locals.username)
   }
 )

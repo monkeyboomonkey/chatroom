@@ -1,16 +1,14 @@
-// import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-// import { configureStore } from '@reduxjs/toolkit'
-import pkg from '@reduxjs/toolkit';
+import * as pkg from '@reduxjs/toolkit';
 const { createSlice, configureStore, current } = pkg;
 
 interface User {
   userid: string;
   fn: string;
   ln: string; 
-  email:String;
-  password: String;
-  username: String;
+  email: string;
+  password: string;
+  username: string;
 }
 
 interface Chats {
@@ -28,11 +26,10 @@ interface UserState {
 
 }
 
-const initialState = {
+const initialState: UserState = {
   user: null,
-  // {chatroom1:[{c1_obj1}, {c1_obj1},...], chatroom2:[{c2_obj1}, {c2_obj1},...]}
   chats: {}
-} as UserState;
+};
 
 const chatroomSlice = createSlice({
   name: 'chatroom_user',
@@ -55,6 +52,9 @@ const chatroomSlice = createSlice({
       }
       // console.log(current(state));
     },
+    setUser(state, action: PayloadAction<User>) {
+      state.user = action.payload;
+    }
   },
 })
 
@@ -66,5 +66,5 @@ const chatroomSlice = createSlice({
 
 // store.dispatch(chatroomSlice.actions.postChat({chatroom: 'chatroom1', chatlog: {message: 'hello world', timestamp:'12345'}}));
 
-export const { userLogin, userLogout, postChat } = chatroomSlice.actions
+export const { userLogin, userLogout, postChat, setUser } = chatroomSlice.actions
 export default chatroomSlice.reducer

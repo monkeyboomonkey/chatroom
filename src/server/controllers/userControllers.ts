@@ -5,6 +5,7 @@ import postgres from 'postgres'
 import { users } from '../models/psqlmodels.js'
 import dotenv from 'dotenv';
 import { hashSync, compareSync } from "bcrypt-ts";
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 

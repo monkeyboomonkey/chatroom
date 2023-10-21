@@ -8,26 +8,30 @@ import Update from "./components/Update.js";
 import './styles/App.scss'
 import { UserContext } from './Context.js';
 import AuthProvider from './components/AuthProvider.jsx';
+import { SocketContext, socket } from "./Context.js";
 
 function App() {
   const [user, setUser] = useState({});
   const userValues = [user, setUser]
+  const socket = io("ws://localhost:3001", { autoConnect: false, query: {username: username}, reconnection: false });
   console.log("rerendering app")
   return (
     <BrowserRouter>
-        <AuthProvider>
-          <UserContext.Provider value={userValues}>
-            <Routes>
-              <Route path="/login/*" element={<Login setUser={setUser} user={user} />} />
-              <Route path="/signup/*" element={<Signup />} />
-              <Route path="/" element={<Main user={user} />} />
-              <Route path="/profile/*" element={<Profile setUser={setUser} user={user} />} />
-              <Route path="/update/*" element={<Update setUser={setUser} user={user} />} />
-            </Routes>
-          </UserContext.Provider>
-        </AuthProvider>
+        <SocketContext.Provider value={{ socket: socket }}>
+          <AuthProvider>
+            <UserContext.Provider value={userValues}>
+              <Routes>
+                <Route path="/login/*" element={<Login />} />
+                <Route path="/signup/*" element={<Signup />} />
+                <Route path="/" element={<Main />} />
+                <Route path="/profile/*" element={<Profile />} />
+                <Route path="/update/*" element={<Update />} />
+              </Routes>
+            </UserContext.Provider>
+          </AuthProvider>
+        </SocketContext.Provider>
     </BrowserRouter>
-  )
+  );
 }
 
 export default App;

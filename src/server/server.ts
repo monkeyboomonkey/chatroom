@@ -20,6 +20,8 @@ app.use(express.json());
 const whitelist = [
   undefined,
   "http://localhost:8080",
+  "http://localhost:3000",
+  "http://localhost:3001",
 ];
 const corsOptions = {
   credentials: true, // This is important.
@@ -32,13 +34,20 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors(corsOptions))
 app.use(cookieParser());
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// app.use(express.static(path.resolve(__dirname, "../client")));
+
 app.use("/api", router);
+app.use(express.static(path.join(__dirname, "../../dist/client")));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../dist/client/index.html"));
+});
+app.use((req, res) => {
+  res.status(404).send("Not Found");
+});
 app.use(errorHandler);
+
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {

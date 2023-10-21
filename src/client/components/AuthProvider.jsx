@@ -4,10 +4,10 @@ import { SocketContext } from "../Context";
 
 const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
-  const [authStatus, dangerouslySetAuthStatus] = useState(localStorage.getItem("authStatus"));
+  const [authStatus, dangerouslySetAuthStatus] = useState(localStorage.getItem("authStatus") || false);
   const { socket } = useContext(SocketContext);
   const navigate = useNavigate();
-
+  console.log(localStorage.getItem("authStatus"));
   useEffect(() => {
     if (authStatus && !socket.connected) {
       socket.connect();

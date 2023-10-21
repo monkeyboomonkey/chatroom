@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider.jsx";
 
-function Log(props) {
+function Log() {
     const navigate = useNavigate();
     const { login } = useAuth();
     const [username, setUserName] = useState();
@@ -26,10 +26,6 @@ function Log(props) {
 
             })
                 .then(response => response.json())
-                .then(data => {
-                    const newUserinfo = { ...data }
-                    props.setUser(newUserinfo);
-                })
                 .then(() => {
                     login();
                 });

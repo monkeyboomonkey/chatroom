@@ -3,19 +3,22 @@ import { useRef, useEffect, useContext } from "react";
 import '../styles/style.css';
 import Chatboxheader from "./Chatboxheader.jsx";
 import { SocketContext } from "../Context";
+import { useSelector } from "react-redux";
 
 function Chatbox(props) {
     const { socket } = useContext(SocketContext);
     const chatDisplayRef = useRef(null);
     const messageContentRef = useRef(null);
+    const user = useSelector(state => state.user);
+    console.log(user)
     const handleSendBtnClicked = () => {
         const message = messageContentRef.current.value;
         messageContentRef.current.value = '';
         if (message.length > 0) {
             socket.emit('message', {
-                username: props.user.username ? props.user.username : "anonymous", message: message
+                username: user ? user : "anonymous", message: message
             });
-            console.log("Socket pushed")
+            console.log("Socket pushed", message)
         }
     }
     useEffect(() => {

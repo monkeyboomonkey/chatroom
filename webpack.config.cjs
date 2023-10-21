@@ -2,7 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  mode: "development",
+  mode: process.env.NODE_ENV ? process.env.NODE_ENV : "development",
   devtool: "eval-source-map",
   entry: {
     main: "./src/client/index.js",
@@ -76,4 +76,7 @@ module.exports = {
     //   // inject: false
     // })
   ],
+  resolve: {
+  extensions: ['', '.ts', '.tsx', '.js', '.jsx', '.scss'],
+ },
 };
