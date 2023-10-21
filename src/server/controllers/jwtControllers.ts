@@ -18,6 +18,7 @@ dotenv.config();
 export async function createJWT(req: Request, res: Response, next: NextFunction): Promise<void> {
   // if accessing from logging in, aka the only time we have the id naturally
   if (res.locals.user && res.locals.user.userid) {
+   
     res.locals.token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), { expiresIn: 300 });
   } else {
     // accessing from just the username
