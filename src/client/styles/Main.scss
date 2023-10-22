@@ -5,15 +5,45 @@ $blue: #94C2ED;
 $orange: #E38968;
 $gray: #92959E;
 
-// *,
-// *:before,
-// *:after {
-//     box-sizing: border-box;
-// }
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
 
-body {
-    background: #c18ac4;
-    font: 14px/20px "Lato", Arial, sans-serif;
-    padding: 40px 0;
-    color: white;
+@media screen and (orientation: landscape) {
+    html, body {
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+    }
+    .outerContainerMain {
+        height: 100vh;
+        width: 100vw;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+}
+
+@media screen and (max-width: 600px) {
+    .innerContainerMain {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: fit-content;
+    }
+}
+
+.outerContainerMain {
+    width: 100%;
+    height: 100%;
+}
+
+
+.innerContainerMain {
+    width: 100%;
+    height: fit-content;
 }

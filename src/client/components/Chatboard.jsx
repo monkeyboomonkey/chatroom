@@ -16,16 +16,14 @@ function Chatboard() {
   const newRoomDivRef = useRef(null);
   const newRoomText = useRef(null);
 
-  console.log("socket: ", socket)
   // listen for active rooms and set rooms/categories
   useEffect(() => {
     const handleRoomsData = (data) => {
       console.log("Rooms Data:", data);
       dispatch(setCurrentCategories(data));
     };
-
-    socket.on("rooms", handleRoomsData);
-
+    
+    socket.on("rooms", handleRoomsData); // make sure to use same function reference to remove correct listener, or use no second argument to remove all listeners
     // Cleanup the socket listener when the component unmounts
     return () => {
       socket.off("rooms", handleRoomsData);
@@ -37,9 +35,9 @@ function Chatboard() {
     const chatBoxDiv = chatBoxRef.current;
     const chatBoxDisplay = chatBoxDiv.querySelector(".chatDisplay");
     chatBoxDisplay.innerText = "";
-    console.log("> > > chatBoxDisplay.value: ", chatBoxDisplay.value);
-    console.log("> > > chatBoxDisplay: ", chatBoxDisplay);
-    console.log(">>> chatBoxDiv: ", chatBoxDiv);
+    // console.log("> > > chatBoxDisplay.value: ", chatBoxDisplay.value);
+    // console.log("> > > chatBoxDisplay: ", chatBoxDisplay);
+    // console.log(">>> chatBoxDiv: ", chatBoxDiv);
     dispatch(setCurrentChatroom(roomName));
     socket.emit("joinRoom", roomName);
   };
@@ -55,7 +53,7 @@ function Chatboard() {
   };
 
   return (
-    <div>
+    <div className="innerContainerMain">
       <Navbar />
       <div className="chatboard">
         <div className="chatCategory">

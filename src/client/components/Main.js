@@ -2,11 +2,12 @@ import React, {useContext, useEffect} from 'react';
 import { Outlet } from "react-router-dom";
 import { SocketContext } from '../Context';
 import { useSelector } from 'react-redux';
+import "../styles/Main.scss"
 
 function Main() {
     const authStatus = useSelector(state => state.isAuth);
     const { socket } = useContext(SocketContext); // socket comes from the SocketContext, see Context.js, and App.js
-
+    console.log("AuthStatus:",authStatus)
     /*
     * this effect will run when the component mounts and when the authStatus changes
     * if the authStatus is true, then the socket will connect
@@ -31,10 +32,10 @@ function Main() {
                 });
             });
         } else if (socket.connected) {
-            socket.disconnect();
+            // socket.disconnect();
         }
         return () => {
-            socket.disconnect();
+            // socket.disconnect();
             socket.off("connect", () => {
                 console.log("Connected to server:", socket.connected);
             });
@@ -42,10 +43,10 @@ function Main() {
                 console.log("Connected to server:", socket.connected);
             });
         }
-    }, [authStatus]);
+    });
     // Outlet is a placeholder for the child routes of the parent route, any child routes will be rendered here, defaulted to index aka Chatboard
     return (
-        <div>
+        <div className='outerContainerMain'>
             {/* authCheck needs to come before render of Outlet, otherwise socket might not connect in time, resulting in weird behavior */}
             {authStatus === null ? "Verifying User Please Wait" : <Outlet />} {/* <Outlet /> is a placeholder for the child routes of the parent route. */}
         </div>

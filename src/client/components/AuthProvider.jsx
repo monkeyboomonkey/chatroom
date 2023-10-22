@@ -15,7 +15,8 @@ const AuthProvider = ({ children }) => {
   const authStatus = useSelector((state) => state.isAuth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+  console.log("authStatus: ", authStatus)
+
   /*
   * Verify user on page load, done by useEffect below
   */

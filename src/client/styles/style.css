@@ -1,10 +1,65 @@
+@media screen and (max-width: 600px) {
+    .chatboard {
+        display: flex;
+        flex-direction: column;
+        margin-top: 1vh;
+        max-width: fit-content;
+        max-height: fit-content;
+        margin: 0vh 2vw;
+    }
+    .chatboard > .chatCategory {
+        width: fit-content;
+        opacity: .8;
+        border-radius: 15px;
+        background-color: #b5dee8;
+        overflow: auto;
+        border: 2px solid #000000;
+        display: flex;
+        height: fit-content;
+    }
+    .chatCategory > .chatCategoryList {
+        border-radius: 15px;
+        padding: 10px;
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+    .chatCategory > .chatCategoryList > .allChatCategories {
+        display: flex;
+    }
+    .chatCategory > .chatCategoryList > div:first-child {
+        display: flex;
+        flex-direction: row;
+        overflow: auto;
+    }
+}
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
 #root {
-    width: 95%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 body {
     background-color: rgb(199, 202, 174);
+    margin: 0px;
+    padding: 0px;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("https://gifdb.com/images/high/aesthetic-anime-pixelated-background-bnuuk8wf00lrrcvf.gif");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    scrollbar-gutter: stable both-edges;
+    overflow-x: hidden;
 }
+
 
 .welcometext {
     font-family: Montserrat, sans-serif;
@@ -36,12 +91,12 @@ body {
 .navbar {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    padding: 0.5rem;
     background: linear-gradient(90deg, rgba(3, 191, 203, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%);
     background-size: 100%;
     opacity: .8;
-    margin: auto;
-    min-height: fit-content;
+    margin: 1vh 1vw;
+    height: fit-content;
     border-radius: 15px;
     box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.75);
     color: #000000;
@@ -49,6 +104,7 @@ body {
     overflow-x: auto;
     overflow-y: hidden;
     border: 2px solid #000000;
+    /* align-self: flex-start; */
 }
 
 .navbar > .leftNav > h2 {
@@ -108,23 +164,27 @@ li {
     border-radius: 15px;
 }
 
+
 .chatboard {
-    width: 100%;
-    height: 100%;
     display: flex;
-    margin-top: 10px;
-    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1vh;
+    position: relative;
 }
 
 .chatCategory {
-    width: 30%;
     opacity: .8;
     margin: 10px;
     border-radius: 15px;
     background-color: #b5dee8;
-    height: 70vh;
-    overflow: auto;
+    height: 80vh;
+    overflow: hidden;
     border: 2px solid #000000;
+}
+
+.chatCategory div:first-child {
+    height: min-content;
 }
 
 .chatCategory > div > form > div:nth-child(1) {
@@ -135,10 +195,16 @@ li {
 }
 
 .chatCategoryList {
-    height: 90%;
     border-radius: 15px;
     padding: 10px;
     overflow-y: auto;
+    height: min-content;
+}
+
+.chatCategoryList div:first-child {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
 }
 
 .chatCategoryList > h3 {
@@ -147,8 +213,7 @@ li {
 }
 
 .allChatCategories {
-    height: 70%;
-    overflow-y: auto;
+    overflow: hidden;
     border-radius: 15px;
 }
 
@@ -157,7 +222,10 @@ li {
 }
 
 .chatBox {
-    width: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
     padding-right: 30px;
     border-radius: 10px;
 }

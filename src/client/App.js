@@ -16,6 +16,7 @@ import Chatboard from './components/Chatboard.jsx';
 function App() {
   const username = useSelector(state => state.username);
   const socket = io("ws://localhost:3001", { autoConnect: false, query: {username: username}, reconnection: false });
+  console.log("socket:", socket)
   console.log("rerendering app")
   return (
     <BrowserRouter>
@@ -27,9 +28,7 @@ function App() {
                   </AuthProvider>
                 }>
                   <Route index element={ // index element is the default route for the parent route
-                  <AuthProvider>
                     <Chatboard />
-                  </AuthProvider>
                 }/>
                   <Route path="profile" element={
                       <Profile />

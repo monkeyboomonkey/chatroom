@@ -21,36 +21,27 @@ function Chatbox() {
             console.log("Socket pushed", message)
         }
     }
-    
-    useEffect(() => {
-        socket.on('message', (data) => {
-            const { username, message } = data;
-            console.log("Socket pulled", data)
-            const receivedMessageDiv = document.createElement('div');
-            receivedMessageDiv.classList.add('userMessage');
-            receivedMessageDiv.innerHTML = `<span class='usernameDisplay'>${username}</span> <span class='messageDisplay'>${message.message}</span>`;
-            if (!chatDisplayRef.current) {
-                chatDisplayRef.current = document.createElement('div');
-                chatDisplayRef.current.classList.add('chatDisplay');
-            }
-            chatDisplayRef.current.appendChild(receivedMessageDiv);
-            chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight;
-        });
-        return () => {
-            socket.off('message', (data) => {
-                console.log("Socket pulled")
-                const receivedMessageDiv = document.createElement('div');
-                receivedMessageDiv.classList.add('userMessage');
-                receivedMessageDiv.innerHTML = `<span class='usernameDisplay'>${data.message.username}</span> <span class='messageDisplay'>${data.message.message}</span>`;
-                if (!chatDisplayRef.current) {
-                    chatDisplayRef.current = document.createElement('div');
-                    chatDisplayRef.current.classList.add('chatDisplay');
-                }
-                chatDisplayRef.current.appendChild(receivedMessageDiv);
-                chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight;
-            });
+
+    const handleReceiveMessage = (data) => {
+        const { username, message } = data;
+        console.log("Socket pulled", data)
+        const receivedMessageDiv = document.createElement('div');
+        receivedMessageDiv.classList.add('userMessage');
+        receivedMessageDiv.innerHTML = `<span class='usernameDisplay'>${username}</span> <span class='messageDisplay'>${message.message}</span>`;
+        if (!chatDisplayRef.current) {
+            chatDisplayRef.current = document.createElement('div');
+            chatDisplayRef.current.classList.add('chatDisplay');
         }
-    }, []);
+        chatDisplayRef.current.appendChild(receivedMessageDiv);
+        chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight;
+    }
+
+    useEffect(() => {
+        socket.on('message', handleReceiveMessage);
+        return () => {
+            socket.off('message', handleReceiveMessage);
+        }
+    }, [socket]);
 
     return (
         <div className="innerChatBox">
