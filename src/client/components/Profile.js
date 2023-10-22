@@ -9,7 +9,6 @@ function Profile() {
     const lastName = useSelector(state => state.chatroomReducer.ln);
     const email = useSelector(state => state.chatroomReducer.email);
     
-    console.log(useSelector(state => state));
     let fullName = `${firstName} ${lastName}`
     let emailAddress = `${email}`
 
