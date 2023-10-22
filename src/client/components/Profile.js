@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import '../styles/Profile.scss'
 
-function Profile(props) {
+function Profile() {
     const navigate = useNavigate();
-    const [username, setUsername] = useState(props.user.username);
-    const [password, setPassword] = useState();
-    const [firstName, setFirstName] = useState(props.user.fn);
-    const [lastName, setLastName] = useState(props.user.ln);
-    const [email, setEmail] = useState(props.user.email);
-    const test = () => {
-        console.log(props.user.fn)
-    }
+    const firstName = useSelector(state => state.chatroomReducer.fn);
+    const lastName = useSelector(state => state.chatroomReducer.ln);
+    const email = useSelector(state => state.chatroomReducer.email);
+    
+    console.log(useSelector(state => state));
     let fullName = `${firstName} ${lastName}`
     let emailAddress = `${email}`
 
@@ -21,28 +19,6 @@ function Profile(props) {
     function toUpdate() {
         navigate("/update")
     }
-    // { fn: "Jane", ln: "Doe", email: "janedoe@yahoo.com", password: "$2a$10$KDBSkhYSw5nQiN2P/9/G7uXHLe9eFMazEcWVn1fY39hC129HJWMRq", username: "user1" }
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     const updateData = {
-    //         fn: firstName,
-    //         ln: lastName,
-    //         email: email,
-    //         username: username,
-    //         password: password
-    //     }
-    //     try {
-    //         const result = await fetch('http://localhost:3001/api/updateuser', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify(updateData)
-    //         })
-    //     } catch (error) {
-    //         console.log(error.message);
-    //     }
-    // }
 
     return (
         <div className="card-container">
@@ -53,20 +29,13 @@ function Profile(props) {
                 <button className="primary" onClick={toUpdate}>
                     Update
                 </button>
-                <button className="primary ghost" onClick={test}>
+                <button className="primary ghost" onClick={() => {}}>
                     Options
                 </button>
             </div>
             <div className="interests">
                 <h6>Interests</h6>
                 <ul>
-                    <li>UI / UX</li>
-                    <li>Dungeons & Dragons</li>
-                    <li>Vegan recipes</li>
-                    <li>Dogs</li>
-                    <li>FIFA</li>
-                    <li>Yoga</li>
-                    <li>Calligraphy</li>
                 </ul>
             </div>
 

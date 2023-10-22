@@ -3,7 +3,7 @@ import Chatroom from "./Chatroom.jsx";
 import { useSelector } from "react-redux";
 
 function Chatcategory({ handleSwitchRoom }) {
-  const categories = useSelector((state) => state.categories);
+  const categories = useSelector((state) => state.chatroomReducer.categories);
   return (
     <div>
       <h3>All active rooms</h3>

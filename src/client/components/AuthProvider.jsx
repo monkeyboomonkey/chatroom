@@ -12,7 +12,7 @@ import { setUser, setIsAuth } from "../chatroomReducer.ts";
 
 const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
-  const authStatus = useSelector((state) => state.isAuth);
+  const authStatus = useSelector((state) => state.chatroomReducer.isAuth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   console.log("authStatus: ", authStatus)

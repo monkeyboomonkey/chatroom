@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import "../styles/Main.scss"
 
 function Main() {
-    const authStatus = useSelector(state => state.isAuth);
+    const authStatus = useSelector((state) => state.chatroomReducer.isAuth);
     const { socket } = useContext(SocketContext); // socket comes from the SocketContext, see Context.js, and App.js
     console.log("AuthStatus:",authStatus)
     /*

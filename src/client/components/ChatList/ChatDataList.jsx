@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 export function ChatDataList() {
   const { socket } = useContext(SocketContext);
-  const categories = useSelector((state) => state.categories);
+  const categories = useSelector((state) => state.chatroomReducer.categories);
   console.log("ChatDataList Categories", categories);
 
   const generateRoomList = (rooms) => {

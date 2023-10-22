@@ -17,36 +17,30 @@ const result = await db.select().from(users);
 import { Express, Request, Response, NextFunction } from 'express';
 
 export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const { userid, newfn, newln, newemail, newusername, newpassword } = req.body;
+  const { firstName, lastName, email, username } = req.body;
+  const { userid } = res.locals;
+  if (!firstName && !lastName && !email && !username) return next('Missing required fields');
 
-  const foundNewUsername = await db.select().from(users).where(and(eq(users.username, newusername), ne(users.userid, userid)));
-  const foundNewEmail = await db.select().from(users).where(and(eq(users.email, newemail), ne(users.userid, userid)));
+  const foundNewUsername = username ? await db.select().from(users).where(and(eq(users.username, username), ne(users.userid, userid))) : [];
+  const foundNewEmail = email ? await db.select().from(users).where(and(eq(users.email, email), ne(users.userid, userid))) : [];
   if (!foundNewUsername.length && !foundNewEmail.length) {
-    if (newpassword) {
-      try {
-        const newUser = await db.update(users).set({ fn: newfn, ln: newln, email: newemail, username: newusername, password: hashSync(newpassword, 10) }).where(eq(users.userid, userid)).returning();
-        res.locals.user = newUser[0];
-        return next();
+    try {
+      const currentUser = await db.select().from(users).where(eq(users.userid, userid));
+      const userCredentials = {
+        fn: !firstName ? currentUser[0].fn : firstName,
+        ln: !lastName ? currentUser[0].ln : lastName,
+        email: !email ? currentUser[0].email : email,
+        username: !username ? currentUser[0].username : username,
       }
-      catch (e) {
-        return next('failed to updateUser');
-      }
+      const newUser = await db.update(users).set(userCredentials).where(eq(users.userid, userid)).returning();
+      res.locals.user = newUser[0];
+      return next();
+    } catch (e) {
+      return next('failed to updateUser');
     }
-    else {
-      try {
-        const newUser = await db.update(users).set({ fn: newfn, ln: newln, email: newemail, username: newusername }).where(eq(users.userid, userid)).returning();
-        res.locals.user = newUser[0];
-        return next();
-      }
-      catch (e) {
-        return next('failed to updateUser');
-      }
-    }
-  }
-  else if (foundNewUsername.length) {
+  } else if (foundNewUsername.length) {
     return next('Username exists');
-  }
-  else {
+  } else {
     return next('Email exists');
   }
 }

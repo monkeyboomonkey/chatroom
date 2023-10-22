@@ -140,6 +140,11 @@ button.primary.ghost {
     border: 0;
 }
 
+.nuform input::placeholder {
+    color: #ffffff;
+    
+}
+
 #roomName {
     font-family: Montserrat, sans-serif;
     outline: 0;

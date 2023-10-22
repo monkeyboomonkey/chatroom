@@ -43,9 +43,11 @@ export async function createJWT(req: Request, res: Response, next: NextFunction)
 export async function verifyJWT(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const data = jwt.verify(req.cookies.jwt, String(process.env.JWT_SECRET));
-    console.log('data: ', data)
+    
     if (typeof data === 'object' && 'userid' in data) {
       const user = await db.select().from(users).where(eq(users.userid, String(data.userid)));
+      if (!user.length) throw new Error('Invalid JWT payload');
+      res.locals.userid = data.userid;
       res.locals.username = user[0].username;
       res.locals.verify = true;
       return next();

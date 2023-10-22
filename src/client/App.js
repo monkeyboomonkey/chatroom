@@ -14,7 +14,7 @@ import Chatboard from './components/Chatboard.jsx';
 
 
 function App() {
-  const username = useSelector(state => state.username);
+  const username = useSelector((state) => state.chatroomReducer.username);
   const socket = io("ws://localhost:3001", { autoConnect: false, query: {username: username}, reconnection: false });
   console.log("socket:", socket)
   console.log("rerendering app")

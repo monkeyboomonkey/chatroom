@@ -9,7 +9,7 @@ function Chatbox() {
     const { socket } = useContext(SocketContext);
     const chatDisplayRef = useRef(null);
     const messageContentRef = useRef(null);
-    const roomName = useSelector(state => state.currentChatroom);
+    const roomName = useSelector(state => state.chatroomReducer.currentChatroom);
 
     const handleSendBtnClicked = () => {
         const message = messageContentRef.current.value;
