@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthProvider.jsx";
+import { useDispatch } from 'react-redux';
+import { setIsAuth } from '../chatroomReducer';
 
-function Log() {
+function Login() {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const dispatch = useDispatch();
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
-    const handleLogin = async (e) => {
+
+    const authenticateUser = () => {
+        dispatch(setIsAuth(true));
+        navigate("/");
+    }
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const loginData = {
             username: username,
             password: password
         }
-
         try {
-            fetch('http://localhost:3001/api/userlogin', {
+            const res = await fetch('/api/userlogin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -23,12 +29,12 @@ function Log() {
                 body: JSON.stringify(loginData),
                 credentials: 'include',
                 mode: "cors",
-
-            })
-                .then(response => response.json())
-                .then(() => {
-                    login();
-                });
+            });
+            if (res.status === 200) {
+                authenticateUser();
+            } else {
+                throw new Error("Login failed");
+            }
         } catch {
             console.log(error.message);
             navigate("/signup");
@@ -36,14 +42,13 @@ function Log() {
     }
 
     return (
-
         <div className="login-wrapper">
             <div className="form">
                 <h1>Login</h1>
-                <form onSubmit={handleLogin}>
+                <form onSubmit={handleSubmit}>
                     <input placeholder='Username' type="text" onChange={el => setUserName(el.target.value)} />
                     <input placeholder='Password' type="password" onChange={el => setPassword(el.target.value)} />
-                    <button onClick={handleLogin}>Log in</button>
+                    <button onClick={handleSubmit}>Log in</button>
                     <p className="message">Not registered? <Link to="/signup">Create an account</Link></p>
                 </form>
             </div>
@@ -54,4 +59,4 @@ function Log() {
 }
 
 
-export default Log;
+export default Login;

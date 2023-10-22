@@ -1,8 +1,10 @@
 import React, { useContext } from "react";
 import { SocketContext } from "../../Context";
+import { useSelector } from "react-redux";
 
-export function ChatDataList({ categories }) {
+export function ChatDataList() {
   const { socket } = useContext(SocketContext);
+  const categories = useSelector((state) => state.categories);
   console.log("ChatDataList Categories", categories);
 
   const generateRoomList = (rooms) => {

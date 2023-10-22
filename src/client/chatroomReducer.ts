@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import * as pkg from '@reduxjs/toolkit';
-const { createSlice, configureStore, current } = pkg;
+const { createSlice } = pkg;
 
 interface User {
   userid: string;
@@ -21,50 +21,56 @@ interface Chatlog {
 }
 
 interface UserState {
-  user: User | null;
+  username: User | null;
   chats: Chats;
-
+  currentChatroom: string | null;
+  categories: string[];
+  isAuth: boolean | null;
 }
 
 const initialState: UserState = {
-  user: null,
-  chats: {}
+  username: null,
+  chats: {},
+  currentChatroom: null,
+  categories: ['lobby'],
+  isAuth: null,
 };
 
 const chatroomSlice = createSlice({
-  name: 'chatroom_user',
+  name: 'chatroomSlice',
   initialState,
   reducers: {
     userLogin(state, action: PayloadAction<User>) {
-      state.user = action.payload;
-      // console.log(current(state));
+      state.username = action.payload;
     },
     userLogout(state) {
-      state.user = null;
-      // console.log(current(state));
+      state.username = null;
     },
     postChat(state, action: PayloadAction<{chatroom: string, chatlog: Chatlog}>) {
-      if(state.chats[action.payload.chatroom]){
+      if (state.chats[action.payload.chatroom]) {
         state.chats[action.payload.chatroom].push(action.payload.chatlog);
       }
-      else{
+      else {
         state.chats[action.payload.chatroom] = [action.payload.chatlog];
       }
-      // console.log(current(state));
     },
     setUser(state, action: PayloadAction<User>) {
-      state.user = action.payload;
+      state.username = action.payload;
+    },
+    setCurrentChatroom(state, action: PayloadAction<string>) {
+      state.currentChatroom = action.payload;
+    },
+    setCurrentCategories(state, action: PayloadAction<string[]>) {
+      state.categories = action.payload;
+    },
+    addCategory(state, action: PayloadAction<string>) {
+      state.categories.push(action.payload);
+    },
+    setIsAuth(state, action: PayloadAction<boolean>) {
+      state.isAuth = action.payload;
     }
   },
 })
 
-// all tests passed
-// const store = configureStore({reducer: chatroomSlice.reducer})
-// store.dispatch(chatroomSlice.actions.userLogin({fn: 'fn', ln:'ln', userid:'userid', email:'email', password:'password', username:'testusername'}));
-// store.dispatch(chatroomSlice.actions.userLogout());
-// store.dispatch(chatroomSlice.actions.userLogin({fn: 'fn', ln:'ln', userid:'userid', email:'email', password:'password', username:'testusername2'}));
-
-// store.dispatch(chatroomSlice.actions.postChat({chatroom: 'chatroom1', chatlog: {message: 'hello world', timestamp:'12345'}}));
-
-export const { userLogin, userLogout, postChat, setUser } = chatroomSlice.actions
+export const { userLogin, userLogout, postChat, setUser, setCurrentChatroom, setCurrentCategories, addCategory, setIsAuth } = chatroomSlice.actions
 export default chatroomSlice.reducer

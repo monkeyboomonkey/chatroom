@@ -13,7 +13,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { router } from "./routes/api.js";
 import { errorHandler } from "./controllers/userControllers.js";
-import { getUsersInRoom } from "./websockets/users.js";
 import * as chatServer from "./websockets/events.js";
 const app = express();
 app.use(express.json());

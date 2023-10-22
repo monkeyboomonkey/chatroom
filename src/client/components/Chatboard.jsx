@@ -6,18 +6,22 @@ import "../styles/style.css";
 import { SocketContext } from "../Context";
 import { ChatDataList } from "./ChatList/ChatDataList.jsx";
 import Navbar from "./Navbar.jsx";
+import { useDispatch } from "react-redux";
+import { setCurrentChatroom, setCurrentCategories } from "../chatroomReducer.ts";
 
-function Chatboard(props) {
+function Chatboard() {
   const { socket } = useContext(SocketContext);
+  const dispatch = useDispatch();
   const chatBoxRef = useRef(null);
   const newRoomDivRef = useRef(null);
   const newRoomText = useRef(null);
-  const [categories, setCategories] = useState(["lobby"]);
+
+  console.log("socket: ", socket)
   // listen for active rooms and set rooms/categories
   useEffect(() => {
     const handleRoomsData = (data) => {
       console.log("Rooms Data:", data);
-      setCategories(data);
+      dispatch(setCurrentCategories(data));
     };
 
     socket.on("rooms", handleRoomsData);
@@ -28,50 +32,42 @@ function Chatboard(props) {
     };
   }, []);
 
-
-  const [roomName, setRoomName] = useState("");
   const handleSwitchRoom = (roomName) => {
-    console.log("Handling switch rooooooooom");
+    console.log(`Switching to room: ${roomName}`);
     const chatBoxDiv = chatBoxRef.current;
     const chatBoxDisplay = chatBoxDiv.querySelector(".chatDisplay");
     chatBoxDisplay.innerText = "";
     console.log("> > > chatBoxDisplay.value: ", chatBoxDisplay.value);
     console.log("> > > chatBoxDisplay: ", chatBoxDisplay);
     console.log(">>> chatBoxDiv: ", chatBoxDiv);
-    setRoomName(roomName);
+    dispatch(setCurrentChatroom(roomName));
+    socket.emit("joinRoom", roomName);
   };
-  const handleNewRoomClicked = () => {
-    newRoomDivRef.current.style.display = "block";
-  };
+
   const handleNewRoomFormSubmit = (e) => {
+    e.preventDefault();
     const newRoomName = newRoomText.current.value;
     newRoomText.current.value = "";
     newRoomDivRef.current.style.display = "none";
     console.log("newRoomName: ", newRoomName);
-    const updatedCategories = [...categories, newRoomName];
     handleSwitchRoom(newRoomName);
     socket.emit("joinRoom", newRoomName);
-    // setCategories(updatedCategories);
   };
+
   return (
     <div>
       <Navbar />
       <div className="chatboard">
         <div className="chatCategory">
-          <ChatDataList
-            categories={categories}
-            setCategories={setCategories}
-            setRoomName={setRoomName}
-          />
+          <ChatDataList />
           <div className="chatCategoryList">
             <Chatcategory
               handleSwitchRoom={handleSwitchRoom}
-              categories={categories}
             />
           </div>
         </div>
         <div className="chatBox" ref={chatBoxRef}>
-          <Chatbox roomName={roomName} user={props.user}/>
+          <Chatbox />
         </div>
       </div>
       <div ref={newRoomDivRef} className="newRoomDiv">

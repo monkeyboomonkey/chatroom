@@ -39,6 +39,7 @@ export function listen(io: Server) {
     );
 
     const activeRooms: string[] = getActiveRooms(io);
+    console.log(activeRooms)
     socket.emit('rooms', activeRooms.length ? activeRooms : ['lobby']);
 
     socket.on("disconnect", () => {
@@ -125,10 +126,9 @@ export function listen(io: Server) {
     socket.on("message", (message: string) => {
       // push message to a database with timestamp and room name
       console.log(`${socket.username} said ${message}`);
-
       const response = {
         username: socket.username,
-        message: message,
+        message,
       };
       // io.to should be used to send messages to all users including self
       io.to(socket.room).emit("message", response);

@@ -1,59 +1,50 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { SocketContext } from "../Context";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser, setIsAuth } from "../chatroomReducer.ts";
+
+/*
+* Auth Provider wraps the entire app, except for the login and signup pages (not protected routes)
+* Auth Provider checks if user is authenticated on page load
+* If user is authenticated, set user in redux store and set auth status to true
+* If user is not authenticated, set auth status to false and redirect to login page
+*/
 
 const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
-  const [authStatus, dangerouslySetAuthStatus] = useState(localStorage.getItem("authStatus") || false);
-  const { socket } = useContext(SocketContext);
+  const authStatus = useSelector((state) => state.isAuth);
   const navigate = useNavigate();
-  console.log(localStorage.getItem("authStatus"));
+  const dispatch = useDispatch();
+  
+  /*
+  * Verify user on page load, done by useEffect below
+  */
   useEffect(() => {
-    if (authStatus && !socket.connected) {
-      socket.connect();
-      socket.on("connect", () => {
-        console.log("Connected to server:", socket.connected);
-      });
-      socket.on("disconnect", () => {
-        console.log("Connected to server:", socket.connected);
-        socket.off("connect", () => {
-          console.log("Connected to server:", socket.connected);
+    const verifyUser = async () => {
+      try {
+        const response = await fetch('api/verify', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          mode: "cors",
         });
-        socket.off("disconnect", () => {
-          console.log("Connected to server:", socket.connected);
-        });
-      });
+        if (!response.ok) throw new Error('Failed to verify user');
+        const data = await response.json();
+        dispatch(setUser(data));
+        dispatch(setIsAuth(true));
+      } catch (err) {
+        console.log(err);
+        dispatch(setIsAuth(false));
+        navigate('/login');
+      }
     }
-
-    return () => {
-      socket.disconnect();
-    }
-  }, []);
-
-  const logout = async () => {
-    await fetch('http://localhost:3001/api/userlogout', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      mode: "cors",
-    });
-    socket.disconnect();
-    dangerouslySetAuthStatus(false);
-    localStorage.removeItem("authStatus");
-    navigate("/login")
-  }
-
-  const login = () => {
-    socket.connect();
-    dangerouslySetAuthStatus(true);
-    localStorage.setItem("authStatus", true);
-    navigate("/")
-  }
+    verifyUser();
+  }, [])
 
   return (
-    <AuthContext.Provider value={{ authStatus, logout, login, dangerouslySetAuthStatus }}>
+    <AuthContext.Provider value={{ authStatus }}>
       {children}
     </AuthContext.Provider>
   );
