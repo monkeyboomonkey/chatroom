@@ -12,26 +12,32 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "dist", "client"),
-    publicPath: '/' // needs to be project root for HtmlWebpackPlugin, ./ does not work
+    // publicPath: '/' // needs to be project root for HtmlWebpackPlugin, ./ does not work
   },
   module: {
     rules: [
       {
         test: /.(js|jsx|ts|tsx)$/,
+        exclude: /node_modules/,
         include: path.resolve(__dirname, "src", "client"),
         use: {
           loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"]
+          }
         },
         resolve: {
           fullySpecified: false,
         },
       },
       {
-        test: /\.(sa|sc|c)ss$/, // styles files
+        test: /\.(sa|sc|c)ss$/,
+        exclude: /node_modules/,
         use: ["style-loader", "css-loader", "sass-loader"],
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        exclude: /node_modules/,
         use: {
           loader: 'url-loader',
         },
@@ -57,24 +63,13 @@ module.exports = {
     historyApiFallback: true,
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: "src/client/index.html",
-      chunks: ['main'],
-      // inject: false
-    }),
+    new HtmlWebpackPlugin({template: "src/client/index.html",}),
     // new HtmlWebpackPlugin({
-    //   filename: 'login.html',
-    //   template: "src/client/login.html",
-    //   chunks: ['login'],
-    //   // inject: false
+    //   filename: 'index.html',
+    //   template: "src/client/index.html",
+    //   chunks: ['main'],
+    //   inject: false
     // }),
-    // new HtmlWebpackPlugin({
-    //   filename: 'profile.html',
-    //   template: "src/client/profile.html",
-    //   chunks: ['profile'],
-    //   // inject: false
-    // })
   ],
   resolve: {
     extensions: ['', '.ts', '.tsx', '.js', '.jsx', '.scss'],

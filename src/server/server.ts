@@ -20,6 +20,7 @@ app.use(express.json());
 const whitelist = [
   undefined,
   "http://localhost:8080",
+  "http://localhost:8081",
 ];
 const corsOptions = {
   credentials: true, // This is important.
@@ -45,13 +46,6 @@ const io = new Server(httpServer, {
   cors: { origin: "*" },
 });
 chatServer.listen(io);
-
-declare module "socket.io" {
-  interface Socket {
-    username: string;
-    room: string;
-  }
-}
 
 const PORT = 3001;
 httpServer.listen(PORT, () =>

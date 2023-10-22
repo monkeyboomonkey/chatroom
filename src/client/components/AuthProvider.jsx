@@ -5,11 +5,10 @@ import { SocketContext } from "../Context";
 const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [authStatus, dangerouslySetAuthStatus] = useState(localStorage.getItem("authStatus"));
-  const { socket } = useContext(SocketContext);
+  const socket = useContext(SocketContext);
   const navigate = useNavigate();
   
   useEffect(() => {
-    try {
       fetch('http://localhost:3001/api/verify', {
         method: 'GET',
         headers: {
@@ -20,15 +19,17 @@ const AuthProvider = ({ children }) => {
       })
       .then(response => response.json())
       .then(data => {
-        console.log("Verification response is: " + data)
+        console.log("Verification response is: ")
+        console.log(data)
         if (data !== true) {
           localStorage.setItem("authStatus", false);
+          console.log('We are going to Login')
           navigate("/login")
         }
-      });
-    } catch {
-      navigate("/login")
-    }
+      })
+     .catch(e => {navigate("/login")})
+      
+    
 
     if (authStatus && !socket.connected) {
       socket.connect();
@@ -40,6 +41,7 @@ const AuthProvider = ({ children }) => {
       });
     }
     return () => {
+      console.log('running cleanup')
       socket.disconnect();
       socket.off("connect", () => {
         console.log("Connected to server:", socket.connected);

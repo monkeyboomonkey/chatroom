@@ -8,9 +8,6 @@ import store from './store'
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <Provider store={store}>
-
-        <SocketContext.Provider value={{ socket: socket }}>
-            <App />
-        </SocketContext.Provider>
+        <App />
     </Provider>
 );
