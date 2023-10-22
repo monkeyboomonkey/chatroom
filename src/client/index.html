@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BooMonkeyBoo</title>
-    <script src="main.bundle.js"></script>
+    <!-- <script src="main.bundle.js"></script> -->
+    <!-- keep script tag commented out if htmlWebpackPlugin is on in webpack config, unless you disable script injection, so webpack will no longer generate script tags on it's own -->
+    <!-- this is to avoid script tag duplication causing multiple requests for the same resource -->
   </head>
   <body>
     <div id="root"></div>
