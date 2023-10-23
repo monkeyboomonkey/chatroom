@@ -54,7 +54,11 @@ const chatroomSlice = createSlice({
       state.categories.push(action.payload);
     },
     setIsAuth(state, action: PayloadAction<boolean>) {
-      state.isAuth = action.payload;
+      if (action.payload === false) {
+        return initialState;
+      } else {
+        state.isAuth = action.payload;
+      }
     },
     setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string}>) {
       state.userIdentity = action.payload;

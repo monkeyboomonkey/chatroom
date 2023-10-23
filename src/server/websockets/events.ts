@@ -59,6 +59,50 @@ export function listen(io: Server) {
     });
 
     /**
+     * Start DM
+     * Event: "startDM"
+     * Functionality: 
+     * Args:
+     *  1. username - user to start DM with
+     */
+    socket.on("startDM", async (username: any) => {
+      // find socket that matches username
+      // io.sockets.sockets is a Map of all sockets connected to the server
+      // Array.from(io.sockets.sockets.values())[0].username) -> username of first socket in the list
+      username = username.username;
+      const targetSocket = Array.from(io.sockets.sockets.values()).find(
+        (s) => s.username === username
+      );
+
+      if (!targetSocket) {
+        // If the target user is not found, emit an error message to the sender
+        socket.emit("systemMessage", `User ${username} not found`);
+        return;
+      }
+
+      console.log(`${socket.username} wants to DM ${targetSocket.username}`);
+
+      // create room name with both usernames
+      const roomName = ['DM', socket.username, targetSocket.username].sort().join("-");
+
+      // join room
+      socket.leave(socket.room);
+      socket.join(roomName);
+      socket.room = roomName;
+
+      targetSocket.leave(targetSocket.room);
+      targetSocket.join(roomName);
+      targetSocket.room = roomName;
+
+      // send message to room that DM has started
+      io.to(roomName).emit(
+        "startDM",
+        { roomName, 
+          users: [socket.username, targetSocket.username] } // index zero is the initiator of the DM
+      );
+    });
+
+    /**
      * User joins a room
      * Event: "joinRoom"
      * Request args:
@@ -75,6 +119,8 @@ export function listen(io: Server) {
       try {
         if (!room) {
           throw Error("No room provided");
+        } else if (room.startsWith("DM")) {
+          throw Error("Cannot join DMs through joinRoom");
         }
         // leave lobby or previous room
         socket.leave(socket.room);

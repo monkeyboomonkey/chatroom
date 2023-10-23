@@ -4,7 +4,7 @@ import '../styles/style.css';
 import Chatboxheader from "./Chatboxheader.jsx";
 import { SocketContext } from "../Context";
 import { useSelector, useDispatch } from "react-redux";
-import { addNewChat } from "../util/chatroomReducer.ts";
+import { addNewChat, setCurrentChatroom } from "../util/chatroomReducer.ts";
 
 function Chatbox() {
     const { socket } = useContext(SocketContext);
@@ -29,8 +29,21 @@ function Chatbox() {
         chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight;
     }
 
+    const startDM = (e) => {
+        const username = e.target.getAttribute('value'); // get username of user clicked on, getAttribute comes from React
+        // console.log("DM username: ", username);
+        socket.emit('startDM', { username: username });
+    }
+
+    const handleDMStarted = (data) => {
+        const { roomName, users } = data;
+        console.log(roomName, users);
+        dispatch(setCurrentChatroom(roomName));
+    }
+
     useEffect(() => {
         socket.on('message', handleReceiveMessage); // listen for new messages
+        socket.on('startDM', handleDMStarted); // listen for new messages
         return () => {
             socket.off('message', handleReceiveMessage); // remove listener when component unmounts (cleanup)
         }
@@ -42,7 +55,13 @@ function Chatbox() {
             <div className="chatDisplay" ref={chatDisplayRef}>
                 {currentChatroomState.map((chat, index) => (
                     <div key={index} className="userMessage">
-                        <span className="usernameDisplay">{chat.username}</span>
+                        <span 
+                            value={chat.username} 
+                            className="usernameDisplay"
+                            onClick={startDM}
+                        >
+                            {chat.username}
+                        </span>
                         <span className="messageDisplay">{chat.message}</span>
                     </div>
                 ))}

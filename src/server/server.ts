@@ -13,7 +13,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { router } from "./routes/api.js";
 import { errorHandler } from "./controllers/userControllers.js";
-import * as chatServer from "./websockets/events.js";
+import * as chatServer from "./websockets/events.js"; // import object of exported functions from events, named chatServer
 const app = express();
 app.use(express.json());
 const whitelist = [
@@ -48,11 +48,11 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
+const httpServer = createServer(app); // pass express to the http server
+const io = new Server(httpServer, { // pass http server to socket io server
   cors: { origin: "*" },
 });
-chatServer.listen(io);
+chatServer.listen(io); // call listen function from events, passing in socket io server
 
 declare module "socket.io" {
   interface Socket {
