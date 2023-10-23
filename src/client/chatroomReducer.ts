@@ -41,8 +41,11 @@ const chatroomSlice = createSlice({
       state.username = action.payload;
     },
     setCurrentChatroom(state, action: PayloadAction<string>) {
-      state.currentChatroomState = [];
       state.currentChatroom = action.payload;
+      state.currentChatroomState = [{
+        username: state.username!,
+        message: 'joined the chatroom'
+      }];
     },
     setCurrentCategories(state, action: PayloadAction<string[]>) {
       state.categories = action.payload;
@@ -62,9 +65,6 @@ const chatroomSlice = createSlice({
     addNewChat(state, action: PayloadAction<{username: string, message: string}>) {
       state.currentChatroomState.push(action.payload);
     },
-    resetChatroomState(state) {
-      state.currentChatroomState = [];
-    }
   },
 })
 
@@ -76,7 +76,6 @@ export const {
   setIsAuth, 
   setUserIdentity,
   addNewChat,
-  resetChatroomState
 } = chatroomSlice.actions
 
 export default chatroomSlice.reducer

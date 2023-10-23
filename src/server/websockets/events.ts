@@ -3,7 +3,7 @@ import { getUsersInRoom } from "./users.js";
 import { getActiveRooms } from "./rooms.js";
 
 export function listen(io: Server) {
-  io.on("connection", (socket) => {
+  io.on("connection", (socket: Socket) => {
     /**
      * Event types:
      * Client SENDS:
@@ -38,9 +38,7 @@ export function listen(io: Server) {
       `${socket.id.substring(0, 2)} has joined the lobby`
     );
 
-    const activeRooms: string[] = getActiveRooms(io);
-    console.log(activeRooms)
-    socket.emit('rooms', activeRooms.length ? activeRooms : ['lobby']);
+    socket.emit('rooms', getActiveRooms(io));
 
     socket.on("disconnect", () => {
       console.log(`user disconnected with socket id: ${socket.id}`);
@@ -96,7 +94,7 @@ export function listen(io: Server) {
           .emit(
             "systemMessage",
             `socket.broadcast ${socket.username} has joined the chat`
-          );
+        );
 
         // send list of connected users in room
         const roster = await getUsersInRoom(io, socket);
@@ -125,7 +123,7 @@ export function listen(io: Server) {
      */
     socket.on("message", (message: {[key: string]: string}) => {
       // push message to a database with timestamp and room name
-      console.log(`${socket.username} sent message to ${socket.room}: ${message}`);
+      console.log(`${socket.username} sent message to room ${socket.room}: ${message?.message}`);
       const response = {
         username: socket.username,
         message: message?.message

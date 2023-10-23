@@ -35,8 +35,8 @@ function Login() {
             } else {
                 throw new Error("Login failed");
             }
-        } catch {
-            console.log(error.message);
+        } catch (error) {
+            console.log(error);
             navigate("/signup");
         }
     }

@@ -13,7 +13,6 @@ function Chatbox() {
     const dispatch = useDispatch();
     const roomName = useSelector(state => state.chatroomReducer.currentChatroom); // get current room name
     const currentChatroomState = useSelector(state => state.chatroomReducer.currentChatroomState); // get current room state, that being all messages in the room
-    console.log(currentChatroomState)
 
     const handleSendBtnClicked = () => {
         if (userMessage?.length > 0) {
@@ -54,6 +53,7 @@ function Chatbox() {
                     type="text" 
                     className="messageContent" 
                     onChange={(e) => setUserMessage(e.target.value)}
+                    value={userMessage}
                 />
                 <button 
                     disabled={roomName === null ? true : false} 
