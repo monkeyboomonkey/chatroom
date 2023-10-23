@@ -123,12 +123,12 @@ export function listen(io: Server) {
      *  message: string
      * }
      */
-    socket.on("message", (message: string) => {
+    socket.on("message", (message: {[key: string]: string}) => {
       // push message to a database with timestamp and room name
-      console.log(`${socket.username} said ${message}`);
+      console.log(`${socket.username} sent message to ${socket.room}: ${message}`);
       const response = {
         username: socket.username,
-        message,
+        message: message?.message
       };
       // io.to should be used to send messages to all users including self
       io.to(socket.room).emit("message", response);

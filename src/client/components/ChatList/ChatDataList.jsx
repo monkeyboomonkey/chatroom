@@ -30,9 +30,9 @@ export function ChatDataList() {
     <div>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="chatroom-choice">Choose or create a topic:</label>
+          <label className="roomFormLabel" htmlFor="chatroom-choice">Choose or create a topic:</label>
         </div>
-        <div>
+        <div className="roomForm">
           <input list="browsers" id="roomName" name="Room" />
           <input id="joinRoomButton" type="submit" value="Join"></input>
         </div>

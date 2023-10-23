@@ -1,32 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { Route, Routes, useNavigate, Link } from "react-router-dom";
-import Login from "./Login.js";
+import React from 'react';
+import { useNavigate, Link } from "react-router-dom";
 
 function Signup() {
-    const [username, setUsername] = useState();
-    const [password, setPassword] = useState();
-    const [firstName, setFirstName] = useState();
-    const [lastName, setLastName] = useState();
-    const [email, setEmail] = useState();
-
     const navigate = useNavigate();
+    const formData = new FormData();
+    const setFormData = (name, value) => {
+        formData.set(name, value);
+    };
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(name, value);
+    };
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-        const signupData = {
-            fn: firstName,
-            ln: lastName,
-            email: email,
-            username: username,
-            password: password
-        }
+        const data = Object.fromEntries(formData);
         try {
             await fetch('http://localhost:3001/api/registeruser', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(signupData)
+                body: JSON.stringify(data)
             })
             navigate("/login")
 
@@ -38,36 +32,41 @@ function Signup() {
 
     return (
         <div className="signup-wrapper">
-            {/* <h1>Signup</h1> */}
             <div className="form">
                 <form onSubmit={handleSubmit}>
-                    <label>
-                        <p>First Name (Optional)</p>
-                        <input type="text" onChange={el => setFirstName(el.target.value)} />
-                    </label>
-                    <label>
-                        <p>Last Name (Optional)</p>
-                        <input type="text" onChange={el => setLastName(el.target.value)} />
-                    </label>
-                    <label>
-                        <p>Email Address</p>
-                        <input type="text" onChange={el => setEmail(el.target.value)} />
-                    </label>
-                    <label>
-                        <p>Username</p>
-                        <input type="text" onChange={el => setUsername(el.target.value)} />
-                    </label>
-                    <label>
-                        <p>Password</p>
-                        <input type="password" onChange={el => setPassword(el.target.value)} />
-                    </label>
-
+                    <input 
+                        type="text"
+                        name='firstName'
+                        placeholder="First Name"
+                        onChange={handleInputChange}
+                    />
+                    <input 
+                        type="text" 
+                        name='lastName'
+                        placeholder="Last Name"
+                        onChange={handleInputChange}
+                    />
+                    <input 
+                        type="text" 
+                        name='email'
+                        placeholder="Email"
+                        onChange={handleInputChange}
+                    />
+                    <input 
+                        type="text" 
+                        name='username'
+                        placeholder="Username"
+                        onChange={handleInputChange}
+                    />
+                    <input 
+                        type="password" 
+                        name='password'
+                        placeholder="Password"
+                        onChange={handleInputChange}
+                    />
                     <button onClick={handleSubmit}>Submit</button>
                     <p class="message">Already registered? <Link to="/login">Sign in</Link></p>
                 </form>
-                {/* <Routes>
-                    <Route path="/login" element={<Login />} />
-                </Routes> */}
             </div>
         </div>
 

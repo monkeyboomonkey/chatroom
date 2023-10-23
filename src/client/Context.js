@@ -8,8 +8,3 @@ export const UserContext = createContext();
 * takes parameter of username
 * returns a socket connection
 */
-
-export const createSocket = (username) => {
-  const socket = io("ws://localhost:3001", { autoConnect: false, query: {username: username}, reconnection: false });
-  return socket;
-}

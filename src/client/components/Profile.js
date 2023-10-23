@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import '../styles/Profile.scss'
@@ -21,7 +21,11 @@ function Profile() {
 
     return (
         <div className="card-container">
-            <img className="round" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpaiczmKCa_Gd7MeORuu_nN7mUxR9we2h5Xc3sY-ZAjYBwhz0knH63sq77l9BM6GULDmE&usqp=CAU" alt="user" />
+            <img 
+                className="round" 
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpaiczmKCa_Gd7MeORuu_nN7mUxR9we2h5Xc3sY-ZAjYBwhz0knH63sq77l9BM6GULDmE&usqp=CAU" 
+                alt="user" 
+            />
             <h3>{fullName}</h3>
             <h6>{emailAddress}</h6>
             <div className="buttons">

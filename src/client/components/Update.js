@@ -94,7 +94,9 @@ function Update() {
       </div>
       <div className="interests">
         <h6>Interests</h6>
-        <ul></ul>
+        <ul>
+          
+        </ul>
       </div>
       <div className="return">
         <button className="return" onClick={toMain}>

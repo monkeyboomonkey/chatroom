@@ -2,7 +2,7 @@ import React from "react";
 import Chatroom from "./Chatroom.jsx";
 import { useSelector } from "react-redux";
 
-function Chatcategory({ handleSwitchRoom }) {
+function Chatcategory() {
   const categories = useSelector((state) => state.chatroomReducer.categories);
   return (
     <div>
@@ -12,7 +12,6 @@ function Chatcategory({ handleSwitchRoom }) {
           <Chatroom
             key={index}
             id={chatroom}
-            switchRoom={handleSwitchRoom}
           />
         ))}
       </div>

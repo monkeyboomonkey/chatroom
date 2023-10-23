@@ -2,27 +2,14 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import * as pkg from '@reduxjs/toolkit';
 const { createSlice } = pkg;
 
-// interface User {
-//   userid: string;
-//   fn: string;
-//   ln: string; 
-//   email: string;
-//   password: string;
-//   username: string;
-// }
-
-interface Chats {
-  [key: string]: Chatlog[]
-}
-
-interface Chatlog {
+interface Chat {
+  username: string;
   message: string;
-  timestamp: string;
 }
 
 interface UserState {
   username: string | null;
-  chats: Chats;
+  currentChatroomState: Chat[];
   currentChatroom: string | null;
   categories: string[];
   isAuth: boolean | null;
@@ -35,7 +22,7 @@ interface UserState {
 
 const initialState: UserState = {
   username: null,
-  chats: {},
+  currentChatroomState: [],
   currentChatroom: null,
   categories: ['lobby'],
   isAuth: null,
@@ -50,18 +37,11 @@ const chatroomSlice = createSlice({
   name: 'chatroomSlice',
   initialState,
   reducers: {
-    postChat(state, action: PayloadAction<{chatroom: string, chatlog: Chatlog}>) {
-      if (state.chats[action.payload.chatroom]) {
-        state.chats[action.payload.chatroom].push(action.payload.chatlog);
-      }
-      else {
-        state.chats[action.payload.chatroom] = [action.payload.chatlog];
-      }
-    },
     setUser(state, action: PayloadAction<string>) {
       state.username = action.payload;
     },
     setCurrentChatroom(state, action: PayloadAction<string>) {
+      state.currentChatroomState = [];
       state.currentChatroom = action.payload;
     },
     setCurrentCategories(state, action: PayloadAction<string[]>) {
@@ -78,9 +58,25 @@ const chatroomSlice = createSlice({
       if (action.payload.username) {
         state.username = action.payload.username;
       }
+    },
+    addNewChat(state, action: PayloadAction<{username: string, message: string}>) {
+      state.currentChatroomState.push(action.payload);
+    },
+    resetChatroomState(state) {
+      state.currentChatroomState = [];
     }
   },
 })
 
-export const { postChat, setUser, setCurrentChatroom, setCurrentCategories, addCategory, setIsAuth, setUserIdentity } = chatroomSlice.actions
+export const { 
+  setUser, 
+  setCurrentChatroom, 
+  setCurrentCategories, 
+  addCategory, 
+  setIsAuth, 
+  setUserIdentity,
+  addNewChat,
+  resetChatroomState
+} = chatroomSlice.actions
+
 export default chatroomSlice.reducer

@@ -1,18 +1,18 @@
-import { useRef } from "react";
-import React from "react";
+import React, { useContext } from "react";
+import { useDispatch } from "react-redux";
+import { setCurrentChatroom } from "../chatroomReducer.ts";
+import { SocketContext } from "../Context.js";
 
-function Chatroom({ switchRoom, id }) {
-    const chatRoomRef = useRef(null);
-    const handleChatroomClicked = () => {
-        const allChatRooms = document.querySelectorAll('.chatroom');
-        for (const chatroom of allChatRooms) {
-            chatroom.classList.remove('activeRoom');
-        }
-        chatRoomRef.current.classList.add('activeRoom');
-        switchRoom(id);
-    }
+function Chatroom({ id }) {
+    const dispatch = useDispatch();
+    const { socket } = useContext(SocketContext);
+    const handleSwitchRoom = () => {
+        console.log(`Switching to room: ${id}`);
+        dispatch(setCurrentChatroom(id));
+        socket.emit("joinRoom", id);
+    };
     return (
-        <div className="chatroom" onClick={handleChatroomClicked} ref={chatRoomRef}>
+        <div className="chatroom" onClick={handleSwitchRoom}>
             <h3>Room #{id}</h3>
         </div>
     );
