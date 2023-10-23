@@ -6,7 +6,7 @@ import { SocketContext } from "../Context";
 import { ChatDataList } from "./ChatList/ChatDataList.jsx";
 import Navbar from "./Navbar.jsx";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentCategories } from "../chatroomReducer.ts";
+import { setCurrentCategories } from "../util/chatroomReducer.ts";
 
 function Chatboard() {
   const { socket } = useContext(SocketContext);
@@ -35,11 +35,11 @@ function Chatboard() {
       <div className="chatboard">
         {!roomActive ?
           <div className="chatCategory">
-          <ChatDataList />
-          <div className="chatCategoryList">
-            <Chatcategory />
-          </div>
-        </div> : null}
+            <ChatDataList />
+            <div className="chatCategoryList">
+              <Chatcategory />
+            </div>
+          </div> : null}
         <div className="chatBox" >
           <Chatbox />
         </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setIsAuth} from "../chatroomReducer.ts";
+import { setIsAuth } from "../util/chatroomReducer.ts";
 
 function Navbar() {
     const navigate = useNavigate();

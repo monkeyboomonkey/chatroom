@@ -4,11 +4,11 @@ import '../styles/style.css';
 import Chatboxheader from "./Chatboxheader.jsx";
 import { SocketContext } from "../Context";
 import { useSelector, useDispatch } from "react-redux";
-import { addNewChat } from "../chatroomReducer";
+import { addNewChat } from "../util/chatroomReducer.ts";
 
 function Chatbox() {
     const { socket } = useContext(SocketContext);
-    const [ userMessage, setUserMessage ] = useState(''); // message input field
+    const [userMessage, setUserMessage] = useState(''); // message input field
     const chatDisplayRef = useRef(null);
     const dispatch = useDispatch();
     const roomName = useSelector(state => state.chatroomReducer.currentChatroom); // get current room name
@@ -40,24 +40,24 @@ function Chatbox() {
         <div className="innerChatBox">
             <Chatboxheader roomName={roomName} />
             <div className="chatDisplay" ref={chatDisplayRef}>
-                    {currentChatroomState.map((chat, index) => (
-                        <div key={index} className="userMessage">
-                            <span className="usernameDisplay">{chat.username}</span>
-                            <span className="messageDisplay">{chat.message}</span>
-                        </div>
-                    ))}
+                {currentChatroomState.map((chat, index) => (
+                    <div key={index} className="userMessage">
+                        <span className="usernameDisplay">{chat.username}</span>
+                        <span className="messageDisplay">{chat.message}</span>
+                    </div>
+                ))}
             </div>
             <div className="chatControl">
-                <textarea 
-                    disabled={roomName === null ? true : false} 
-                    type="text" 
-                    className="messageContent" 
+                <textarea
+                    disabled={roomName === null ? true : false}
+                    type="text"
+                    className="messageContent"
                     onChange={(e) => setUserMessage(e.target.value)}
                     value={userMessage}
                 />
-                <button 
-                    disabled={roomName === null ? true : false} 
-                    className="sendBtn" 
+                <button
+                    disabled={roomName === null ? true : false}
+                    className="sendBtn"
                     onClick={handleSendBtnClicked}
                 >
                     Send
