@@ -49,11 +49,19 @@ router.post('/getSignedURL', getAWSURL , (req: Request, res: Response): void => 
 // route just for verification, if needed
 // currently just responds with a boolean if the user is verified or not
 router.get('/verify', verifyJWT,
-  (req: Request, res: Response): void => {
+  (_req: Request, res: Response): void => {
     let variableStatus = 500;
     if (res.locals.verify) {
       variableStatus = 200;
     }
-    res.status(variableStatus).json(res.locals.username)
+    res.status(variableStatus).json({
+        username: res.locals.user.username, 
+        userIdentity: {
+          email: res.locals.user.email, 
+          fn: res.locals.user.fn, 
+          ln: res.locals.user.ln
+        },
+      }
+    );
   }
 )

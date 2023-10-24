@@ -1,6 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import * as pkg from '@reduxjs/toolkit';
-import { type } from 'os';
 const { createSlice } = pkg;
 
 interface Chat {
@@ -40,8 +39,9 @@ const chatroomSlice = createSlice({
   name: 'chatroomSlice',
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<string>) {
-      state.username = action.payload;
+    setUser(state, action: PayloadAction<UserState>) {
+      state.username = action.payload.username;
+      state.userIdentity = {...state.userIdentity, ...action.payload.userIdentity};
     },
     setCurrentChatroom(state, action: PayloadAction<string>) {
       state.currentChatroom = action.payload;
