@@ -1,15 +1,14 @@
 import { Server, Socket } from "socket.io";
 import { getUsersInRoom } from "./users.js";
-import { getActiveRooms } from "./rooms.js";
 import { users, chatlogs, chatrooms } from "../models/psqlmodels.js";
 import { eq, lt, gte, ne } from "drizzle-orm";
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import dotenv from 'dotenv';
-import { get } from "http";
 const connectionString = String(process.env.POSTGRES_URI)
 const client = postgres(connectionString)
 const db = drizzle(client);
+// import { getActiveRooms } from "./rooms.js";
 dotenv.config();
 
 export async function init(io: Server) {
@@ -19,8 +18,10 @@ export async function init(io: Server) {
    * https://socket.io/docs/v3/server-api/
   */
 
+  //* Map of room names to chatroom_ids  
   const roomIDs = new Map<string, string>();
 
+  //* Get all rooms from database
   let allRooms: any = await db.select().from(chatrooms).execute();
   allRooms = allRooms.map((room: any) => {
     return room.chatroom_name
@@ -234,6 +235,12 @@ export async function init(io: Server) {
     });
   });
 
+  /*
+  * Server event listener for creating a new room
+  * Event: "create_room"
+  * Args: room name
+  * Functionality: add room to allRooms array
+  */
   io.on("create_room", async (room: string) => {
     if (!allRooms.includes(room)) allRooms.push(room); //! add room to allRooms array
   });
