@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.idea/
+.vscode/
+.env
+drizzle/
+drizzle.config.ts
+test.js

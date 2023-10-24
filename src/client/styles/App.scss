@@ -1,0 +1,127 @@
+@import './Mixix.scss';
+
+h1 {
+    color: rgb(11, 12, 11);
+}
+
+.login-wrapper {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signup-wrapper {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-wrapper {
+    width: 360px;
+    margin: auto;
+}
+
+.chatdisplay {
+    position: relative;
+    background: #b97272;
+    max-width: 300px;
+    max-height: 500px;
+    margin: 0 auto 30px;
+    padding: 20px;
+    scroll-behavior: smooth;
+}
+
+@media screen and (max-width: 890px) {
+    .form {
+        @include form;
+        min-width: 80%;
+    }
+}
+@media screen and (min-width: 891px) {
+    .form {
+        @include form;
+        min-width: 40%;
+    }
+}
+
+.roomForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.form > form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.form > h1 {
+    font-family: Montserrat, sans-serif;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin: 0px 0px 1rem 0px;
+    padding: 5px;
+    margin-left: auto;
+    text-decoration: underline;
+    margin-right: auto;
+    border-radius: 5px;
+    color: #ffffff;
+    text-align: center;
+    background-color: #4040407c;
+    box-shadow: 0px 0px 5px 0px #212121;
+    width: fit-content;
+    height: fit-content;
+}
+
+.form input {
+    font-family: Montserrat, sans-serif;
+    outline: 0;
+    border-radius: 5px;
+    background: #dfdfdf;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+    box-shadow: 0px 0px 5px 0px #212121;
+    font-size: 1rem;
+    min-width: 20rem;
+}
+
+.form button {
+    font-family: Montserrat, sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    border-radius: 5px;
+    background: #03BFCB;
+    border: 0;
+    padding: 0.8rem;
+    color: #FFFFFF;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 0 0.8rem;
+    box-shadow: 0px 0px 5px 0px #212121;
+    transition: scale 0.3s ease-in-out;
+    min-width: 20rem;
+    &:hover {
+        scale: 105%;
+    }
+    &:active {
+        scale: 100%;
+    }
+}
+
+
+.bttn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+}
