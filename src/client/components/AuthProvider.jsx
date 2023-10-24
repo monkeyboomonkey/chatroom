@@ -7,7 +7,7 @@ const AuthProvider = ({ children }) => {
   const [authStatus, dangerouslySetAuthStatus] = useState(localStorage.getItem("authStatus"));
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
       fetch('http://localhost:3001/api/verify', {
         method: 'GET',
@@ -19,12 +19,13 @@ const AuthProvider = ({ children }) => {
       })
       .then(response => response.json())
       .then(data => {
+
         console.log("Verification response is: ")
         console.log(data)
         if (data !== true) {
           localStorage.setItem("authStatus", false);
           console.log('We are going to Login')
-          navigate("/login")
+          // navigate("/login")
         }
       })
      .catch(e => {navigate("/login")})

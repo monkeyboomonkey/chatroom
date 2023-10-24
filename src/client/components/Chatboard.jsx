@@ -8,8 +8,10 @@ import { ChatDataList } from "./ChatList/ChatDataList";
 import Navbar from "./Navbar";
 
 function Chatboard(props) {
-  console.log('rendering Chatboard')
-  const { socket } = useContext(SocketContext);
+  const socket = useContext(SocketContext);
+  console.log('socket in Chatboard is:')
+  console.log(socket)
+
   const chatBoxRef = useRef(null);
   const newRoomDivRef = useRef(null);
   const newRoomText = useRef(null);

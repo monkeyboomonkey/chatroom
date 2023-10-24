@@ -29,7 +29,7 @@ interface UserState {
 }
 
 const initialState = {
-  user: null,
+  user: {fn: 'fn', ln:'ln', userid:'userid', email:'email', password:'password', username:'testusername'},
   // {chatroom1:[{c1_obj1}, {c1_obj1},...], chatroom2:[{c2_obj1}, {c2_obj1},...]}
   chats: {}
 } as UserState;

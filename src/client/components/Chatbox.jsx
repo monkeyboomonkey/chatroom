@@ -5,7 +5,9 @@ import Chatboxheader from "./Chatboxheader";
 import { SocketContext } from "../Context";
 
 function Chatbox(props) {
-    const { socket } = useContext(SocketContext);
+    const socket = useContext(SocketContext);
+    console.log('socket in Chatbox is:')
+    console.log(socket)
     const chatDisplayRef = useRef(null);
     const messageContentRef = useRef(null);
     const handleSendBtnClicked = () => {
