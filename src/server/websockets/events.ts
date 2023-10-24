@@ -73,7 +73,7 @@ export function listen(io: Server) {
       const targetSocket = Array.from(io.sockets.sockets.values()).find(
         (s) => s.username === username
       );
-
+      console.log(io.sockets);
       if (!targetSocket) {
         // If the target user is not found, emit an error message to the sender
         socket.emit("systemMessage", `User ${username} not found`);

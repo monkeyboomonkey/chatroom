@@ -1,5 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import * as pkg from '@reduxjs/toolkit';
+import { type } from 'os';
 const { createSlice } = pkg;
 
 interface Chat {

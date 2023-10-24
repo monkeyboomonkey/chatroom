@@ -62,6 +62,6 @@ declare module "socket.io" {
 }
 
 const PORT = 3001;
-httpServer.listen(PORT, () =>
+httpServer.listen(PORT, () => // listen on express server, not socket io server
   console.log("listening on http://localhost:3001")
 );

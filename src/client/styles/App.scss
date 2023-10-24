@@ -1,9 +1,10 @@
+@import './Mixix.scss';
+
 h1 {
     color: rgb(11, 12, 11);
 }
 
 .login-wrapper {
-    // width: 100%;
     margin: auto;
     display: flex;
     justify-content: center;
@@ -12,7 +13,6 @@ h1 {
 
 .signup-wrapper {
     margin: auto;
-    // width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,25 +31,6 @@ h1 {
     margin: 0 auto 30px;
     padding: 20px;
     scroll-behavior: smooth;
-}
-
-@mixin form {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    z-index: 1;
-    opacity: 0.8;
-    border: 2px solid #000000;
-    padding: 0.5rem;
-    text-align: center;
-    box-shadow: 0px 0px 15px 1px #212121;
-    background-image: url("https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/v1003-71c-x.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=4e6ef20121f4996cef83ee6eb410c841");
-    transition: width 0.5s ease-in-out;
-    min-height: 50%;
-    overflow: auto;
 }
 
 @media screen and (max-width: 890px) {

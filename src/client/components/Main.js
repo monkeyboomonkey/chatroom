@@ -7,7 +7,7 @@ import "../styles/Main.scss"
 function Main() {
     const authStatus = useSelector((state) => state.chatroomReducer.isAuth);
     const { socket } = useContext(SocketContext); // socket comes from the SocketContext, see Context.js, and App.js
-    console.log("AuthStatus:",authStatus)
+    console.log("AuthStatus:", authStatus)
     /*
     * this effect will run when the component mounts and when the authStatus changes
     * if the authStatus is true, then the socket will connect
@@ -32,10 +32,10 @@ function Main() {
                 });
             });
         } else if (socket.connected) {
-            // socket.disconnect();
+            socket.disconnect();
         }
         return () => {
-            // socket.disconnect();
+            socket.disconnect();
             socket.off("connect", () => {
                 console.log("Connected to server:", socket.connected);
             });
