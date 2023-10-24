@@ -18,7 +18,7 @@ dotenv.config();
 export async function createJWT(req: Request, res: Response, next: NextFunction): Promise<void> {
   // if accessing from logging in, aka the only time we have the id naturally
   if (res.locals.user && res.locals.user.userid) {
-    res.locals.token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), { expiresIn: 300 });
+    res.locals.token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), { expiresIn: 3000 });
   } else {
     // accessing from just the username
     const { username } = req.body;
@@ -28,7 +28,7 @@ export async function createJWT(req: Request, res: Response, next: NextFunction)
     const foundUser = await db.select().from(users).where(eq(users.username, username)).catch()
     //console.log("found user: ", user)
     if (foundUser.length) {
-      res.locals.token = jwt.sign({ userid: foundUser[0].userid }, String(process.env.JWT_SECRET), { expiresIn: 300 });
+      res.locals.token = jwt.sign({ userid: foundUser[0].userid }, String(process.env.JWT_SECRET), { expiresIn: 3000 });
       //console.log('token set: ', res.locals.token)
     } else {
       // cannot find user
@@ -40,11 +40,21 @@ export async function createJWT(req: Request, res: Response, next: NextFunction)
   return next();
 }
 
-export function verifyJWT(req: Request, res: Response, next: NextFunction): void {
+export async function verifyJWT(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const data = jwt.verify(req.cookies.jwt, String(process.env.JWT_SECRET));
-    res.locals.verify = true;
-    return next();
+    
+    if (typeof data === 'object' && 'userid' in data) {
+      const user = await db.select().from(users).where(eq(users.userid, String(data.userid)));
+      if (!user.length) throw new Error('Invalid JWT payload');
+      res.locals.userid = data.userid;
+      res.locals.username = user[0].username;
+      res.locals.verify = true;
+      return next();
+    } else {
+      res.locals.verify = false;
+      throw new Error('Invalid JWT payload');
+    }
   } catch {
     // torn between sending something thru res.locals so the frontend can know
     res.locals.verify = false;

@@ -1,13 +1,4 @@
-body {
-    background-color: #28223F;
-    font-family: Montserrat, sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-}
+@import './Mixix.scss';
 
 h6 {
     margin: 5px 0;
@@ -20,6 +11,7 @@ p {
 }
 
 .card-container {
+    @include flex-vert;
     background-color: #FFFFFF;
     border-radius: 5px;
     box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.75);
@@ -28,10 +20,14 @@ p {
     padding-bottom: 30px;
     position: relative;
     width: 50%;
-    max-width: 350px;
+    min-width: 350px;
     text-align: center;
-    margin: auto;
+    margin: 0 auto;
+    margin-top: 10%;
     background-image: url("https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/v1003-71c-x.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=4e6ef20121f4996cef83ee6eb410c841");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .card-container .round {
@@ -138,6 +134,11 @@ button.primary.ghost {
     font-size: 12px;
     padding: 5px;
     border: 0;
+}
+
+.nuform input::placeholder {
+    color: #ffffff;
+    
 }
 
 #roomName {

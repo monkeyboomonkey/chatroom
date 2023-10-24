@@ -1,26 +1,17 @@
 import React from "react";
-import Chatroom from "./Chatroom";
-import { useEffect, useContext } from "react";
-import { SocketContext } from "../Context";
+import Chatroom from "./Chatroom.jsx";
+import { useSelector } from "react-redux";
 
-function Chatcategory(props) {
-  const { socket } = useContext(SocketContext);
-  const handleSwitchRoomEvent = (id) => {
-    console.log(`Switching to room: ${id}`);
-    // socket.emit('switchroom', id);
-    props.handleSwitchRoom(id);
-    socket.emit("joinRoom", id);
-  };
-
+function Chatcategory() {
+  const categories = useSelector((state) => state.chatroomReducer.categories);
   return (
     <div>
       <h3>All active rooms</h3>
       <div className="allChatCategories">
-        {props.categories.map((chatroom, index) => (
+        {categories.map((chatroom, index) => (
           <Chatroom
             key={index}
             id={chatroom}
-            switchRoom={handleSwitchRoomEvent}
           />
         ))}
       </div>
