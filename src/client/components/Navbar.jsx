@@ -1,10 +1,30 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthProvider.jsx";
+import { useDispatch } from "react-redux";
+import { setIsAuth } from "../util/chatroomReducer.ts";
 
 function Navbar() {
     const navigate = useNavigate();
-    const { logout } = useAuth();
+    const dispatch = useDispatch();
+    async function logoutVerifiedUser() {
+        try {
+            const response = await fetch("api/userlogout", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (response.ok) {
+                console.log("User logged out");
+                navigate("/login")
+                dispatch(setIsAuth(false));
+            } else {
+                throw new Error("Unknown error occurred while logging out");
+            }
+        } catch (err) {
+            console.error(err.message);
+        }
+    }
     function profile() {
         navigate("/profile")
     }
@@ -16,7 +36,7 @@ function Navbar() {
             <div className="rightNav">
                 <ul>
                     <button className="navButton" onClick={profile}>Profile</button>
-                    <button className="navButton" onClick={logout}>Log Out</button>
+                    <button className="navButton" onClick={logoutVerifiedUser}>Log Out</button>
                 </ul>
             </div>
         </nav>

@@ -1,8 +1,10 @@
 import React, { useContext } from "react";
 import { SocketContext } from "../../Context";
+import { useSelector } from "react-redux";
 
-export function ChatDataList({ categories }) {
+export function ChatDataList() {
   const { socket } = useContext(SocketContext);
+  const categories = useSelector((state) => state.chatroomReducer.categories);
   console.log("ChatDataList Categories", categories);
 
   const generateRoomList = (rooms) => {
@@ -28,9 +30,9 @@ export function ChatDataList({ categories }) {
     <div>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="chatroom-choice">Choose or create a topic:</label>
+          <label className="roomFormLabel" htmlFor="chatroom-choice">Choose or create a topic:</label>
         </div>
-        <div>
+        <div className="roomForm">
           <input list="browsers" id="roomName" name="Room" />
           <input id="joinRoomButton" type="submit" value="Join"></input>
         </div>

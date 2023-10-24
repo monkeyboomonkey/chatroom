@@ -1,30 +1,27 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthProvider.jsx";
 import { useDispatch } from "react-redux";
-import { userLogin } from "../chatroomReducer.ts";
+import { setIsAuth } from "../util/chatroomReducer.ts";
 
-function Log(props) {
+function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
-
-  // const dispatch = useDispatch();
-
+  const dispatch = useDispatch();
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
-  const handleLogin = async (e) => {
+  const authenticateUser = () => {
+    dispatch(setIsAuth(true));
+    navigate("/");
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const loginData = {
       username: username,
       password: password,
     };
-
-    // Dispatch to redux store- the user
-    // dispatch(userLogin(loginData.username));
-
     try {
-      fetch("http://localhost:3001/api/userlogin", {
+      const res = await fetch("/api/userlogin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,17 +29,14 @@ function Log(props) {
         body: JSON.stringify(loginData),
         credentials: "include",
         mode: "cors",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          const newUserinfo = { ...data };
-          props.setUser(newUserinfo);
-        })
-        .then(() => {
-          login();
-        });
+      });
+      if (res.status === 200) {
+        authenticateUser();
+      } else {
+        throw new Error("Login failed");
+      }
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
       navigate("/signup");
     }
   };
@@ -51,7 +45,7 @@ function Log(props) {
     <div className="login-wrapper">
       <div className="form">
         <h1>Login</h1>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSubmit}>
           <input
             placeholder="Username"
             type="text"
@@ -62,7 +56,7 @@ function Log(props) {
             type="password"
             onChange={(el) => setPassword(el.target.value)}
           />
-          <button onClick={handleLogin}>Log in</button>
+          <button onClick={handleSubmit}>Log in</button>
           <p className="message">
             Not registered? <Link to="/signup">Create an account</Link>
           </p>
@@ -72,4 +66,4 @@ function Log(props) {
   );
 }
 
-export default Log;
+export default Login;

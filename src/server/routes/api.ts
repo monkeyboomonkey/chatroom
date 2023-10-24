@@ -16,7 +16,12 @@ router.get('/getallusers', getAllUsers, (req: Request, res: Response): void => {
 router.post('/registeruser', registerUser, setUserIDRedis, (req: Request, res: Response): void => { res.status(200).json('user registered') });
 router.post('/userlogin', userLogIn, createJWT, (req: Request, res: Response): void => { res.status(200).json(res.locals.user); });
 router.delete('/deleteuser', verifyJWT, deleteUser, deleteJWT, (req: Request, res: Response): void => { res.status(200).json('user deleted') });
-router.patch('/updateuser', verifyJWT, updateUser, createJWT, (req: Request, res: Response): void => { res.status(200).json(res.locals.user) });
+router.patch('/updateuser', verifyJWT, updateUser, createJWT, (req: Request, res: Response): void => { res.status(200).json({
+  username: res.locals.user.username,
+  email: res.locals.user.email,
+  fn: res.locals.user.fn,
+  ln: res.locals.user.ln,
+})});
 router.delete('/userlogout', deleteJWT, (req: Request, res: Response): void => { res.status(200).json('user logged out') })
 
 // Chatroom routes
@@ -49,6 +54,6 @@ router.get('/verify', verifyJWT,
     if (res.locals.verify) {
       variableStatus = 200;
     }
-    res.status(variableStatus).json(res.locals.verify)
+    res.status(variableStatus).json(res.locals.username)
   }
 )

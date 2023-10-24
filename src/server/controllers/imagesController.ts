@@ -9,13 +9,11 @@ const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACC_KEY,
   secretAccessKey: process.env.AWS_SECRET_KEY,
   region: "us-west-1",
+  signatureVersion: "v4",
 });
 
 export async function getAWSURL(req: Request, res: Response, next: NextFunction): Promise<void>  {
-    // const { key } = req.body;
-    // Either we set a key and send it to client or client sets a key and sends to us
-    // Either way need to store key inside of our DB and use it to query for our photos.
-    const key = 'test'
+    const { key } = req.body;
     const params = {
         Bucket: "listing-photos-scout",
         Key: key,
@@ -32,6 +30,7 @@ export async function getAWSURL(req: Request, res: Response, next: NextFunction)
 
 export async function setIMGKey (req:Request,res:Response,next:NextFunction): Promise<void>{
     const {key} = req.body;
+
     
 }
 // controller for saving key into database

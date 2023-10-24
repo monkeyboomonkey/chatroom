@@ -1,46 +1,87 @@
 import React from "react";
-import { useRef, useState, useEffect, useContext } from "react";
+import { useEffect, useContext, useState, useRef } from "react";
 import '../styles/style.css';
-import Chatboxheader from "./Chatboxheader";
+import Chatboxheader from "./Chatboxheader.jsx";
 import { SocketContext } from "../Context";
+import { useSelector, useDispatch } from "react-redux";
+import { addNewChat, setCurrentChatroom } from "../util/chatroomReducer.ts";
 
-function Chatbox(props) {
+function Chatbox() {
     const { socket } = useContext(SocketContext);
+    const [userMessage, setUserMessage] = useState(''); // message input field
     const chatDisplayRef = useRef(null);
-    const messageContentRef = useRef(null);
+    const dispatch = useDispatch();
+    const roomName = useSelector(state => state.chatroomReducer.currentChatroom); // get current room name
+    const currentChatroomState = useSelector(state => state.chatroomReducer.currentChatroomState); // get current room state, that being all messages in the room
+
     const handleSendBtnClicked = () => {
-        const message = messageContentRef.current.value;
-        messageContentRef.current.value = '';
-        if (message.length > 0) {
-            socket.emit('message', {
-                username: props.user.username ? props.user.username : "anonymous", message: message
-            });
-            console.log("Socket pushed")
+        if (userMessage?.length > 0) {
+            socket.emit('message', { message: userMessage }); // send message to server
+            console.log("Socket pushed: ", userMessage);
+            setUserMessage(''); // clear input field
         }
     }
+
+    const handleReceiveMessage = (data) => {
+        const { username, message } = data;
+        console.log("Socket pulled", data)
+        dispatch(addNewChat({ username, message }));
+        chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight;
+    }
+
+    const startDM = (e) => {
+        const username = e.target.getAttribute('value'); // get username of user clicked on, getAttribute comes from React
+        // console.log("DM username: ", username);
+        socket.emit('startDM', { username: username });
+    }
+
+    const handleDMStarted = (data) => {
+        const { roomName, users } = data;
+        console.log(roomName, users);
+        dispatch(setCurrentChatroom(roomName));
+    }
+
     useEffect(() => {
-        socket.on('message', (data) => {
-            console.log("Socket pulled")
-            const receivedMessageDiv = document.createElement('div');
-            receivedMessageDiv.classList.add('userMessage');
-            receivedMessageDiv.innerHTML = `<span class='usernameDisplay'>${data.message.username}</span> <span class='messageDisplay'>${data.message.message}</span>`;
-            if (!chatDisplayRef.current) {
-                chatDisplayRef.current = document.createElement('div');
-                chatDisplayRef.current.classList.add('chatDisplay');
-            }
-            chatDisplayRef.current.appendChild(receivedMessageDiv);
-            chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight;
-        })
-    }, []);
+        socket.on('message', handleReceiveMessage); // listen for new messages
+        socket.on('startDM', handleDMStarted); // listen for new messages
+        return () => {
+            socket.off('message', handleReceiveMessage); // remove listener when component unmounts (cleanup)
+        }
+    }, [socket]);
 
     return (
         <div className="innerChatBox">
-            <Chatboxheader roomName={props.roomName} />
-            <div className="chatDisplay" ref={chatDisplayRef}></div>
-            {props.roomName === '' ? '' : <div className="chatControl">
-                <textarea type="text" className="messageContent" ref={messageContentRef} />
-                <button className="sendBtn" onClick={handleSendBtnClicked}>Send</button>
-            </div>}
+            <Chatboxheader roomName={roomName} />
+            <div className="chatDisplay" ref={chatDisplayRef}>
+                {currentChatroomState.map((chat, index) => (
+                    <div key={index} className="userMessage">
+                        <span 
+                            value={chat.username} 
+                            className="usernameDisplay"
+                            onClick={startDM}
+                        >
+                            {chat.username}
+                        </span>
+                        <span className="messageDisplay">{chat.message}</span>
+                    </div>
+                ))}
+            </div>
+            <div className="chatControl">
+                <textarea
+                    disabled={roomName === null ? true : false}
+                    type="text"
+                    className="messageContent"
+                    onChange={(e) => setUserMessage(e.target.value)}
+                    value={userMessage}
+                />
+                <button
+                    disabled={roomName === null ? true : false}
+                    className="sendBtn"
+                    onClick={handleSendBtnClicked}
+                >
+                    Send
+                </button>
+            </div>
         </div>
     );
 }
