@@ -19,6 +19,7 @@ interface UserState {
     ln: string;
     email: string;
   }
+  image: string;
 }
 
 const initialState: UserState = {
@@ -32,6 +33,7 @@ const initialState: UserState = {
     ln: '',
     email: ''
   },
+  image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpaiczmKCa_Gd7MeORuu_nN7mUxR9we2h5Xc3sY-ZAjYBwhz0knH63sq77l9BM6GULDmE&usqp=CAU",
 };
 
 const chatroomSlice = createSlice({
@@ -61,10 +63,13 @@ const chatroomSlice = createSlice({
         state.isAuth = action.payload;
       }
     },
-    setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string}>) {
+    setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string, image: string}>) {
       state.userIdentity = action.payload;
       if (action.payload.username) {
         state.username = action.payload.username;
+      }
+      if(action.payload.image){
+        state.image = action.payload.image;
       }
     },
     addNewChat(state, action: PayloadAction<{username: string, message: string}>) {

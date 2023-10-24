@@ -1,16 +1,16 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import "../styles/Profile.scss";
+import { setUserIdentity } from "../util/chatroomReducer.ts";
+import { current } from "@reduxjs/toolkit";
 
 function Update() {
   const navigate = useNavigate();
   const formRef = useRef(null);
   const dispatch = useDispatch();
-  const [img, setImg] = useState(
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpaiczmKCa_Gd7MeORuu_nN7mUxR9we2h5Xc3sY-ZAjYBwhz0knH63sq77l9BM6GULDmE&usqp=CAU"
-  );
+  const image = useSelector((state) => state.chatroomReducer.image);
 
   function toMain() {
     navigate("/");
@@ -60,10 +60,8 @@ function Update() {
     }
 
     const imgLink = `https://listing-photos-scout.s3.us-west-1.amazonaws.com/${randKey}`;
-    // test setIMG
 
     setFormData(name, imgLink);
-    setImg(imgLink);
   };
 
   const handleSubmit = async (e) => {
@@ -87,7 +85,7 @@ function Update() {
 
   return (
     <div className="card-container">
-      <img className="round" src={img} alt="user" />
+      <img className="round" src={image} alt="user" />
       <div className="nuform">
         <form ref={formRef} onSubmit={handleInputChange}>
           <label>
