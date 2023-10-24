@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "all": "concurrently \"npm run serve\" \"npm run dev\"",
+    "all": "concurrently \"npm run serve\" \"npm run dev\" \"redis-server\"",
     "dev": "nodemon --exec node --loader ts-node/esm src/server/server.ts",
     "build": "webpack",
     "serve": "webpack-dev-server",

@@ -33,6 +33,12 @@ function Signup() {
     return (
         <div className="signup-wrapper">
             <div className="form">
+                <div className="headersContainer">
+                    <h1 className="loginHeader">Chaxolotl</h1>
+                    <h2 className="loginHeader">Chat with your friends!</h2>
+                    <h3 className="loginHeader">Signup</h3>
+                    <hr />
+                </div>
                 <form onSubmit={handleSubmit}>
                     <input 
                         type="text"

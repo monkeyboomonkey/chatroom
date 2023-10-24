@@ -1,13 +1,14 @@
-import React, {useContext, useEffect} from 'react';
+import React, { useContext, useEffect, useRef, createContext } from 'react';
 import { Outlet } from "react-router-dom";
 import { SocketContext } from '../Context';
 import { useSelector } from 'react-redux';
 import "../styles/Main.scss"
 
 function Main() {
+    const mainContainerContext = createContext();
     const authStatus = useSelector((state) => state.chatroomReducer.isAuth);
     const { socket } = useContext(SocketContext); // socket comes from the SocketContext, see Context.js, and App.js
-    console.log("AuthStatus:", authStatus)
+    const mainContainerRef = useRef(null);
     /*
     * this effect will run when the component mounts and when the authStatus changes
     * if the authStatus is true, then the socket will connect
@@ -46,9 +47,11 @@ function Main() {
     });
     // Outlet is a placeholder for the child routes of the parent route, any child routes will be rendered here, defaulted to index aka Chatboard
     return (
-        <div className='outerContainerMain'>
+        <div ref={mainContainerRef} className='outerContainerMain'>
             {/* authCheck needs to come before render of Outlet, otherwise socket might not connect in time, resulting in weird behavior */}
-            {authStatus === null ? "Verifying User Please Wait" : <Outlet />} {/* <Outlet /> is a placeholder for the child routes of the parent route. */}
+            <mainContainerContext.Provider value={mainContainerRef}>
+                {authStatus === null ? "Verifying User Please Wait" : <Outlet />} {/* <Outlet /> is a placeholder for the child routes of the parent route. */}
+            </mainContainerContext.Provider>
         </div>
     )
 }

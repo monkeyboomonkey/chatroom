@@ -49,6 +49,7 @@ export async function verifyJWT(req: Request, res: Response, next: NextFunction)
       if (!user.length) throw new Error('Invalid JWT payload');
       res.locals.userid = data.userid;
       res.locals.username = user[0].username;
+      res.locals.user = user[0];
       res.locals.verify = true;
       return next();
     } else {
