@@ -3,6 +3,7 @@ import { Route, Routes, useNavigate, Link } from "react-router-dom";
 import Login from "./Login.js";
 
 function Signup() {
+
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
     const [firstName, setFirstName] = useState();

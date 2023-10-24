@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider.jsx";
 import { useDispatch } from "react-redux";
-import { userLogin } from "../chatroomReducer.tsx";
+import { userLogin } from "../chatroomReducer.ts";
 
 function Log(props) {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();

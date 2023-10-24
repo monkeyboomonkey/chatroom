@@ -4,6 +4,7 @@ import { getAllChatrooms, addChatroom } from '../controllers/chatroomControllers
 import { addChatlog, getAllChatlogs } from '../controllers/chatlogControllers.js'
 import {addChatroomLogRedis,getChatHistoryRedis, getChatroomID, getUserID, setUserIDRedis,setChatroomIDRedis}  from "../controllers/chatlogControllerRedis.js"
 import { createJWT, verifyJWT, deleteJWT } from '../controllers/jwtControllers.js'
+import { getAWSURL } from '../controllers/imagesController.js';
 
 
 export const router = express.Router();
@@ -23,8 +24,6 @@ router.delete('/userlogout', deleteJWT, (req: Request, res: Response): void => {
 router.get('/getallchatrooms', verifyJWT, getAllChatrooms, createJWT, (req: Request, res: Response): void => { res.status(200).json(res.locals.allChatrooms) });
 router.post('/addchatroom', verifyJWT, addChatroom, setChatroomIDRedis, createJWT,(req: Request, res: Response): void => { res.status(200).json('chatroom added') });
 
-
-
 // Chatlog routes
 // intend to add verifyJWT before and createJWT(renew JWT) after addChatlog and getAllChatlogs because they are user operations
 router.post('/addchatlog', verifyJWT, addChatlog, addChatroomLogRedis, createJWT, (req: Request, res: Response): void => { res.status(200).json(res.locals.chatlog) });
@@ -36,6 +35,11 @@ router.get('/getallchatlogs', verifyJWT, getChatHistoryRedis, createJWT, (req: R
 // Getting userID and chatroomID routes
 router.get('/chatroomID', getChatroomID, (req: Request, res: Response): void => { res.status(200).json(res.locals.chatroomID) }); // Expecting chatroom_name from request
 router.get('/userID', getUserID , (req: Request, res: Response): void => { res.status(200).json(res.locals.userID) }); // Expecting username from request
+
+
+// Route for images
+router.post('/getSignedURL', getAWSURL , (req: Request, res: Response): void => { res.status(200).json(res.locals.url) }); // Expecting username from request
+
 
 // route just for verification, if needed
 // currently just responds with a boolean if the user is verified or not
