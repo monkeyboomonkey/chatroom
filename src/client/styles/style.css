@@ -91,6 +91,8 @@ body {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    box-shadow: -4px 4px 1px 1px #212121;
+    border-radius: 5px;
     margin: 0.5rem;
     padding: 0px;
 }
