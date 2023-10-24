@@ -1,42 +1,51 @@
 import { Server, Socket } from "socket.io";
 import { getUsersInRoom } from "./users.js";
 import { getActiveRooms } from "./rooms.js";
+import { users, chatlogs, chatrooms } from "../models/psqlmodels.js";
+import { eq, lt, gte, ne } from "drizzle-orm";
+import { drizzle } from 'drizzle-orm/postgres-js'
+import postgres from 'postgres'
+import dotenv from 'dotenv';
+const connectionString = String(process.env.POSTGRES_URI)
+const client = postgres(connectionString)
+const db = drizzle(client);
+dotenv.config();
 
 export function listen(io: Server) {
-  io.on("connection", (socket: Socket) => {
-    /**
-     * Event types:
-     * Client SENDS:
-     * "register" - set socket.username to provided username
-     *    returns "systemMessage" with text
-     * "message" - normal chat messages, default
-     *    returns JSON with {user, message}
-     * "joinRoom"
-     *    returns "systemMessage" with text
-     * "leaveRoom"
-     *    returns "systemMessage" with text
+  /*
+   * Socket.io events
+   * https://socket.io/docs/v3/emitting-events/
+   * https://socket.io/docs/v3/server-api/
+  */
+  const roomIDs = new Map<string, string>();
+  io.on("connection", async (socket: Socket) => {
+    /*
+    * Event types:
+    * Client SENDS:
+    * "register" - set socket.username to provided username
+    *    returns "systemMessage" with text
+    * "message" - normal chat messages, default
+    *    returns JSON with {user, message}
+    * "joinRoom"
+    *    returns "systemMessage" with text
+    * "leaveRoom"
+    *    returns "systemMessage" with text
     *
     * Client LISTENS:
     * "message" - a chat message in lobby or room
     * "systemMessage" - user joins or leaves room
     * "room" - array of all current room names
     */
-   console.log(`a user connected with socket id: ${socket.id}`);
-   
-   /**
-     * State Variables
-     */
+
+    console.log(`a user connected with socket id: ${socket.id}`);
+
+    /*
+    * State Variables
+    */
     socket.username = socket.handshake.query.username?.toString() || "anonymous";
     socket.room = "lobby";
-
-    /**
-     * Upon connection, user will join the lobby room by default
-     */
-    // Join room=lobby by default
-    io.to("lobby").emit(
-      "systemMessage",
-      `${socket.id.substring(0, 2)} has joined the lobby`
-    );
+    const user = await db.select().from(users).where(eq(users.username, socket.username));
+    socket.userID = user[0]?.userid;
 
     socket.emit('rooms', getActiveRooms(io));
 
@@ -45,47 +54,43 @@ export function listen(io: Server) {
       socket.disconnect(true);
     });
 
-    /** Register username
+    /* Register username
      * Args:
      *  1. username - desired display name
-     */
+    */
     socket.on("register", (username: string) => {
-      socket.username = username;
-      console.log(`${socket.id} changed name to ${socket.username}`);
-
+     socket.username = username;
       socket.broadcast
-        .to("lobby")
-        .emit("systemMessage", `${socket.username} has joined the lobby`);
+      .to("lobby")
+      .emit("systemMessage", `${socket.username} has joined the lobby`);
     });
 
-    /**
+    /*
      * Start DM
      * Event: "startDM"
      * Functionality: 
      * Args:
      *  1. username - user to start DM with
-     */
+    */
     socket.on("startDM", async (username: any) => {
-      // find socket that matches username
-      // io.sockets.sockets is a Map of all sockets connected to the server
-      // Array.from(io.sockets.sockets.values())[0].username) -> username of first socket in the list
+      //* find socket that matches username
+      //* io.sockets.sockets is a Map of all sockets connected to the server
+      //* Array.from(io.sockets.sockets.values())[0].username) -> username of first socket in the list
       username = username.username;
       const targetSocket = Array.from(io.sockets.sockets.values()).find(
         (s) => s.username === username
       );
-      console.log(io.sockets);
       if (!targetSocket) {
-        // If the target user is not found, emit an error message to the sender
+        //* If the target user is not found, emit an error message to the sender
         socket.emit("systemMessage", `User ${username} not found`);
         return;
       }
 
-      console.log(`${socket.username} wants to DM ${targetSocket.username}`);
-
-      // create room name with both usernames
-      const roomName = ['DM', socket.username, targetSocket.username].sort().join("-");
-
-      // join room
+      //* create room name with both usernames
+      let roomName = [socket.username, targetSocket.username].sort().join("-");
+      roomName = `DM-${roomName}`;
+      
+      //* join room
       socket.leave(socket.room);
       socket.join(roomName);
       socket.room = roomName;
@@ -94,67 +99,74 @@ export function listen(io: Server) {
       targetSocket.join(roomName);
       targetSocket.room = roomName;
 
-      // send message to room that DM has started
+      //* send message to room that DM has started
       io.to(roomName).emit(
         "startDM",
         { roomName, 
-          users: [socket.username, targetSocket.username] } // index zero is the initiator of the DM
+          users: [socket.username, targetSocket.username] } //! index zero is the initiator of the DM
       );
     });
 
-    /**
+    /*
      * User joins a room
      * Event: "joinRoom"
      * Request args:
      *  1. user - user display name
      *  2. room - name of room to join
-     */
-    // front end
-    // user clicks to join room
-    // 1. websocket request to join room
-    // 2. HTTP fetch request to api route on server, server fetches from db
+    */
     socket.on("joinRoom", async (room: string) => {
-      // grab last 20 messages from db for that room
-      // Broadcast to room that a user has joined
+      //* grab last 20 messages from db for that room
+      //* Broadcast to room that a user has joined
       try {
         if (!room) {
           throw Error("No room provided");
         } else if (room.startsWith("DM")) {
           throw Error("Cannot join DMs through joinRoom");
         }
-        // leave lobby or previous room
+        //* leave lobby or previous room
         socket.leave(socket.room);
         if (socket.room !== "lobby") {
           const roster = await getUsersInRoom(io, socket);
           socket.broadcast.to(socket.room).emit("roomUsers", roster);
         }
+        //* check if room exists, if not, create it
+        let chatroom_id: string;
+        const chatroom = await db.select().from(chatrooms).where(eq(chatrooms.chatroom_name, room)).execute();
+        if (!chatroom.length) {
+          const result = await db.insert(chatrooms).values({chatroom_name: room}).returning();
+          chatroom_id = result[0].chatroom_id;
+        } else {
+          chatroom_id = chatroom[0].chatroom_id;
+        }
 
-        // join new room
+        //* Set roomID to chatroom_id in roomIDs map
+        if (!roomIDs.has(room)) roomIDs.set(room, chatroom_id); //! -> roomIDs = { 'lobby' => postgres chatroom_id }
+
+        //* join new room
         socket.room = room;
-        console.log(`${socket.username} has joined ${room}`);
         socket.join(socket.room);
-
-        // tell room that user has joined
+        
+        console.log("Rooms", Array.from(io.sockets.adapter.rooms.values()));
+        //* tell room that user has joined
         socket.broadcast
-          .to(socket.room)
-          .emit(
-            "systemMessage",
-            `socket.broadcast ${socket.username} has joined the chat`
+        .to(socket.room)
+        .emit(
+          "systemMessage",
+          {message: `${socket.username} has joined the chat`}
         );
 
-        // send list of connected users in room
+        //* send list of connected users in room
         const roster = await getUsersInRoom(io, socket);
         io.to(socket.room).emit("roomUsers", roster);
 
-        // send updated list of rooms to all users as an array
+        //* send updated list of rooms to all users as an array
         io.emit('rooms', getActiveRooms(io));
       } catch (e) {
         console.log(e.message);
-
       }
     });
 
-    /**
+    /*
      * Chat message
      * User sends a message to lobby or a specific room
      * Event: "message"
@@ -166,31 +178,44 @@ export function listen(io: Server) {
      *  username: string,
      *  message: string
      * }
-     */
-    socket.on("message", (message: {[key: string]: string}) => {
-      // push message to a database with timestamp and room name
-      console.log(`${socket.username} sent message to room ${socket.room}: ${message?.message}`);
+    */
+    socket.on("message", async (message: {[key: string]: string}) => {
+      /*
+      * Check if roomID exists in roomIDs map
+      * If it does, use it
+      * If it doesn't, query the database for the chatroom_id
+      */
+      let chatroom_id: string;
+      const roomID = roomIDs.get(socket.room);
+      if (roomID) chatroom_id = roomID;
+      else {
+        const chatroom = await db.select().from(chatrooms).where(eq(chatrooms.chatroom_name, socket.room)).execute();
+        chatroom_id = chatroom[0].chatroom_id;
+      }
+
+      //* insert message into chatlogs table using chatroom_id and socket.userID
+      await db.insert(chatlogs).values({chatroom_id: chatroom_id, userid: socket.userID, message: message?.message})
       const response = {
         username: socket.username,
-        message: message?.message
+        message: message?.message,
+        room: socket.room,
       };
-      // io.to should be used to send messages to all users including self
       io.to(socket.room).emit("message", response);
     });
 
-    /**
+    /*
      * Leave room
      * Event: "leaveRoom"
      * Args:
      *  1. room - name of room to leave
-     */
+    */
     socket.on("leaveRoom", async () => {
       socket.broadcast
-        .to(socket.room)
-        .emit("systemMessage", `${socket.username} has left the room`);
+      .to(socket.room)
+      .emit("systemMessage", {message: `${socket.username} has left the chat`});
       socket.leave(socket.room);
-      // send list of connected users in room
-      console.log(`${socket.username} has left ${socket.room}`);
+
+      //* send list of connected users in room
       const roster = await getUsersInRoom(io, socket);
       io.to(socket.room).emit("roomUsers", roster);
     });

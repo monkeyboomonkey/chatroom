@@ -89,9 +89,10 @@ export function userLogIn(req: Request, res: Response, next: NextFunction): void
 export async function registerUser(req: Request, res: Response, next: NextFunction): Promise<void> {
 
   const { fn, ln, username, email, password } = req.body;
+  if (!fn && !ln && !username && !email && !password) return next('Missing required fields');
   res.locals = {username:username}
-  const foundUsername = await db.select().from(users).where(eq(users.username, username));
-  const foundEmail = await db.select().from(users).where(eq(users.email, email));
+  const foundUsername = username ? await db.select().from(users).where(eq(users.username, username)) : [];
+  const foundEmail = email ? await db.select().from(users).where(eq(users.email, email)) : [];
 
   if (!foundUsername.length && !foundEmail.length) {
     try {

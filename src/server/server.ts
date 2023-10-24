@@ -7,6 +7,7 @@ declare module "socket.io" {
   interface Socket {
     username: string;
     room: string;
+    userID: any;
   }
 }
 import path from "path";
@@ -39,10 +40,10 @@ const __dirname = path.dirname(__filename);
 
 app.use("/api", router);
 app.use(express.static(path.join(__dirname, "../../dist/client")));
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.sendFile(path.join(__dirname, "../../dist/client/index.html"));
 });
-app.use((req, res) => {
+app.use((_req, res) => {
   res.status(404).send("Not Found");
 });
 app.use(errorHandler);
@@ -53,13 +54,6 @@ const io = new Server(httpServer, { // pass http server to socket io server
   cors: { origin: "*" },
 });
 chatServer.listen(io); // call listen function from events, passing in socket io server
-
-declare module "socket.io" {
-  interface Socket {
-    username: string;
-    room: string;
-  }
-}
 
 const PORT = 3001;
 httpServer.listen(PORT, () => // listen on express server, not socket io server

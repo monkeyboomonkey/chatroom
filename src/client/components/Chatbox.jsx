@@ -4,7 +4,7 @@ import '../styles/style.css';
 import Chatboxheader from "./Chatboxheader.jsx";
 import { SocketContext } from "../Context";
 import { useSelector, useDispatch } from "react-redux";
-import { addNewChat, setCurrentChatroom } from "../util/chatroomReducer.ts";
+import { addNewChat, setCurrentChatroom, addCategory } from "../util/chatroomReducer.ts";
 
 function Chatbox() {
     const { socket } = useContext(SocketContext);
@@ -35,17 +35,26 @@ function Chatbox() {
         socket.emit('startDM', { username: username });
     }
 
+
     const handleDMStarted = (data) => {
         const { roomName, users } = data;
         console.log(roomName, users);
         dispatch(setCurrentChatroom(roomName));
     }
 
+    const handleSystemMessage = (data) => {
+        console.log(data)
+        dispatch(addNewChat({ username: 'System', message: data.message }));
+    }
+
     useEffect(() => {
         socket.on('message', handleReceiveMessage); // listen for new messages
         socket.on('startDM', handleDMStarted); // listen for new messages
+        socket.on('systemMessage', handleSystemMessage); // listen for system messages (when user is added to a new room
         return () => {
-            socket.off('message', handleReceiveMessage); // remove listener when component unmounts (cleanup)
+            socket.off('systemMessage', handleSystemMessage);
+            socket.on('startDM', handleDMStarted);
+            socket.off('message', handleReceiveMessage);
         }
     }, [socket]);
 
@@ -53,18 +62,30 @@ function Chatbox() {
         <div className="innerChatBox">
             <Chatboxheader roomName={roomName} />
             <div className="chatDisplay" ref={chatDisplayRef}>
-                {currentChatroomState.map((chat, index) => (
-                    <div key={index} className="userMessage">
-                        <span 
-                            value={chat.username} 
-                            className="usernameDisplay"
-                            onClick={startDM}
-                        >
-                            {chat.username}
-                        </span>
-                        <span className="messageDisplay">{chat.message}</span>
-                    </div>
-                ))}
+                {currentChatroomState.reduce((messages, currMessage, index) => {
+                    const chat = currMessage;
+                    if (chat.username === 'System') {
+                        messages.push(<div key={index} className="systemMessage">{chat.message}</div>)
+                    } else {
+                        messages.push(
+                            <div key={index} className="userMessage">
+                                <span
+                                    value={chat.username}
+                                    className="usernameDisplay"
+                                    onClick={startDM}
+                                >
+                                    {chat.username}
+                                </span>
+                                <span
+                                    className="messageDisplay"
+                                >
+                                    {chat.message}
+                                </span>
+                            </div>
+                        )
+                    }
+                    return messages;
+                }, [])}
             </div>
             <div className="chatControl">
                 <textarea

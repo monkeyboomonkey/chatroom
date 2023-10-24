@@ -19,7 +19,7 @@ export function getActiveRooms(io: Server) {
     const filteredActiveRooms = arr.filter(room => !room[1].has(room[0])); // filter out rooms that have more than 1 person in them
     const res = ['lobby']; // initialize res with lobby
     for (const room of filteredActiveRooms) {
-      if (room[0] !== 'lobby') res.push(room[0]); // add room name to res, except for lobby
+      if (room[0] !== 'lobby' && !room[0].startsWith('DM')) res.push(room[0]); // add room name to res, except for lobby
     }
     return res;
   } catch (error) {
