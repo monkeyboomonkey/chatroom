@@ -31,53 +31,53 @@ function Signup() {
     }
 
     return (
-        <div className="signup-wrapper">
-            <div className="form">
-                <div className="headersContainer">
-                    <h1 className="loginHeader">Chaxolotl</h1>
-                    <h2 className="loginHeader">Chat with your friends!</h2>
-                    <h3 className="loginHeader">Signup</h3>
-                    <hr />
+        <div className="outerContainer outerContainerMain">
+            <div className="signup-wrapper">
+                <div className="form">
+                    <div className="headersContainer">
+                        <h1 className="loginHeader">Chaxolotl</h1>
+                        <h2 className="loginHeader">Chat with your friends!</h2>
+                        <h3 className="loginHeader">Signup</h3>
+                        <hr />
+                    </div>
+                    <form onSubmit={handleSubmit}>
+                        <input 
+                            type="text"
+                            name='firstName'
+                            placeholder="First Name"
+                            onChange={handleInputChange}
+                        />
+                        <input 
+                            type="text" 
+                            name='lastName'
+                            placeholder="Last Name"
+                            onChange={handleInputChange}
+                        />
+                        <input 
+                            type="text" 
+                            name='email'
+                            placeholder="Email"
+                            onChange={handleInputChange}
+                        />
+                        <input 
+                            type="text" 
+                            name='username'
+                            placeholder="Username"
+                            onChange={handleInputChange}
+                        />
+                        <input 
+                            type="password" 
+                            name='password'
+                            placeholder="Password"
+                            onChange={handleInputChange}
+                        />
+                        <button onClick={handleSubmit}>Submit</button>
+                        <p class="message">Already registered? <Link to="/login">Sign in</Link></p>
+                    </form>
                 </div>
-                <form onSubmit={handleSubmit}>
-                    <input 
-                        type="text"
-                        name='firstName'
-                        placeholder="First Name"
-                        onChange={handleInputChange}
-                    />
-                    <input 
-                        type="text" 
-                        name='lastName'
-                        placeholder="Last Name"
-                        onChange={handleInputChange}
-                    />
-                    <input 
-                        type="text" 
-                        name='email'
-                        placeholder="Email"
-                        onChange={handleInputChange}
-                    />
-                    <input 
-                        type="text" 
-                        name='username'
-                        placeholder="Username"
-                        onChange={handleInputChange}
-                    />
-                    <input 
-                        type="password" 
-                        name='password'
-                        placeholder="Password"
-                        onChange={handleInputChange}
-                    />
-                    <button onClick={handleSubmit}>Submit</button>
-                    <p class="message">Already registered? <Link to="/login">Sign in</Link></p>
-                </form>
             </div>
         </div>
-
-    )
-
+    );
 }
 
 export default Signup;
