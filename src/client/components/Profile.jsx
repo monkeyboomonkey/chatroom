@@ -7,8 +7,9 @@ function Profile() {
     const navigate = useNavigate();
     const firstName = useSelector(state => state.chatroomReducer.userIdentity.fn);
     const lastName = useSelector(state => state.chatroomReducer.userIdentity.ln);
-    const email = useSelector(state => state.chatroomReducer.userIdentity.email);
-    
+    const email = useSelector(state => state.chatroomReducer.userIdentity.email);   
+    const image = useSelector((state) => state.chatroomReducer.pictureURL);
+    console.log(image)
     let fullName = `${firstName} ${lastName}`
     let emailAddress = `${email}`
 
@@ -24,7 +25,7 @@ function Profile() {
             <div className="card-container">
                 <img 
                     className="round" 
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpaiczmKCa_Gd7MeORuu_nN7mUxR9we2h5Xc3sY-ZAjYBwhz0knH63sq77l9BM6GULDmE&usqp=CAU" 
+                    src={image}
                     alt="user" 
                 />
                 <h3>{fullName}</h3>

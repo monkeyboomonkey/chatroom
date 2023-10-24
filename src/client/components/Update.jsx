@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { setUserIdentity } from "../util/chatroomReducer.ts";
 import "../styles/Profile.scss";
 
@@ -8,7 +8,7 @@ function Update() {
   const navigate = useNavigate();
   const formRef = useRef(null);
   const dispatch = useDispatch();
-  const image = useSelector((state) => state.chatroomReducer.image);
+  const image = useSelector((state) => state.chatroomReducer.pictureURL);
 
   function toMain() {
     navigate("/");
@@ -28,6 +28,7 @@ function Update() {
   const handleIMGChange = async (e) => {
     const { name } = e.target;
 
+    // Fix this if time, random number generator for Key generation but could potentially generate same number twice rn
     const randKey = String(Math.floor(Math.random() * 10000));
 
     const constructURL = {
@@ -71,6 +72,7 @@ function Update() {
       });
       if (!res.ok) throw new Error(res.status);
       const user = await res.json();
+      console.log(user,'userinfo@@@@@@@')
       dispatch(setUserIdentity(user)); //* update redux store with updated user info
       navigate("/profile");
     } catch (error) {
@@ -83,7 +85,7 @@ function Update() {
       <div className="card-container">
         <img
           className="round"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpaiczmKCa_Gd7MeORuu_nN7mUxR9we2h5Xc3sY-ZAjYBwhz0knH63sq77l9BM6GULDmE&usqp=CAU"
+          src={image}
           alt="user"
         />
         <div className="nuform">

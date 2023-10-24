@@ -18,7 +18,7 @@ interface UserState {
     ln: string;
     email: string;
   }
-  image: string;
+  pictureURL: string;
 }
 
 const initialState: UserState = {
@@ -32,7 +32,7 @@ const initialState: UserState = {
     ln: '',
     email: ''
   },
-  image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpaiczmKCa_Gd7MeORuu_nN7mUxR9we2h5Xc3sY-ZAjYBwhz0knH63sq77l9BM6GULDmE&usqp=CAU",
+  pictureURL:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpaiczmKCa_Gd7MeORuu_nN7mUxR9we2h5Xc3sY-ZAjYBwhz0knH63sq77l9BM6GULDmE&usqp=CAU",
 };
 
 const chatroomSlice = createSlice({
@@ -63,13 +63,13 @@ const chatroomSlice = createSlice({
         state.isAuth = action.payload;
       }
     },
-    setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string, image: string}>) {
+    setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string, pictureURL: string}>) {
       state.userIdentity = action.payload;
       if (action.payload.username) {
         state.username = action.payload.username;
       }
-      if(action.payload.image){
-        state.image = action.payload.image;
+      if(action.payload.pictureURL){
+        state.pictureURL = action.payload.pictureURL;
       }
     },
     addNewChat(state, action: PayloadAction<{username: string, message: string}>) {

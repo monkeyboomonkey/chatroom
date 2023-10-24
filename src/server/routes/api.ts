@@ -21,6 +21,7 @@ router.patch('/updateuser', verifyJWT, updateUser, createJWT, (req: Request, res
   email: res.locals.user.email,
   fn: res.locals.user.fn,
   ln: res.locals.user.ln,
+  pictureURL: res.locals.user.pictureURL,
 })});
 router.delete('/userlogout', deleteJWT, (req: Request, res: Response): void => { res.status(200).json('user logged out') })
 
