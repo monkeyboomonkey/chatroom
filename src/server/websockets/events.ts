@@ -3,7 +3,7 @@ import { getUsersInRoom } from "./users.js";
 import { getActiveRooms } from "./rooms.js";
 
 export function listen(io: Server) {
-  io.on("connection", (socket) => {
+  io.on("connection", (socket: Socket) => {
     /**
      * Event types:
      * Client SENDS:
@@ -38,8 +38,7 @@ export function listen(io: Server) {
       `${socket.id.substring(0, 2)} has joined the lobby`
     );
 
-    const activeRooms: string[] = getActiveRooms(io);
-    socket.emit('rooms', activeRooms.length ? activeRooms : ['lobby']);
+    socket.emit('rooms', getActiveRooms(io));
 
     socket.on("disconnect", () => {
       console.log(`user disconnected with socket id: ${socket.id}`);
@@ -60,6 +59,50 @@ export function listen(io: Server) {
     });
 
     /**
+     * Start DM
+     * Event: "startDM"
+     * Functionality: 
+     * Args:
+     *  1. username - user to start DM with
+     */
+    socket.on("startDM", async (username: any) => {
+      // find socket that matches username
+      // io.sockets.sockets is a Map of all sockets connected to the server
+      // Array.from(io.sockets.sockets.values())[0].username) -> username of first socket in the list
+      username = username.username;
+      const targetSocket = Array.from(io.sockets.sockets.values()).find(
+        (s) => s.username === username
+      );
+      console.log(io.sockets);
+      if (!targetSocket) {
+        // If the target user is not found, emit an error message to the sender
+        socket.emit("systemMessage", `User ${username} not found`);
+        return;
+      }
+
+      console.log(`${socket.username} wants to DM ${targetSocket.username}`);
+
+      // create room name with both usernames
+      const roomName = ['DM', socket.username, targetSocket.username].sort().join("-");
+
+      // join room
+      socket.leave(socket.room);
+      socket.join(roomName);
+      socket.room = roomName;
+
+      targetSocket.leave(targetSocket.room);
+      targetSocket.join(roomName);
+      targetSocket.room = roomName;
+
+      // send message to room that DM has started
+      io.to(roomName).emit(
+        "startDM",
+        { roomName, 
+          users: [socket.username, targetSocket.username] } // index zero is the initiator of the DM
+      );
+    });
+
+    /**
      * User joins a room
      * Event: "joinRoom"
      * Request args:
@@ -76,6 +119,8 @@ export function listen(io: Server) {
       try {
         if (!room) {
           throw Error("No room provided");
+        } else if (room.startsWith("DM")) {
+          throw Error("Cannot join DMs through joinRoom");
         }
         // leave lobby or previous room
         socket.leave(socket.room);
@@ -95,7 +140,7 @@ export function listen(io: Server) {
           .emit(
             "systemMessage",
             `socket.broadcast ${socket.username} has joined the chat`
-          );
+        );
 
         // send list of connected users in room
         const roster = await getUsersInRoom(io, socket);
@@ -122,13 +167,12 @@ export function listen(io: Server) {
      *  message: string
      * }
      */
-    socket.on("message", (message: string) => {
+    socket.on("message", (message: {[key: string]: string}) => {
       // push message to a database with timestamp and room name
-      console.log(`${socket.username} said ${message}`);
-
+      console.log(`${socket.username} sent message to room ${socket.room}: ${message?.message}`);
       const response = {
         username: socket.username,
-        message: message,
+        message: message?.message
       };
       // io.to should be used to send messages to all users including self
       io.to(socket.room).emit("message", response);
