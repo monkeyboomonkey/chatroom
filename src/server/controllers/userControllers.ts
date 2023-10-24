@@ -89,7 +89,7 @@ export function userLogIn(req: Request, res: Response, next: NextFunction): void
 export async function registerUser(req: Request, res: Response, next: NextFunction): Promise<void> {
 
   const { fn, ln, username, email, password } = req.body;
-
+  res.locals = {username:username}
   const foundUsername = await db.select().from(users).where(eq(users.username, username));
   const foundEmail = await db.select().from(users).where(eq(users.email, email));
 
