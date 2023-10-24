@@ -6,18 +6,28 @@ import { eq, lt, gte, ne } from "drizzle-orm";
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import dotenv from 'dotenv';
+import { get } from "http";
 const connectionString = String(process.env.POSTGRES_URI)
 const client = postgres(connectionString)
 const db = drizzle(client);
 dotenv.config();
 
-export function listen(io: Server) {
+export async function init(io: Server) {
   /*
    * Socket.io events
    * https://socket.io/docs/v3/emitting-events/
    * https://socket.io/docs/v3/server-api/
   */
+
   const roomIDs = new Map<string, string>();
+
+  let allRooms: any = await db.select().from(chatrooms).execute();
+  allRooms = allRooms.map((room: any) => {
+    return room.chatroom_name
+  }).filter((room: any) => {
+    return !room.startsWith('DM')
+  });
+
   io.on("connection", async (socket: Socket) => {
     /*
     * Event types:
@@ -38,7 +48,8 @@ export function listen(io: Server) {
     */
 
     console.log(`a user connected with socket id: ${socket.id}`);
-
+    console.log(allRooms)
+  
     /*
     * State Variables
     */
@@ -47,7 +58,8 @@ export function listen(io: Server) {
     const user = await db.select().from(users).where(eq(users.username, socket.username));
     socket.userID = user[0]?.userid;
 
-    socket.emit('rooms', getActiveRooms(io));
+    // socket.emit('rooms', getActiveRooms(io)); //* send list of ACTIVE rooms to user
+    socket.emit('rooms', allRooms); //* send list of ALL rooms to user
 
     socket.on("disconnect", () => {
       console.log(`user disconnected with socket id: ${socket.id}`);
@@ -123,12 +135,14 @@ export function listen(io: Server) {
         } else if (room.startsWith("DM")) {
           throw Error("Cannot join DMs through joinRoom");
         }
+
         //* leave lobby or previous room
         socket.leave(socket.room);
         if (socket.room !== "lobby") {
           const roster = await getUsersInRoom(io, socket);
           socket.broadcast.to(socket.room).emit("roomUsers", roster);
         }
+
         //* check if room exists, if not, create it
         let chatroom_id: string;
         const chatroom = await db.select().from(chatrooms).where(eq(chatrooms.chatroom_name, room)).execute();
@@ -146,7 +160,6 @@ export function listen(io: Server) {
         socket.room = room;
         socket.join(socket.room);
         
-        console.log("Rooms", Array.from(io.sockets.adapter.rooms.values()));
         //* tell room that user has joined
         socket.broadcast
         .to(socket.room)
@@ -160,7 +173,7 @@ export function listen(io: Server) {
         io.to(socket.room).emit("roomUsers", roster);
 
         //* send updated list of rooms to all users as an array
-        io.emit('rooms', getActiveRooms(io));
+        io.emit('rooms', allRooms);
       } catch (e) {
         console.log(e.message);
       }
@@ -219,5 +232,9 @@ export function listen(io: Server) {
       const roster = await getUsersInRoom(io, socket);
       io.to(socket.room).emit("roomUsers", roster);
     });
+  });
+
+  io.on("create_room", async (room: string) => {
+    if (!allRooms.includes(room)) allRooms.push(room); //! add room to allRooms array
   });
 }

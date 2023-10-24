@@ -53,7 +53,7 @@ const httpServer = createServer(app); // pass express to the http server
 const io = new Server(httpServer, { // pass http server to socket io server
   cors: { origin: "*" },
 });
-chatServer.listen(io); // call listen function from events, passing in socket io server
+chatServer.init(io); // call listen function from events, passing in socket io server, creating a listener for socket io events
 
 const PORT = 3001;
 httpServer.listen(PORT, () => // listen on express server, not socket io server

@@ -6,16 +6,17 @@ export function getActiveRooms(io: Server) {
     // ==> [['4ziBKG9XFS06NdtVAAAH', Set(1)], ['room1', Set(2)], ...]
     const arr = Array.from(io.sockets.adapter.rooms);
     /*
-      Example of what the array looks like:
-      [
-        [ 'yrMGI-QtI4UdJ0alAAAB', Set(1) { 'yrMGI-QtI4UdJ0alAAAB' } ],
-        [ 'lobby', Set(1) { 'yrMGI-QtI4UdJ0alAAAB' } ]
-      ]
+    *  Example of what the array looks like:
+    *  [
+    *    [ 'yrMGI-QtI4UdJ0alAAAB', Set(1) { 'yrMGI-QtI4UdJ0alAAAB' } ],
+    *    [ 'lobby', Set(1) { 'yrMGI-QtI4UdJ0alAAAB' } ]
+    *  ]
     */
     // Filter rooms whose name exist in set:
     // ==> [['room1', Set(2)], ['room2', Set(2)]]
     // Return only the room name: 
     // ==> ['room1', 'room2']
+    console.log(arr)
     const filteredActiveRooms = arr.filter(room => !room[1].has(room[0])); // filter out rooms that have more than 1 person in them
     const res = ['lobby']; // initialize res with lobby
     for (const room of filteredActiveRooms) {
