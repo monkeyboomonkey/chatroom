@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from "react-router-dom";
+import { useNavigateTo } from './Main';
 import '../styles/Profile.scss'
 
 function Profile() {
-    const navigate = useNavigate();
+    const navigateTo = useNavigateTo();
     const firstName = useSelector(state => state.chatroomReducer.userIdentity.fn);
     const lastName = useSelector(state => state.chatroomReducer.userIdentity.ln);
     const email = useSelector(state => state.chatroomReducer.userIdentity.email);
@@ -13,10 +13,10 @@ function Profile() {
     let emailAddress = `${email}`
 
     function toMain() {
-        navigate("/")
+        navigateTo("/");
     }
     function toUpdate() {
-        navigate("/update")
+        navigateTo("/update");
     }
 
     return (

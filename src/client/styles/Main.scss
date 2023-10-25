@@ -47,15 +47,25 @@ $gray: #92959E;
     }
 }
 
+@keyframes move-down-out-of-middle {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(100vh);
+    }
+    
+}
+
 .outerContainerMain {
     width: 100%;
     height: 100%;
-}
-
-.outerContainerMain.animated {
     animation: move-down-into-middle 1s ease-in-out;
 }
 
+.outerContainerMain.animateOut {
+    animation: move-down-out-of-middle 1s ease-in-out;
+}
 
 .innerContainerMain {
     width: 100%;

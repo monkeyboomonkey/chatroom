@@ -9,6 +9,9 @@ interface Chat {
 
 interface UserState {
   username: string | null;
+  directMessages: {
+    [key: string]: Chat[];
+  }
   currentChatroomState: Chat[];
   currentChatroom: string | null;
   categories: string[];
@@ -22,6 +25,7 @@ interface UserState {
 
 const initialState: UserState = {
   username: null,
+  directMessages: {},
   currentChatroomState: [],
   currentChatroom: null,
   categories: ['lobby'],
@@ -70,6 +74,12 @@ const chatroomSlice = createSlice({
     addNewChat(state, action: PayloadAction<{username: string, message: string}>) {
       state.currentChatroomState.push(action.payload);
     },
+    addDirectMessageRoom(state, action: PayloadAction<{roomName: string}>) {
+      state.directMessages[action.payload.roomName] = [];
+    },
+    addDirectMessage(state, action: PayloadAction<{roomName: string, message: string, username: string}>) {
+      state.directMessages[action.payload.roomName].push({username: action.payload.username, message: action.payload.message});
+    },
   },
 })
 
@@ -81,6 +91,8 @@ export const {
   setIsAuth, 
   setUserIdentity,
   addNewChat,
+  addDirectMessageRoom,
+  addDirectMessage
 } = chatroomSlice.actions
 
 export default chatroomSlice.reducer

@@ -1,11 +1,11 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setIsAuth } from "../util/chatroomReducer.ts";
+import { useNavigateTo } from "./Main.jsx";
 
 function Navbar() {
-    const navigate = useNavigate();
     const dispatch = useDispatch();
+    const navigateTo = useNavigateTo();
     async function logoutVerifiedUser() {
         try {
             const response = await fetch("api/userlogout", {
@@ -16,8 +16,9 @@ function Navbar() {
             });
             if (response.ok) {
                 console.log("User logged out");
-                navigate("/login")
-                dispatch(setIsAuth(false));
+                navigateTo("/login", () => {
+                    dispatch(setIsAuth(false));
+                });
             } else {
                 throw new Error("Unknown error occurred while logging out");
             }
@@ -25,9 +26,11 @@ function Navbar() {
             console.error(err.message);
         }
     }
+
     function profile() {
-        navigate("/profile")
+        navigateTo("/profile")
     }
+
     return (
         <nav className="navbar">
             <div className="leftNav">
