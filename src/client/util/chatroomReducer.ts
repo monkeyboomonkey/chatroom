@@ -9,9 +9,6 @@ interface Chat {
 
 interface UserState {
   username: string | null;
-  directMessages: {
-    [key: string]: Chat[];
-  }
   currentChatroomState: Chat[];
   currentChatroom: string | null;
   categories: string[];
@@ -21,11 +18,11 @@ interface UserState {
     ln: string;
     email: string;
   }
+  pictureURL: string;
 }
 
 const initialState: UserState = {
   username: null,
-  directMessages: {},
   currentChatroomState: [],
   currentChatroom: null,
   categories: ['lobby'],
@@ -35,6 +32,7 @@ const initialState: UserState = {
     ln: '',
     email: ''
   },
+  pictureURL:"",
 };
 
 const chatroomSlice = createSlice({
@@ -65,20 +63,18 @@ const chatroomSlice = createSlice({
         state.isAuth = action.payload;
       }
     },
-    setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string}>) {
-      state.userIdentity = action.payload;
+    setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string, pictureURL: string}>) {
+      // state.userIdentity = action.payload;
+      state.userIdentity = {...state.userIdentity,...action.payload}
       if (action.payload.username) {
         state.username = action.payload.username;
+      }
+      if(action.payload.pictureURL){
+        state.pictureURL = action.payload.pictureURL;
       }
     },
     addNewChat(state, action: PayloadAction<{username: string, message: string}>) {
       state.currentChatroomState.push(action.payload);
-    },
-    addDirectMessageRoom(state, action: PayloadAction<{roomName: string}>) {
-      state.directMessages[action.payload.roomName] = [];
-    },
-    addDirectMessage(state, action: PayloadAction<{roomName: string, message: string, username: string}>) {
-      state.directMessages[action.payload.roomName].push({username: action.payload.username, message: action.payload.message});
     },
   },
 })
@@ -91,8 +87,6 @@ export const {
   setIsAuth, 
   setUserIdentity,
   addNewChat,
-  addDirectMessageRoom,
-  addDirectMessage
 } = chatroomSlice.actions
 
 export default chatroomSlice.reducer

@@ -31,6 +31,7 @@ function Login() {
         mode: "cors",
       });
       if (res.status === 200) {
+        console.log
         authenticateUser();
       } else {
         throw new Error("Login failed");

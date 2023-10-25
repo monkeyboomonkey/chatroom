@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useDispatch,useSelector } from "react-redux";
 import { useNavigateTo } from "./Main.jsx";
 import { setUserIdentity } from "../util/chatroomReducer.ts";
 import "../styles/Profile.scss";
@@ -7,6 +8,7 @@ import "../styles/Profile.scss";
 function Update() {
   const formRef = useRef(null);
   const dispatch = useDispatch();
+  const image = useSelector((state) => state.chatroomReducer.pictureURL);
   const navigateTo = useNavigateTo();
 
   function toMain() {
@@ -24,6 +26,42 @@ function Update() {
     const { name, value } = e.target;
     setFormData(name, value);
   };
+  const handleIMGChange = async (e) => {
+    const { name } = e.target;
+
+    // Fix this if time, random number generator for Key generation but could potentially generate same number twice rn
+    const randKey = String(Math.floor(Math.random() * 10000));
+
+    const constructURL = {
+      bucketName: "listing-photos-scout",
+      region: "us-west-1",
+      key: randKey,
+    };
+
+    try {
+      const presignedURLRequest = await fetch("/api/getSignedURL", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: constructURL.key }),
+      });
+      //   if (!presignedURL.ok) throw new Error("Error getting presigned URL");
+      const presignedURL = await presignedURLRequest.json();
+      const imgFile = e.target.files[0];
+      const uploadPicture = await fetch(presignedURL, {
+        method: "PUT",
+        headers: { "Content-Type": "multipart/form-data" },
+        body: imgFile,
+      });
+      //   if (!uploadPicture.ok)
+      //     throw new Error("Error uploading image into S3 Bucket");
+    } catch (e) {
+      console.log(e, "ERROR Uploading image to S3 DB");
+    }
+
+    const imgLink = `https://listing-photos-scout.s3.us-west-1.amazonaws.com/${randKey}`;
+
+    setFormData(name, imgLink);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(formData);
@@ -35,6 +73,7 @@ function Update() {
       });
       if (!res.ok) throw new Error(res.status);
       const user = await res.json();
+      console.log(user,'userinfo@@@@@@@')
       dispatch(setUserIdentity(user)); //* update redux store with updated user info
       navigate("/profile");
     } catch (error) {
@@ -47,11 +86,19 @@ function Update() {
       <div className="card-container">
         <img
           className="round"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpaiczmKCa_Gd7MeORuu_nN7mUxR9we2h5Xc3sY-ZAjYBwhz0knH63sq77l9BM6GULDmE&usqp=CAU"
+          src={image}
           alt="user"
         />
         <div className="nuform">
           <form ref={formRef} onSubmit={handleSubmit}>
+          <label>
+            <input
+              type="file"
+              name="profilePicture"
+              placeholder="test"
+              onChange={handleIMGChange}
+            ></input>
+            </label>
             <label>
               <input
                 type="text"
