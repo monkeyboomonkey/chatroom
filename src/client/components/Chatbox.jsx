@@ -9,6 +9,7 @@ import { addNewChat, setCurrentChatroom, addCategory } from "../util/chatroomRed
 function Chatbox() {
     const { socket } = useContext(SocketContext);
     const [userMessage, setUserMessage] = useState(''); // message input field
+    const [userImageMessage, setUserImageMessage] = useState('')
     const chatDisplayRef = useRef(null);
     const dispatch = useDispatch();
     const roomName = useSelector(state => state.chatroomReducer.currentChatroom); // get current room name
@@ -20,13 +21,19 @@ function Chatbox() {
             console.log("Socket pushed: ", userMessage);
             setUserMessage(''); // clear input field
         }
+        if(userImageMessage.name){
+            socket.emit('message',{ message : userImageMessage })
+            setUserImageMessage("");
+        }
     }
-
+    
     const handleReceiveMessage = (data) => {
+        
         const { username, message } = data;
         console.log("Socket pulled", data)
         dispatch(addNewChat({ username, message }));
         chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight;
+        
     }
 
     const startDM = (e) => {
@@ -66,7 +73,25 @@ function Chatbox() {
                     const chat = currMessage;
                     if (chat.username === 'System') {
                         messages.push(<div key={index} className="systemMessage">{chat.message}</div>)
-                    } else {
+                    }else if(chat.message instanceof ArrayBuffer){
+                        const blob = new Blob([chat.message]);
+                        const srcBlob = URL.createObjectURL(blob);
+                        messages.push(<div key={index} className="userMessage">
+                        <span
+                            value={chat.username}
+                            className="usernameDisplay"
+                            onClick={startDM}
+                        >
+                            {chat.username}
+                        </span>
+                        <span
+                            className="messageDisplay"
+                        >
+                            <img src={srcBlob}></img>
+                        </span>
+                    </div>)
+                    }
+                    else {
                         messages.push(
                             <div key={index} className="userMessage">
                                 <span
@@ -95,6 +120,7 @@ function Chatbox() {
                     onChange={(e) => setUserMessage(e.target.value)}
                     value={userMessage}
                 />
+                <input type="file" onChange={(e)=>setUserImageMessage(e.target.files[0])}/>
                 <button
                     disabled={roomName === null ? true : false}
                     className="sendBtn"

@@ -194,7 +194,7 @@ export async function init(io: Server) {
      *  message: string
      * }
     */
-    socket.on("message", async (message: {[key: string]: string}) => {
+    socket.on("message", async (message: {[key: string]: string} | ArrayBuffer) => {
       /*
       * Check if roomID exists in roomIDs map
       * If it does, use it
@@ -202,20 +202,29 @@ export async function init(io: Server) {
       */
       let chatroom_id: string;
       const roomID = roomIDs.get(socket.room);
+      console.log(message)
       if (roomID) chatroom_id = roomID;
       else {
         const chatroom = await db.select().from(chatrooms).where(eq(chatrooms.chatroom_name, socket.room)).execute();
         chatroom_id = chatroom[0].chatroom_id;
       }
+      if (message instanceof ArrayBuffer){
+        console.log(message)
+        io.to(socket.room).emit("message", message);
 
+      }
+      else{
       //* insert message into chatlogs table using chatroom_id and socket.userID
-      await db.insert(chatlogs).values({chatroom_id: chatroom_id, userid: socket.userID, message: message?.message});
-      const response = {
-        username: socket.username,
-        message: message?.message,
-        room: socket.room,
-      };
-      io.to(socket.room).emit("message", response);
+        await db.insert(chatlogs).values({chatroom_id: chatroom_id, userid: socket.userID, message: message?.message});
+        const response = {
+          username: socket.username,
+          message: message?.message,
+          room: socket.room,
+        };
+        
+        io.to(socket.room).emit("message", response);
+      }
+    
     });
 
     /*
