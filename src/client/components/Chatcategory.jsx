@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 function Chatcategory() {
   const categories = useSelector((state) => state.chatroomReducer.categories);
   return (
-    <div>
+    <div id="outerCategoryContainer">
       <h3>All active rooms</h3>
       <div className="allChatCategories">
         {categories.map((chatroom, index) => (

@@ -1,5 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import * as pkg from '@reduxjs/toolkit';
+import { stat } from 'fs';
 const { createSlice } = pkg;
 
 interface Chat {
@@ -28,7 +29,7 @@ const initialState: UserState = {
   directMessages: {},
   currentChatroomState: [],
   currentChatroom: null,
-  categories: ['lobby'],
+  categories: [],
   isAuth: null,
   userIdentity: {
     fn: '',
@@ -43,14 +44,13 @@ const chatroomSlice = createSlice({
   reducers: {
     setUser(state, action: PayloadAction<UserState>) {
       state.username = action.payload.username;
-      state.userIdentity = {...state.userIdentity, ...action.payload.userIdentity};
+      if (action.payload.userIdentity) {
+        state.userIdentity = {...state.userIdentity, ...action.payload.userIdentity};
+      }
     },
     setCurrentChatroom(state, action: PayloadAction<string>) {
       state.currentChatroom = action.payload;
-      state.currentChatroomState = [{
-        username: state.username!,
-        message: 'joined the chatroom'
-      }];
+      state.currentChatroomState = [];
     },
     setCurrentCategories(state, action: PayloadAction<string[]>) {
       state.categories = action.payload;

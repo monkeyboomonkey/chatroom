@@ -15,7 +15,6 @@ const AuthProvider = ({ children }) => {
   const authStatus = useSelector((state) => state.chatroomReducer.isAuth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log("authStatus: ", authStatus)
 
   /*
   * Verify user on page load, done by useEffect below
@@ -33,8 +32,8 @@ const AuthProvider = ({ children }) => {
         });
         if (!response.ok) throw new Error('Failed to verify user');
         const data = await response.json();
+        if (!authStatus || authStatus === null) dispatch(setIsAuth(true)); //! setIsAuth HAS to call before setUser
         dispatch(setUser(data));
-        if (authStatus !== true) dispatch(setIsAuth(true));
       } catch (err) {
         console.log(err);
         dispatch(setIsAuth(false));

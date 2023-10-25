@@ -11,9 +11,9 @@ export const router = express.Router();
 // User routes
 // intend to add verifyJWT before and createJWT(renew JWT) after userLogIn, updateUser in '/updateuser' because it is a user operation
 // intend to add verifyJWT before deleteUser because it is a user operation
-router.get('/getallusers', getAllUsers, (req: Request, res: Response): void => { res.status(200).json(res.locals.allUsers) });
+router.get('/getallusers', getAllUsers, (_req: Request, res: Response): void => { res.status(200).json(res.locals.allUsers) });
 router.post('/registeruser', registerUser, setUserIDRedis, (req: Request, res: Response): void => { res.status(200).json('user registered') });
-router.post('/userlogin', userLogIn, createJWT, (req: Request, res: Response): void => { res.status(200).json(res.locals.user); });
+router.post('/userlogin', userLogIn, createJWT, (_req: Request, res: Response): void => { res.status(200).json('jeu'); });
 router.delete('/deleteuser', verifyJWT, deleteUser, deleteJWT, (req: Request, res: Response): void => { res.status(200).json('user deleted') });
 router.patch('/updateuser', verifyJWT, updateUser, createJWT, (req: Request, res: Response): void => { res.status(200).json({
   username: res.locals.user.username,
@@ -21,7 +21,7 @@ router.patch('/updateuser', verifyJWT, updateUser, createJWT, (req: Request, res
   fn: res.locals.user.fn,
   ln: res.locals.user.ln,
 })});
-router.delete('/userlogout', deleteJWT, (req: Request, res: Response): void => { res.status(200).json('user logged out') })
+router.delete('/userlogout', deleteJWT, (_req: Request, res: Response): void => { res.status(200).json('user logged out') })
 
 // Chatroom routes
 // intend to add verifyJWT before and createJWT(renew JWT) after addchatroom because it is a user operation
@@ -50,6 +50,7 @@ router.get('/verify', verifyJWT,
     if (res.locals.verify) {
       variableStatus = 200;
     }
+
     res.status(variableStatus).json({
         username: res.locals.user.username, 
         userIdentity: {
@@ -60,4 +61,4 @@ router.get('/verify', verifyJWT,
       }
     );
   }
-)
+);

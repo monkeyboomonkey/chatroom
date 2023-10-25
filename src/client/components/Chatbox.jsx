@@ -3,61 +3,39 @@ import { useEffect, useContext, useState, useRef } from "react";
 import '../styles/style.css';
 import Chatboxheader from "./Chatboxheader.jsx";
 import { SocketContext } from "../Context";
-import { useSelector, useDispatch } from "react-redux";
-import { addNewChat, setCurrentChatroom, addCategory } from "../util/chatroomReducer.ts";
+import { useSelector } from "react-redux";
 
 function Chatbox() {
     const { socket } = useContext(SocketContext);
-    const [userMessage, setUserMessage] = useState(''); // message input field
+    const [userMessage, setUserMessage] = useState(''); //* message input field
     const chatDisplayRef = useRef(null);
-    const dispatch = useDispatch();
-    const roomName = useSelector(state => state.chatroomReducer.currentChatroom); // get current room name
-    const currentChatroomState = useSelector(state => state.chatroomReducer.currentChatroomState); // get current room state, that being all messages in the room
+    const roomName = useSelector(state => state.chatroomReducer.currentChatroom); //* get current room name
+    const currentChatroomState = useSelector(state => state.chatroomReducer.currentChatroomState); //* get current room state, that being all messages in the room
+    const username = useSelector(state => state.chatroomReducer.username); //* get username from redux store
 
     const handleSendBtnClicked = () => {
         if (userMessage?.length > 0) {
-            socket.emit('message', { message: userMessage }); // send message to server
+            socket.emit('message', { message: userMessage }); //* send message to server
             console.log("Socket pushed: ", userMessage);
-            setUserMessage(''); // clear input field
+            setUserMessage(''); //* clear input field
         }
-    }
-
-    const handleReceiveMessage = (data) => {
-        const { username, message } = data;
-        console.log("Socket pulled", data)
-        dispatch(addNewChat({ username, message }));
-        chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight;
     }
 
     const startDM = (e) => {
-        const username = e.target.getAttribute('value'); // get username of user clicked on, getAttribute comes from React
+        console.log(username)
+        if (e.target.getAttribute('value') === username) {
+            console.log("Cannot DM self");
+            return; //* if user clicks on their own username, do nothing (cannot DM self)
+        }
+        const targetUser = e.target.getAttribute('value'); //* get username of user clicked on, getAttribute comes from React
         // console.log("DM username: ", username);
-        socket.emit('startDM', { username: username });
-    }
-
-
-    const handleDMStarted = (data) => {
-        const { roomName, users } = data;
-        console.log(roomName, users);
-        dispatch(setCurrentChatroom(roomName));
-    }
-
-    const handleSystemMessage = (data) => {
-        console.log(data)
-        dispatch(addNewChat({ username: 'System', message: data.message }));
+        socket.emit('startDM', { username: targetUser });
     }
 
     useEffect(() => {
-        socket.on('message', handleReceiveMessage); // listen for new messages
-        socket.on('startDM', handleDMStarted); // listen for new messages
-        socket.on('systemMessage', handleSystemMessage); // listen for system messages (when user is added to a new room
-        return () => {
-            socket.off('systemMessage', handleSystemMessage);
-            socket.on('startDM', handleDMStarted);
-            socket.off('message', handleReceiveMessage);
-        }
-    }, [socket]);
-
+        chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight; // auto scroll to bottom of chat display
+    }, [currentChatroomState]);
+    
     return (
         <div className="innerChatBox">
             <Chatboxheader roomName={roomName} />
@@ -91,6 +69,7 @@ function Chatbox() {
                 <textarea
                     disabled={roomName === null ? true : false}
                     type="text"
+                    id="messageInput"
                     className="messageContent"
                     onChange={(e) => setUserMessage(e.target.value)}
                     value={userMessage}
