@@ -85,6 +85,8 @@ function Update() {
     <div className="outerContainer">      
       <div className="card-container">
         <img
+          width={"200"}
+          hieght={"200"}
           className="round"
           src={image}
           alt="user"

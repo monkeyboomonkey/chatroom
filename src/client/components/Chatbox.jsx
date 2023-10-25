@@ -87,7 +87,7 @@ function Chatbox() {
                         <span
                             className="messageDisplay"
                         >
-                            <img src={srcBlob}></img>
+                            <img className="chatImage" src={srcBlob}></img>
                         </span>
                     </div>)
                     }
