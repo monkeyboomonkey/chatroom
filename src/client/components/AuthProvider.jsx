@@ -1,7 +1,7 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { setUser, setIsAuth } from "../util/chatroomReducer.ts";
+import { setUser, setIsAut,setUserIdentity } from "../util/chatroomReducer.ts";
 
 /*
 * Auth Provider wraps the entire app, except for the login and signup pages (not protected routes)
@@ -32,9 +32,23 @@ const AuthProvider = ({ children }) => {
           mode: "cors",
         });
         if (!response.ok) throw new Error('Failed to verify user');
+      
         const data = await response.json();
+        const postData = {username : data.username }
+        const urlResponse = await fetch('api/getUser', {
+          method: 'POST',
+          headers:{
+            'Content-Type': "application/json"
+          },
+          body : JSON.stringify(postData)
+        });
+
+        const imageURL = await urlResponse.json();
+
+        dispatch(setUserIdentity({pictureURL: imageURL}));
         dispatch(setUser(data));
-        dispatch(setIsAuth(true));
+
+        if (authStatus !== true) dispatch(setIsAuth(true));
       } catch (err) {
         console.log(err);
         dispatch(setIsAuth(false));

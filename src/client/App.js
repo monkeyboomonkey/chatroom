@@ -1,10 +1,10 @@
 import React from 'react';
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-import Main from "./components/Main.js";
-import Login from "./components/Login.js";
-import Signup from "./components/Signup.js";
-import Profile from "./components/Profile.js";
-import Update from "./components/Update.js";
+import Main from "./components/Main.jsx";
+import Login from "./components/Login.jsx";
+import Signup from "./components/Signup.jsx";
+import Profile from "./components/Profile.jsx";
+import Update from "./components/Update.jsx";
 import './styles/App.scss'
 import AuthProvider from './components/AuthProvider.jsx';
 import { SocketContext } from "./Context.js";
@@ -16,8 +16,7 @@ import Chatboard from './components/Chatboard.jsx';
 function App() {
   const username = useSelector((state) => state.chatroomReducer.username);
   const socket = io("ws://localhost:3001", { autoConnect: false, query: {username: username}, reconnection: false });
-  console.log("socket:", socket)
-  console.log("rerendering app")
+  console.log("socket connected:", socket.connected)
   return (
     <BrowserRouter>
         <SocketContext.Provider value={{ socket: socket }}>

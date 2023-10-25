@@ -1,6 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import * as pkg from '@reduxjs/toolkit';
-import { type } from 'os';
 const { createSlice } = pkg;
 
 interface Chat {
@@ -19,6 +18,7 @@ interface UserState {
     ln: string;
     email: string;
   }
+  pictureURL: string;
 }
 
 const initialState: UserState = {
@@ -32,14 +32,16 @@ const initialState: UserState = {
     ln: '',
     email: ''
   },
+  pictureURL:"",
 };
 
 const chatroomSlice = createSlice({
   name: 'chatroomSlice',
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<string>) {
-      state.username = action.payload;
+    setUser(state, action: PayloadAction<UserState>) {
+      state.username = action.payload.username;
+      state.userIdentity = {...state.userIdentity, ...action.payload.userIdentity};
     },
     setCurrentChatroom(state, action: PayloadAction<string>) {
       state.currentChatroom = action.payload;
@@ -61,10 +63,14 @@ const chatroomSlice = createSlice({
         state.isAuth = action.payload;
       }
     },
-    setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string}>) {
-      state.userIdentity = action.payload;
+    setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string, pictureURL: string}>) {
+      // state.userIdentity = action.payload;
+      state.userIdentity = {...state.userIdentity,...action.payload}
       if (action.payload.username) {
         state.username = action.payload.username;
+      }
+      if(action.payload.pictureURL){
+        state.pictureURL = action.payload.pictureURL;
       }
     },
     addNewChat(state, action: PayloadAction<{username: string, message: string}>) {

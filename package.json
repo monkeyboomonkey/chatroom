@@ -6,21 +6,26 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "all": "concurrently \"npm run serve\" \"npm run dev\"",
+    "all": "concurrently \"npm run serve\" \"npm run dev\" \"redis-server\"",
     "dev": "nodemon --exec node --loader ts-node/esm src/server/server.ts",
     "build": "webpack",
     "serve": "webpack-dev-server",
     "tailwind": "tailwindcss build src/client/Login.scss -o src/public/style.scss",
-    "start": "webpack && nodemon --exec node --loader ts-node/esm src/server/server.ts"
+    "start": "webpack && nodemon --exec node --loader ts-node/esm src/server/server.ts",
+    "generatedrizzle": "drizzle-kit introspect:pg --config=drizzle.config.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.433.0",
     "@babel/core": "^7.23.0",
     "@reduxjs/toolkit": "^1.9.7",
     "@types/cookie-parser": "^1.4.4",
     "@types/react": "^18.2.28",
+    "aws": "^0.0.3-2",
+    "aws-s3": "^2.0.5",
+    "aws-sdk": "^2.1478.0",
     "bcrypt-ts": "^4.0.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

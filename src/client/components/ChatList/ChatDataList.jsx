@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { SocketContext } from "../../Context";
 import { useSelector } from "react-redux";
 
 export function ChatDataList() {
   const { socket } = useContext(SocketContext);
+  const [newRoomName, setNewRoomName] = useState(""); // to be used for creating new room
   const categories = useSelector((state) => state.chatroomReducer.categories);
   console.log("ChatDataList Categories", categories);
 
@@ -19,11 +20,8 @@ export function ChatDataList() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const roomForm = document.getElementById("roomName");
-    const selectedRoom = roomForm.value;
-    console.log("Selected room ", selectedRoom);
-    socket.emit("joinRoom", selectedRoom);
-    roomForm.value = "";
+    const newRoom = newRoomName;
+    socket.emit("joinRoom", newRoom);
   };
 
   return (
@@ -33,7 +31,7 @@ export function ChatDataList() {
           <label className="roomFormLabel" htmlFor="chatroom-choice">Choose or create a topic:</label>
         </div>
         <div className="roomForm">
-          <input list="browsers" id="roomName" name="Room" />
+          <input list="browsers" id="roomName" name="Room" value={newRoomName} onChange={(e) => setNewRoomName(e.target.value)}/>
           <input id="joinRoomButton" type="submit" value="Join"></input>
         </div>
       </form>
