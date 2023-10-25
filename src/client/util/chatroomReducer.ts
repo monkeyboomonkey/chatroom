@@ -17,38 +17,31 @@ interface UserState {
     fn: string;
     ln: string;
     email: string;
+    pictureURL: string;
   }
-  pictureURL: string;
 }
 
 const initialState: UserState = {
   username: null,
   currentChatroomState: [],
   currentChatroom: null,
-  categories: ['lobby'],
+  categories: [],
   isAuth: null,
   userIdentity: {
     fn: '',
     ln: '',
-    email: ''
+    email: '',
+    pictureURL:"",
   },
-  pictureURL:"",
 };
 
 const chatroomSlice = createSlice({
   name: 'chatroomSlice',
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<UserState>) {
-      state.username = action.payload.username;
-      state.userIdentity = {...state.userIdentity, ...action.payload.userIdentity};
-    },
     setCurrentChatroom(state, action: PayloadAction<string>) {
       state.currentChatroom = action.payload;
-      state.currentChatroomState = [{
-        username: state.username!,
-        message: 'joined the chatroom'
-      }];
+      state.currentChatroomState = [];
     },
     setCurrentCategories(state, action: PayloadAction<string[]>) {
       state.categories = action.payload;
@@ -66,11 +59,8 @@ const chatroomSlice = createSlice({
     setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string, pictureURL: string}>) {
       // state.userIdentity = action.payload;
       state.userIdentity = {...state.userIdentity,...action.payload}
-      if (action.payload.username) {
+      if (action.payload.username && action.payload.username !== state.username) {
         state.username = action.payload.username;
-      }
-      if(action.payload.pictureURL){
-        state.pictureURL = action.payload.pictureURL;
       }
     },
     addNewChat(state, action: PayloadAction<{username: string, message: string}>) {
@@ -80,7 +70,6 @@ const chatroomSlice = createSlice({
 })
 
 export const { 
-  setUser, 
   setCurrentChatroom, 
   setCurrentCategories, 
   addCategory, 

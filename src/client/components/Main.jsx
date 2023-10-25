@@ -1,15 +1,20 @@
 import React, { useContext, useEffect, useRef, createContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Outlet } from "react-router-dom";
-import { SocketContext } from '../Context';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { io } from "socket.io-client";
+import { SocketContext } from "../Context.js";
+import { setCurrentCategories, addNewChat, setCurrentChatroom, addCategory } from "../util/chatroomReducer.ts";
 import "../styles/Main.scss"
 
 const mainContainerContext = createContext();
 function Main() {
+    const username = useSelector((state) => state.chatroomReducer.username);
+    console.log(username)
+    const dispatch = useDispatch();
+    const socket = io("ws://localhost:3001", { autoConnect: false, query: { username: username || "anon" }, reconnection: false });
     const navigate = useNavigate();
     const authStatus = useSelector((state) => state.chatroomReducer.isAuth);
-    const { socket } = useContext(SocketContext); // socket comes from the SocketContext, see Context.js, and App.js
     const mainContainerRef = useRef(null);
 
     /**
@@ -27,7 +32,48 @@ function Main() {
             mainContainerRef.current.classList.remove("animateOut");
         }, 1000);
     }
+    
 
+    /**
+     * This function will handle the data received from the server when the socket connects and future rooms data
+     * @param {Array} data - array of strings, each string is a room name
+    */
+    const handleRoomsData = (data) => {
+        console.log("Rooms Data:", data);
+        dispatch(setCurrentCategories(data));
+    };
+
+    const handleReceiveMessage = (data) => {
+        const { username, message } = data;
+        console.log("Socket pulled", data)
+        dispatch(addNewChat({ username, message }));
+    }
+
+    const handleSingleRoomData = (data) => {
+        console.log("Single Room Data:", data);
+        dispatch(addCategory(data));
+    }
+
+    const handleDMStarted = (data) => {
+        const { roomName, users } = data;
+        console.log(roomName, users);
+        dispatch(setCurrentChatroom(roomName));
+    }
+
+    const handleSystemMessage = (data) => {
+        console.log(data)
+        dispatch(addNewChat({ username: 'System', message: data.message }));
+    }
+
+    const setListeners = () => {
+        socket.on('message', handleReceiveMessage); // listen for new messages
+        socket.on('startDM', handleDMStarted); // listen for new messages
+        socket.on('systemMessage', handleSystemMessage); // listen for system messages (when user is added to a new room
+        socket.on("rooms", handleRoomsData);
+        socket.on("singleRoom", handleSingleRoomData);
+        socket.connect();
+    }
+    
     /*
     * this effect will run when the component mounts and when the authStatus changes
     * if the authStatus is true, then the socket will connect
@@ -36,26 +82,20 @@ function Main() {
     * returned is the cleanup function, which will disconnect the socket when the component unmounts
     * and will remove the event listeners for connect and disconnect
     */
-    useEffect(() => {
-        if (authStatus) {
-            socket.connect();
-            socket.on("connect", () => {
-                console.log("Connected to server:", socket.connected);
-            });
-            socket.on("disconnect", () => {
-                console.log("Connected to server:", socket.connected);
-                socket.off("connect", () => {
-                    console.log("Connected to server:", socket.connected);
-                });
-                socket.off("disconnect", () => {
-                    console.log("Connected to server:", socket.connected);
-                });
-            });
-        } else if (socket.connected) {
+   useEffect(() => {
+       //* set up socket listeners here
+       if ((authStatus !== null && authStatus !== false) && (!socket.connected && username?.length)) {
+            setListeners();
+        } else if (authStatus === false) {
             socket.disconnect();
         }
         return () => {
             socket.disconnect();
+            socket.off("singleRoom", handleSingleRoomData)
+            socket.off('systemMessage', handleSystemMessage);
+            socket.off('startDM', handleDMStarted);
+            socket.off('message', handleReceiveMessage);
+            socket.off("rooms", handleRoomsData);
             socket.off("connect", () => {
                 console.log("Connected to server:", socket.connected);
             });
@@ -68,14 +108,15 @@ function Main() {
     return (
         <div ref={mainContainerRef} className='outerContainerMain'>
             {/* authCheck needs to come before render of Outlet, otherwise socket might not connect in time, resulting in weird behavior */}
-            
-            {authStatus === null ? 
+            {authStatus === null || !username?.length ? 
                 <div className='innerContainerMain'>
                     <h1 className='loading'>Loading...</h1>
                 </div> :
-                <mainContainerContext.Provider value={{ navigateTo }}>
-                    <Outlet />
-                </mainContainerContext.Provider>}
+                <SocketContext.Provider value={{ socket: socket }}>
+                    <mainContainerContext.Provider value={{ navigateTo }}>
+                        <Outlet />
+                    </mainContainerContext.Provider>
+                </SocketContext.Provider>}
         </div>
     )
 }
