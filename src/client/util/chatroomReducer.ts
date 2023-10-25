@@ -32,7 +32,7 @@ const initialState: UserState = {
     ln: '',
     email: ''
   },
-  pictureURL:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpaiczmKCa_Gd7MeORuu_nN7mUxR9we2h5Xc3sY-ZAjYBwhz0knH63sq77l9BM6GULDmE&usqp=CAU",
+  pictureURL:"",
 };
 
 const chatroomSlice = createSlice({

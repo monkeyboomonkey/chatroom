@@ -67,13 +67,11 @@ export function deleteUser(req: Request, res: Response, next: NextFunction): voi
 
 export function userLogIn(req: Request, res: Response, next: NextFunction): void {
   const { username, password } = req.body;
-
   db.select().from(users).where(eq(users.username, username))
     .then(user => {
       if (user.length) {
+        console.log(user)
         if (compareSync(password, String(user[0].password))) {
-
-
           res.locals.user = user[0]
           return next();
         }

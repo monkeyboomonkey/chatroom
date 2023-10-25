@@ -36,6 +36,7 @@ const AuthProvider = ({ children }) => {
         console.log(data)
         dispatch(setUser(data));
         dispatch(setIsAuth(true));
+        
       } catch (err) {
         console.log(err);
         dispatch(setIsAuth(false));
