@@ -34,7 +34,7 @@ const AuthProvider = ({ children }) => {
         if (!response.ok) throw new Error('Failed to verify user');
         const data = await response.json();
         dispatch(setUser(data));
-        dispatch(setIsAuth(true));
+        if (authStatus !== true) dispatch(setIsAuth(true));
       } catch (err) {
         console.log(err);
         dispatch(setIsAuth(false));

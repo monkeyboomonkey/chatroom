@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
-import { eq, lt, gte, ne, and } from "drizzle-orm";
+import { eq, lt, gte, ne, and, or } from "drizzle-orm";
 
 import postgres from 'postgres'
 import { users } from '../models/psqlmodels.js'
@@ -91,19 +91,26 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
   const { fn, ln, username, email, password } = req.body;
   if (!fn && !ln && !username && !email && !password) return next('Missing required fields');
   res.locals = {username:username}
-  const foundUsername = username ? await db.select().from(users).where(eq(users.username, username)) : [];
-  const foundEmail = email ? await db.select().from(users).where(eq(users.email, email)) : [];
 
-  if (!foundUsername.length && !foundEmail.length) {
+  // look for a user documents with the same username or email
+  console.log(fn, ln, username, email, password)
+  let user: any;
+  if (email) {
+    user = await db.select().from(users).where(or(eq(users.username, username), eq(users.email, email)));
+  } else {
+    user = await db.select().from(users).where(eq(users.username, username));
+  }
+
+  if (!user.length) {
     try {
-      await db.insert(users).values({ fn, ln, username, email, password: hashSync(password, 10) })
+      await db.insert(users).values({ fn: fn || null, ln: ln || null, username, email: email || null, password: hashSync(password, 10) })
       return next();
     }
     catch (e) {
       return next('failed to registerUser');
     }
   }
-  else if (foundUsername.length) {
+  else if (user[0].username === username) {
     return next('Username exists');
   }
   else {

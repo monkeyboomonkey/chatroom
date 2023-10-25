@@ -28,6 +28,7 @@ export async function init(io: Server) {
   }).filter((room: any) => {
     return !room.startsWith('DM')
   });
+  if (!allRooms.includes("lobby")) allRooms.push("lobby"); //! add lobby to allRooms array, if it doesn't exist
 
   io.on("connection", async (socket: Socket) => {
     /*
@@ -56,8 +57,7 @@ export async function init(io: Server) {
     */
     socket.username = socket.handshake.query.username?.toString() || "anonymous";
     socket.room = "lobby";
-    const user = await db.select().from(users).where(eq(users.username, socket.username));
-    socket.userID = user[0]?.userid;
+    socket.userID = (await db.select().from(users).where(eq(users.username, socket.username)))[0]?.userid; //* get userID from database
 
     // socket.emit('rooms', getActiveRooms(io)); //* send list of ACTIVE rooms to user
     socket.emit('rooms', allRooms); //* send list of ALL rooms to user
@@ -68,8 +68,8 @@ export async function init(io: Server) {
     });
 
     /* Register username
-     * Args:
-     *  1. username - desired display name
+    * Args:
+    * 1. username - desired display name
     */
     socket.on("register", (username: string) => {
      socket.username = username;
@@ -85,6 +85,7 @@ export async function init(io: Server) {
      * Args:
      *  1. username - user to start DM with
     */
+   //! This needs to be adapted to add the DM room to the database
     socket.on("startDM", async (username: any) => {
       //* find socket that matches username
       //* io.sockets.sockets is a Map of all sockets connected to the server
@@ -208,7 +209,7 @@ export async function init(io: Server) {
       }
 
       //* insert message into chatlogs table using chatroom_id and socket.userID
-      await db.insert(chatlogs).values({chatroom_id: chatroom_id, userid: socket.userID, message: message?.message})
+      await db.insert(chatlogs).values({chatroom_id: chatroom_id, userid: socket.userID, message: message?.message});
       const response = {
         username: socket.username,
         message: message?.message,
