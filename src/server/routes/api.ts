@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getAllUsers, registerUser, userLogIn, deleteUser, updateUser } from '../controllers/userControllers.js'
+import { getAllUsers, registerUser, userLogIn, deleteUser, updateUser, getUser } from '../controllers/userControllers.js'
 import { getAllChatrooms, addChatroom } from '../controllers/chatroomControllers.js'
 import { addChatlog, getAllChatlogs } from '../controllers/chatlogControllers.js'
 import {addChatroomLogRedis,getChatHistoryRedis, getChatroomID, getUserID, setUserIDRedis,setChatroomIDRedis}  from "../controllers/chatlogControllerRedis.js"
@@ -13,6 +13,7 @@ export const router = express.Router();
 // intend to add verifyJWT before and createJWT(renew JWT) after userLogIn, updateUser in '/updateuser' because it is a user operation
 // intend to add verifyJWT before deleteUser because it is a user operation
 router.get('/getallusers', getAllUsers, (req: Request, res: Response): void => { res.status(200).json(res.locals.allUsers) });
+router.post('/getUser', getUser, (req: Request, res: Response): void => { res.status(200).json(res.locals.pictureURL) });
 router.post('/registeruser', registerUser, setUserIDRedis, (req: Request, res: Response): void => { res.status(200).json('user registered') });
 router.post('/userlogin', userLogIn, createJWT, (req: Request, res: Response): void => { res.status(200).json(res.locals.user); });
 router.delete('/deleteuser', verifyJWT, deleteUser, deleteJWT, (req: Request, res: Response): void => { res.status(200).json('user deleted') });

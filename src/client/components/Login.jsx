@@ -43,7 +43,7 @@ function Login() {
   }
 
   return (
-    <div className="outerContainer">
+    <div className="outerContainer outerContainerMain">
       <div className="login-wrapper">
         <div className="form">
           <div className="headersContainer">

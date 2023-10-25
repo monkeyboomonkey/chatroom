@@ -1,20 +1,21 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
+import { useNavigateTo } from "./Main.jsx";
 import { setUserIdentity } from "../util/chatroomReducer.ts";
 import "../styles/Profile.scss";
 
 function Update() {
-  const navigate = useNavigate();
   const formRef = useRef(null);
   const dispatch = useDispatch();
   const image = useSelector((state) => state.chatroomReducer.pictureURL);
+  const navigateTo = useNavigateTo();
 
   function toMain() {
-    navigate("/");
+    navigateTo("/");
   }
   function toProfile() {
-    navigate("/profile");
+    navigateTo("/profile");
   }
 
   const formData = new FormData();
