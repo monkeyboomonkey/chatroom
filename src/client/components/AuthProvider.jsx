@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useState, useEffect } from "react";
+import React, { useContext, createContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser, setIsAuth,setUserIdentity } from "../util/chatroomReducer.ts";
@@ -32,8 +32,10 @@ const AuthProvider = ({ children }) => {
           mode: "cors",
         });
         if (!response.ok) throw new Error('Failed to verify user');
-      
+        
         const data = await response.json();
+        if (!authStatus || authStatus === null) dispatch(setIsAuth(true)); //! setIsAuth HAS to call before setUser
+        dispatch(setUser(data));
         const postData = {username : data.username }
         const urlResponse = await fetch('api/getUser', {
           method: 'POST',
@@ -46,9 +48,8 @@ const AuthProvider = ({ children }) => {
         const imageURL = await urlResponse.json();
 
         dispatch(setUserIdentity({pictureURL: imageURL}));
-        dispatch(setUser(data));
 
-        if (authStatus !== true) dispatch(setIsAuth(true));
+        // if (authStatus !== true) dispatch(setIsAuth(true));
       } catch (err) {
         console.log(err);
         dispatch(setIsAuth(false));

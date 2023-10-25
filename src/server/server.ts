@@ -7,6 +7,7 @@ declare module "socket.io" {
   interface Socket {
     username: string;
     room: string;
+    directMessages: Map<string, string>;
     userID: any;
   }
 }
