@@ -17,8 +17,8 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const loginData = {
-        username: username,
-        password: password
+      username: username,
+      password: password
     }
     try {
       const res = await fetch('/api/userlogin', {
@@ -30,6 +30,7 @@ function Login() {
         credentials: 'include',
         mode: "cors",
       });
+      
       if (res.status === 200) {
         authenticateUser();
       } else {

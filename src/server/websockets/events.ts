@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
-import { getUsersInRoom } from "./users.js";
-import { users, chatlogs, chatrooms } from "../models/psqlmodels.js";
+import { getUsersInRoom, findUserByUsername, getUsersDirectMessageRooms } from "./users.js";
+import { users, chatlogs, chatrooms, directmessageroom, directmessages } from "../models/psqlmodels.js";
 import { eq, lt, gte, ne } from "drizzle-orm";
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
@@ -18,11 +18,16 @@ export async function init(io: Server) {
    * https://socket.io/docs/v3/server-api/
   */
 
-  //* Map of room names to chatroom_ids  
-  const roomIDs = new Map<string, string>();
-
+ 
   //* Get all rooms from database
   let allRooms: any = await db.select().from(chatrooms).execute();
+
+  //* Map of room names to chatroom_ids  
+  const roomIDs = new Map<string, string>();
+  allRooms.forEach((room: any) => {
+    roomIDs.set(room.chatroom_name, room.chatroom_id);
+  });
+
   allRooms = allRooms.map((room: any) => {
     return room.chatroom_name
   }).filter((room: any) => {
@@ -58,9 +63,13 @@ export async function init(io: Server) {
     socket.username = socket.handshake.query.username?.toString() || "anonymous";
     socket.room = "lobby";
     socket.userID = (await db.select().from(users).where(eq(users.username, socket.username)))[0]?.userid; //* get userID from database
+    socket.directMessages = new Map<string, string>; //* Map of DM rooms, key = room name, value = directmessageroom_id
+    (await getUsersDirectMessageRooms(socket)).forEach((room: any) => {
+      socket.directMessages.set(room.directmessageroom_name, room.directmessageroom_id); //! add DM rooms to socket.directMessages map
+    });
 
     // socket.emit('rooms', getActiveRooms(io)); //* send list of ACTIVE rooms to user
-    socket.emit('rooms', allRooms); //* send list of ALL rooms to user
+    socket.emit('rooms', allRooms.concat(Array.from(socket.directMessages.keys()))); //* send list of ALL rooms to user
 
     socket.on("disconnect", () => {
       console.log(`user disconnected with socket id: ${socket.id}`);
@@ -94,31 +103,29 @@ export async function init(io: Server) {
       const targetSocket = Array.from(io.sockets.sockets.values()).find(
         (s) => s.username === username
       );
+
       if (!targetSocket) {
         //* If the target user is not found, emit an error message to the sender
         socket.emit("systemMessage", `User ${username} not found`);
         return;
       }
 
-      //* create room name with both usernames
-      let roomName = [socket.username, targetSocket.username].sort().join("-");
-      roomName = `DM-${roomName}`;
+      //* insert DM room into directmessages table
+      const user2_id = (await findUserByUsername(username)).userid;
+      const user1_id = socket.userID;
+      const directmessageroom_name = `DM-${socket.username}-${targetSocket.username}`;
+      const result = await db.insert(directmessageroom).values({user1_id: user1_id, user2_id: user2_id, directmessageroom_name}).returning();
       
-      //* join room
-      socket.leave(socket.room);
-      socket.join(roomName);
-      socket.room = roomName;
+      console.log(result)
+      
+      socket.directMessages.set(directmessageroom_name, result[0].directmessageroom_id); //! add DM room to socket.directMessages map
+      targetSocket.directMessages.set(directmessageroom_name, result[0].directmessageroom_id); //! add DM room to targetSocket.directMessages map
 
-      targetSocket.leave(targetSocket.room);
-      targetSocket.join(roomName);
-      targetSocket.room = roomName;
-
-      //* send message to room that DM has started
-      io.to(roomName).emit(
-        "startDM",
-        { roomName, 
-          users: [socket.username, targetSocket.username] } //! index zero is the initiator of the DM
-      );
+      //* join DM room
+      socket.join(directmessageroom_name);
+      targetSocket.join(directmessageroom_name);
+      io.to(directmessageroom_name).emit("rooms", allRooms.concat(directmessageroom_name)); //! add DM room to allRooms array
+      io.to(targetSocket.id).emit("systemMessage", `${socket.username} started a DM with you`);
     });
 
     /*
@@ -134,8 +141,6 @@ export async function init(io: Server) {
       try {
         if (!room) {
           throw Error("No room provided");
-        } else if (room.startsWith("DM")) {
-          throw Error("Cannot join DMs through joinRoom");
         }
 
         //* leave lobby or previous room
@@ -175,7 +180,7 @@ export async function init(io: Server) {
         io.to(socket.room).emit("roomUsers", roster);
 
         //* send updated list of rooms to all users as an array
-        io.emit('rooms', allRooms);
+        io.emit('rooms', allRooms.concat(Array.from(socket.directMessages.keys())));
       } catch (e) {
         console.log(e.message);
       }
@@ -201,21 +206,40 @@ export async function init(io: Server) {
       * If it doesn't, query the database for the chatroom_id
       */
       let chatroom_id: string;
-      const roomID = roomIDs.get(socket.room);
-      if (roomID) chatroom_id = roomID;
-      else {
-        const chatroom = await db.select().from(chatrooms).where(eq(chatrooms.chatroom_name, socket.room)).execute();
-        chatroom_id = chatroom[0].chatroom_id;
-      }
 
-      //* insert message into chatlogs table using chatroom_id and socket.userID
-      await db.insert(chatlogs).values({chatroom_id: chatroom_id, userid: socket.userID, message: message?.message});
-      const response = {
-        username: socket.username,
-        message: message?.message,
-        room: socket.room,
-      };
-      io.to(socket.room).emit("message", response);
+      if (socket.room.startsWith('DM')) { //! if room is a DM room
+        const roomID = socket.directMessages.get(socket.room); //* check if roomID exists in socket.directMessages map
+        if (roomID) chatroom_id = roomID; //* if it does, use it
+        else { //* if it doesn't, query the database for the directmessageroom_id
+          const dmRoom = await db.select().from(directmessageroom).where(eq(directmessageroom.directmessageroom_name, socket.room)).execute();
+          chatroom_id = dmRoom[0].directmessageroom_id;
+        }
+
+        //* insert message into directmessages table using chatroom_id and socket.userID
+        await db.insert(directmessages).values({directmessageroom_id: chatroom_id, userid: socket.userID, message: message?.message});
+        const response = {
+          username: socket.username,
+          message: message?.message,
+          room: socket.room,
+        };
+        io.to(socket.room).emit("message", response);
+      } else { //! if room is a chatroom
+        const roomID = roomIDs.get(socket.room);
+        if (roomID) chatroom_id = roomID;
+        else {
+          const chatroom = await db.select().from(chatrooms).where(eq(chatrooms.chatroom_name, socket.room)).execute();
+          chatroom_id = chatroom[0].chatroom_id;
+        }
+  
+        //* insert message into chatlogs table using chatroom_id and socket.userID
+        await db.insert(chatlogs).values({chatroom_id: chatroom_id, userid: socket.userID, message: message?.message});
+        const response = {
+          username: socket.username,
+          message: message?.message,
+          room: socket.room,
+        };
+        io.to(socket.room).emit("message", response);
+      }
     });
 
     /*
