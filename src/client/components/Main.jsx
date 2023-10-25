@@ -70,18 +70,6 @@ function Main() {
         socket.on('systemMessage', handleSystemMessage); // listen for system messages (when user is added to a new room
         socket.on("rooms", handleRoomsData);
         socket.on("singleRoom", handleSingleRoomData);
-        // socket.on("connect", () => {
-        //     console.log("Connected to server:", socket.connected);
-        // });
-        // socket.on("disconnect", () => {
-        //     console.log("Connected to server:", socket.connected);
-        //     socket.off("connect", () => {
-        //         console.log("Connected to server:", socket.connected);
-        //     });
-        //     socket.off("disconnect", () => {
-        //         console.log("Connected to server:", socket.connected);
-        //     });
-        // });
         socket.connect();
     }
     

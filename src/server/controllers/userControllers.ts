@@ -15,11 +15,13 @@ const db = drizzle(client);
 const result = await db.select().from(users);
 
 import { Express, Request, Response, NextFunction } from 'express';
+import { current } from '@reduxjs/toolkit';
+import { profile } from 'console';
 
 export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const { firstName, lastName, email, username } = req.body;
+  const { firstName, lastName, email, username, profilePicture } = req.body;
   const { userid } = res.locals;
-  if (!firstName && !lastName && !email && !username) return next('Missing required fields');
+  if (!firstName && !lastName && !email && !username && !profilePicture) return next('Missing required fields');
 
   const foundNewUsername = username ? await db.select().from(users).where(and(eq(users.username, username), ne(users.userid, userid))) : [];
   const foundNewEmail = email ? await db.select().from(users).where(and(eq(users.email, email), ne(users.userid, userid))) : [];
@@ -31,11 +33,14 @@ export async function updateUser(req: Request, res: Response, next: NextFunction
         ln: !lastName ? currentUser[0].ln : lastName,
         email: !email ? currentUser[0].email : email,
         username: !username ? currentUser[0].username : username,
+        pictureURL: !profilePicture ? currentUser[0].pictureURL : profilePicture,
       }
       const newUser = await db.update(users).set(userCredentials).where(eq(users.userid, userid)).returning();
       res.locals.user = newUser[0];
+      console.log(res.locals.user)
       return next();
     } catch (e) {
+      console.log(e)
       return next('failed to updateUser');
     }
   } else if (foundNewUsername.length) {
@@ -65,6 +70,7 @@ export function userLogIn(req: Request, res: Response, next: NextFunction): void
   db.select().from(users).where(eq(users.username, username))
     .then(user => {
       if (user.length) {
+        console.log(user)
         if (compareSync(password, String(user[0].password))) {
           res.locals.user = user[0]
           return next();
@@ -126,6 +132,17 @@ export function getAllUsers(req: Request, res: Response, next: NextFunction): vo
       return next('failed to getAllUsers');
     })
 }
+
+
+// export async function getUser(req: Request, res: Response, next: NextFunction):Promise<void>  {
+//   const {username} = req.body
+//   // console.log(username)
+//   const query  = await db.select().from(users).where((eq(users.username,username)))
+//   const urlLink = query[0].pictureURL
+//   // console.log(urlLink)
+//   res.locals.pictureURL = urlLink
+//   return next()
+// }
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
   console.error(err);

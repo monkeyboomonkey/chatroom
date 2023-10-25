@@ -4,6 +4,7 @@ import { getAllChatrooms, addChatroom } from '../controllers/chatroomControllers
 import { addChatlog, getAllChatlogs } from '../controllers/chatlogControllers.js'
 import {addChatroomLogRedis,getChatHistoryRedis, getChatroomID, getUserID, setUserIDRedis,setChatroomIDRedis}  from "../controllers/chatlogControllerRedis.js"
 import { createJWT, verifyJWT, deleteJWT } from '../controllers/jwtControllers.js'
+import { getAWSURL } from '../controllers/imagesController.js';
 
 
 export const router = express.Router();
@@ -11,7 +12,8 @@ export const router = express.Router();
 // User routes
 // intend to add verifyJWT before and createJWT(renew JWT) after userLogIn, updateUser in '/updateuser' because it is a user operation
 // intend to add verifyJWT before deleteUser because it is a user operation
-router.get('/getallusers', getAllUsers, (_req: Request, res: Response): void => { res.status(200).json(res.locals.allUsers) });
+router.get('/getallusers', getAllUsers, (req: Request, res: Response): void => { res.status(200).json(res.locals.allUsers) });
+// router.post('/getUser', getUser, (req: Request, res: Response): void => { res.status(200).json(res.locals.pictureURL) });
 router.post('/registeruser', registerUser, setUserIDRedis, (req: Request, res: Response): void => { res.status(200).json('user registered') });
 router.post('/userlogin', userLogIn, createJWT, (_req: Request, res: Response): void => { res.status(200).json('jeu'); });
 router.delete('/deleteuser', verifyJWT, deleteUser, deleteJWT, (req: Request, res: Response): void => { res.status(200).json('user deleted') });
@@ -20,6 +22,7 @@ router.patch('/updateuser', verifyJWT, updateUser, createJWT, (req: Request, res
   email: res.locals.user.email,
   fn: res.locals.user.fn,
   ln: res.locals.user.ln,
+  pictureURL: res.locals.user.pictureURL,
 })});
 router.delete('/userlogout', deleteJWT, (_req: Request, res: Response): void => { res.status(200).json('user logged out') })
 
@@ -27,8 +30,6 @@ router.delete('/userlogout', deleteJWT, (_req: Request, res: Response): void => 
 // intend to add verifyJWT before and createJWT(renew JWT) after addchatroom because it is a user operation
 router.get('/getallchatrooms', verifyJWT, getAllChatrooms, createJWT, (req: Request, res: Response): void => { res.status(200).json(res.locals.allChatrooms) });
 router.post('/addchatroom', verifyJWT, addChatroom, setChatroomIDRedis, createJWT,(req: Request, res: Response): void => { res.status(200).json('chatroom added') });
-
-
 
 // Chatlog routes
 // intend to add verifyJWT before and createJWT(renew JWT) after addChatlog and getAllChatlogs because they are user operations
@@ -42,6 +43,11 @@ router.get('/getallchatlogs', verifyJWT, getChatHistoryRedis, createJWT, (req: R
 router.get('/chatroomID', getChatroomID, (req: Request, res: Response): void => { res.status(200).json(res.locals.chatroomID) }); // Expecting chatroom_name from request
 router.get('/userID', getUserID , (req: Request, res: Response): void => { res.status(200).json(res.locals.userID) }); // Expecting username from request
 
+
+// Route for images
+router.post('/getSignedURL', getAWSURL , (req: Request, res: Response): void => { res.status(200).json(res.locals.url) }); // Expecting username from request
+
+
 // route just for verification, if needed
 // currently just responds with a boolean if the user is verified or not
 router.get('/verify', verifyJWT,
@@ -54,6 +60,7 @@ router.get('/verify', verifyJWT,
     res.status(variableStatus).json({
         username: res.locals.user.username, 
         userIdentity: {
+          pictureURL: res.locals.user.pictureURL,
           email: res.locals.user.email, 
           fn: res.locals.user.fn, 
           ln: res.locals.user.ln

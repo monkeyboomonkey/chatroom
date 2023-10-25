@@ -10,7 +10,7 @@ module.exports = {
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "dist", "client"),
-    publicPath: '/' // needs to be project root for HtmlWebpackPlugin, ./ does not work
+    publicPath: "/", // needs to be project root for HtmlWebpackPlugin, ./ does not work
   },
   module: {
     rules: [
@@ -31,7 +31,7 @@ module.exports = {
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         use: {
-          loader: 'url-loader',
+          loader: "url-loader",
         },
       },
     ],
@@ -57,13 +57,13 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: 'index.html',
+      filename: "index.html",
       template: "src/client/index.html",
-      chunks: ['main'],
+      chunks: ["main"],
       // inject: false
     }),
   ],
   resolve: {
-  extensions: ['', '.ts', '.tsx', '.js', '.jsx', '.scss'],
- },
+    extensions: ["", ".ts", ".tsx", ".js", ".jsx", ".scss"],
+  },
 };

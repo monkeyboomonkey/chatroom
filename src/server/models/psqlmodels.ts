@@ -7,6 +7,7 @@ export const users = pgTable("users", {
 	email: varchar("email"),
 	password: text("password").notNull(),
 	username: varchar("username").notNull(),
+	pictureURL: text("pictureURL"),
 });
 
 export const chatrooms = pgTable("chatrooms", {

@@ -33,6 +33,7 @@ function Login() {
       });
       
       if (res.status === 200) {
+        console.log
         authenticateUser();
       } else {
         throw new Error("Login failed");

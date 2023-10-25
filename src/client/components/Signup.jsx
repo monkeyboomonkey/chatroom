@@ -1,34 +1,32 @@
-import React from 'react';
+import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 function Signup() {
-    const navigate = useNavigate();
-    const formData = new FormData();
-    const setFormData = (name, value) => {
-        formData.set(name, value);
-    };
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(name, value);
-    };
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const data = Object.fromEntries(formData);
-        try {
-            await fetch('http://localhost:3001/api/registeruser', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            navigate("/login")
-
-        } catch (error) {
-            console.log(error.message);
-        }
-
+  const navigate = useNavigate();
+  const formData = new FormData();
+  const setFormData = (name, value) => {
+    formData.set(name, value);
+  };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(name, value);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(formData);
+    try {
+      await fetch("http://localhost:3001/api/registeruser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      navigate("/login");
+    } catch (error) {
+      console.log(error.message);
     }
+  };
 
     return (
         <div className="outerContainer outerContainerMain">
