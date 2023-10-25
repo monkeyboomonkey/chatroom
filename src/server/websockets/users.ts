@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
-import { users, directmessageroom, directmessages } from "../models/psqlmodels.js";
-import { eq, lt, gte, ne, or } from "drizzle-orm";
+import { users, directmessageroom } from "../models/psqlmodels.js";
+import { eq, or } from "drizzle-orm";
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import dotenv from 'dotenv';
@@ -23,6 +23,32 @@ export async function findUserByUsername(username: string) {
 }
 
 export async function getUsersDirectMessageRooms(socket: Socket) {
-  const dmRooms = await db.select().from(directmessageroom).where(or(eq(directmessageroom.user1_id, socket.userID), eq(directmessageroom.user2_id, socket.userID))).execute();
-  return dmRooms;
+  let dmRooms;
+  try {
+    if (!socket || !socket.userID) {
+      throw new Error('socket or socket.userID is undefined');
+    } 
+    dmRooms = await db.select().from(directmessageroom).where(or(eq(directmessageroom.user1_id, socket.userID), eq(directmessageroom.user2_id, socket.userID))).execute();
+    return dmRooms || [];
+  } catch (e) {
+    console.log(e);
+    return [];
+  }
+}
+
+export function getUserRooms(socket: Socket): string[] {
+  return Array.from(socket.rooms).filter((r) => r !== socket.id);
+}
+
+export function getRosterAndEmit(io: Server, socket: Socket) {
+  const roster = getUsersInRoom(io, socket);
+  io.to(socket.room).emit("roomUsers", roster);
+}
+
+export function userHasDMRoom(socket: Socket, dmRoomName: string) {
+  return socket.directMessages.has(dmRoomName);
+}
+
+export function addDMRoomToUser(socket: Socket, dmRoomName: string, dmRoomID: string) {
+  socket.directMessages.set(dmRoomName, dmRoomID);
 }

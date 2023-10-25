@@ -13,37 +13,31 @@ const db = drizzle(client);
 
 dotenv.config();
 
-// need to call createJWT, as it refreshes our token;
-// in registering, logging in, updating profile, messaging & creating a chatroom...
 export async function createJWT(req: Request, res: Response, next: NextFunction): Promise<void> {
-  // if accessing from logging in, aka the only time we have the id naturally
-  if (res.locals.user && res.locals.user.userid) {
-    res.locals.token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), { expiresIn: 3000 });
-  } else {
-    // accessing from just the username
-    const { username } = req.body;
-    //console.log("username: ", username);
-    // switched from using .then & .catch, as to be more DRY with token setting
-    // and to fix and error where server would crash upon incorrect info
-    const foundUser = await db.select().from(users).where(eq(users.username, username)).catch()
-    //console.log("found user: ", user)
-    if (foundUser.length) {
-      res.locals.token = jwt.sign({ userid: foundUser[0].userid }, String(process.env.JWT_SECRET), { expiresIn: 3000 });
-      //console.log('token set: ', res.locals.token)
+  try {
+    if (res.locals.user && res.locals.user.userid) {
+      res.locals.token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), { expiresIn: 3000 });
     } else {
-      // cannot find user
-      return next('User does not exist, possible db error')
+      const { username } = req.body;
+      const foundUser = await db.select().from(users).where(eq(users.username, username)).catch()
+      if (foundUser.length) {
+        res.locals.token = jwt.sign({ userid: foundUser[0].userid }, String(process.env.JWT_SECRET), { expiresIn: 3000 });
+      } else {
+        // cannot find user
+        return next('User does not exist, possible db error')
+      }
     }
+  } catch (e) {
+    return next(e);
   }
-  //console.log("cookie added: ", res.locals.token)
   res.cookie("jwt", res.locals.token, { httpOnly: true })
+  // console.log("cookie added: ", res.locals.token)
   return next();
 }
 
 export async function verifyJWT(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const data = jwt.verify(req.cookies.jwt, String(process.env.JWT_SECRET));
-    
     if (typeof data === 'object' && 'userid' in data) {
       const user = await db.select().from(users).where(eq(users.userid, String(data.userid)));
       if (!user.length) throw new Error('Invalid JWT payload');

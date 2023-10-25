@@ -85,8 +85,7 @@ export function userLogIn(req: Request, res: Response, next: NextFunction): void
     })
     .catch(e => {
       return next('failed to userLogin');
-    })
-
+    });
 }
 
 export async function registerUser(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -135,15 +134,15 @@ export function getAllUsers(req: Request, res: Response, next: NextFunction): vo
 }
 
 
-export async function getUser(req: Request, res: Response, next: NextFunction):Promise<void>  {
-  const {username} = req.body
-  console.log(username)
-  const query  = await db.select().from(users).where((eq(users.username,username)))
-  const urlLink = query[0].pictureURL
-  console.log(urlLink)
-  res.locals.pictureURL = urlLink
-  return next()
-}
+// export async function getUser(req: Request, res: Response, next: NextFunction):Promise<void>  {
+//   const {username} = req.body
+//   // console.log(username)
+//   const query  = await db.select().from(users).where((eq(users.username,username)))
+//   const urlLink = query[0].pictureURL
+//   // console.log(urlLink)
+//   res.locals.pictureURL = urlLink
+//   return next()
+// }
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
   console.error(err);

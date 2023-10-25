@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import { setIsAuth } from "../util/chatroomReducer.ts";
+import { setIsAuth, setUserIdentity } from "../util/chatroomReducer.ts";
 
 function Login() {
     const navigate = useNavigate();
@@ -9,7 +9,8 @@ function Login() {
     const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
 
-    const authenticateUser = () => {
+    const authenticateUser = (userData) => {
+      if (userData) dispatch(setUserIdentity(userData));
       dispatch(setIsAuth(true));
       navigate("/");
     }
@@ -20,6 +21,7 @@ function Login() {
       username: username,
       password: password
     }
+    
     try {
       const res = await fetch('/api/userlogin', {
         method: 'POST',
@@ -30,10 +32,9 @@ function Login() {
         credentials: 'include',
         mode: "cors",
       });
-      
+      const userData = await res.json();
       if (res.status === 200) {
-        console.log
-        authenticateUser();
+        authenticateUser(userData);
       } else {
         throw new Error("Login failed");
       }

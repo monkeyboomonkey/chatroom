@@ -15,7 +15,6 @@ const AuthProvider = ({ children }) => {
   const authStatus = useSelector((state) => state.chatroomReducer.isAuth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log("authStatus: ", authStatus)
 
   /*
   * Verify user on page load, done by useEffect below
@@ -31,25 +30,12 @@ const AuthProvider = ({ children }) => {
           credentials: 'include',
           mode: "cors",
         });
-        if (!response.ok) throw new Error('Failed to verify user');
         
+        if (!response.ok) throw new Error('Failed to verify user');
         const data = await response.json();
+        
+        dispatch(setUserIdentity(data));
         if (!authStatus || authStatus === null) dispatch(setIsAuth(true)); //! setIsAuth HAS to call before setUser
-        dispatch(setUser(data));
-        const postData = {username : data.username }
-        const urlResponse = await fetch('api/getUser', {
-          method: 'POST',
-          headers:{
-            'Content-Type': "application/json"
-          },
-          body : JSON.stringify(postData)
-        });
-
-        const imageURL = await urlResponse.json();
-
-        dispatch(setUserIdentity({pictureURL: imageURL}));
-
-        // if (authStatus !== true) dispatch(setIsAuth(true));
       } catch (err) {
         console.log(err);
         dispatch(setIsAuth(false));
