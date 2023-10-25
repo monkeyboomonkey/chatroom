@@ -13,23 +13,15 @@ const db = drizzle(client);
 
 dotenv.config();
 
-// need to call createJWT, as it refreshes our token;
-// in registering, logging in, updating profile, messaging & creating a chatroom...
 export async function createJWT(req: Request, res: Response, next: NextFunction): Promise<void> {
-  // if accessing from logging in, aka the only time we have the id naturally
   try {
     if (res.locals.user && res.locals.user.userid) {
       res.locals.token = jwt.sign({ userid: res.locals.user.userid }, String(process.env.JWT_SECRET), { expiresIn: 3000 });
     } else {
-      // accessing from just the username
       const { username } = req.body;
-      // switched from using .then & .catch, as to be more DRY with token setting
-      // and to fix and error where server would crash upon incorrect info
       const foundUser = await db.select().from(users).where(eq(users.username, username)).catch()
-      //console.log("found user: ", user)
       if (foundUser.length) {
         res.locals.token = jwt.sign({ userid: foundUser[0].userid }, String(process.env.JWT_SECRET), { expiresIn: 3000 });
-        //console.log('token set: ', res.locals.token)
       } else {
         // cannot find user
         return next('User does not exist, possible db error')

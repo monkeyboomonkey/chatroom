@@ -70,7 +70,7 @@ function Signup() {
                             onChange={handleInputChange}
                         />
                         <button onClick={handleSubmit}>Submit</button>
-                        <p class="message">Already registered? <Link to="/login">Sign in</Link></p>
+                        <p className="message">Already registered? <Link to="/login">Sign in</Link></p>
                     </form>
                 </div>
             </div>

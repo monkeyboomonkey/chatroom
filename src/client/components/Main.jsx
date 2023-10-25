@@ -10,6 +10,7 @@ import "../styles/Main.scss"
 const mainContainerContext = createContext();
 function Main() {
     const username = useSelector((state) => state.chatroomReducer.username);
+    console.log(username)
     const dispatch = useDispatch();
     const socket = io("ws://localhost:3001", { autoConnect: false, query: { username: username || "anon" }, reconnection: false });
     const navigate = useNavigate();
@@ -107,7 +108,7 @@ function Main() {
     return (
         <div ref={mainContainerRef} className='outerContainerMain'>
             {/* authCheck needs to come before render of Outlet, otherwise socket might not connect in time, resulting in weird behavior */}
-            {authStatus === null ? 
+            {authStatus === null || !username?.length ? 
                 <div className='innerContainerMain'>
                     <h1 className='loading'>Loading...</h1>
                 </div> :
