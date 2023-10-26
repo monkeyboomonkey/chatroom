@@ -21,7 +21,7 @@ interface UserState {
   }
 }
 
-const initialState: UserState = {
+export const  initialState: UserState = {
   username: null,
   currentChatroomState: [],
   currentChatroom: null,
