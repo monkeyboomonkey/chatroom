@@ -1,10 +1,10 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import Chatcategory from "./Chatcategory.jsx";
 import Chatbox from "./Chatbox.jsx";
 import "../styles/style.css";
 import { ChatDataList } from "./ChatList/ChatDataList.jsx";
 import Navbar from "./Navbar.jsx";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 function Chatboard() {
   const currentChatroom = useSelector(

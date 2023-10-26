@@ -30,10 +30,9 @@ const AuthProvider = ({ children }) => {
           credentials: 'include',
           mode: "cors",
         });
-        
         if (!response.ok) throw new Error('Failed to verify user');
         const data = await response.json();
-        
+        console.log(data)
         dispatch(setUserIdentity(data));
         if (!authStatus || authStatus === null) dispatch(setIsAuth(true)); //! setIsAuth HAS to call before setUser
       } catch (err) {
