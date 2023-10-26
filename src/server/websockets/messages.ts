@@ -4,6 +4,7 @@ import { chatRoomExists, directMessageRoomExists } from "./rooms.ts";
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import dotenv from 'dotenv';
+import { redisClient } from "../models/redismodels.js";
 const connectionString = String(process.env.POSTGRES_URI)
 const client = postgres(connectionString)
 const db = drizzle(client);
@@ -14,6 +15,13 @@ export async function insertChatRoomMessage(socket: Socket, message: any, chatro
   .values({chatroom_id: chatroom_id, userid: socket.userID, message: message?.message})
   .onConflictDoNothing();
 }
+
+// export async function insertChatRoomMessageRedis (socket: Socket, message: any, chatroom_id: string, username:string) {
+//   redisClient.ZADD(`chat:room:${room_id}`, timestamp, message_id, (err, response) => {
+//     if (err) throw err;
+//     console.log(response); // prints the number of elements added
+// });
+// }
 
 export async function insertDirectMessage(socket: Socket, message: any, directmessageroom_id: string) {
   await db.insert(directmessages)

@@ -7,12 +7,8 @@ import { useSelector } from "react-redux";
 
 function Chatbox() {
     const { socket } = useContext(SocketContext);
-<<<<<<< HEAD
     const [userMessage, setUserMessage] = useState(''); // message input field
     const [userImageMessage, setUserImageMessage] = useState('')
-=======
-    const [userMessage, setUserMessage] = useState(''); //* message input field
->>>>>>> dev
     const chatDisplayRef = useRef(null);
     const roomName = useSelector(state => state.chatroomReducer.currentChatroom); //* get current room name
     const currentChatroomState = useSelector(state => state.chatroomReducer.currentChatroomState); //* get current room state, that being all messages in the room
@@ -29,7 +25,6 @@ function Chatbox() {
             setUserImageMessage("");
         }
     }
-<<<<<<< HEAD
     
     const handleReceiveMessage = (data) => {
         
@@ -39,8 +34,6 @@ function Chatbox() {
         chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight;
         
     }
-=======
->>>>>>> dev
 
     const startDM = (e) => {
         console.log(username)

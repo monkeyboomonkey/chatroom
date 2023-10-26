@@ -8,7 +8,7 @@ function Profile() {
     const firstName = useSelector(state => state.chatroomReducer.userIdentity.fn);
     const lastName = useSelector(state => state.chatroomReducer.userIdentity.ln);
     const email = useSelector(state => state.chatroomReducer.userIdentity.email);   
-    const image = useSelector((state) => state.chatroomReducer.pictureURL);
+    const image = useSelector((state) => state.chatroomReducer.userIdentity.pictureURL);
     console.log(image)
     let fullName = `${firstName} ${lastName}`
     let emailAddress = `${email}`

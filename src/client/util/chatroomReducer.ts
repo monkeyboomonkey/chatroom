@@ -60,6 +60,7 @@ const chatroomSlice = createSlice({
     },
     setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string, pictureURL: string}>) {
       // state.userIdentity = action.payload;
+      console.log(action.payload)
       state.userIdentity = {...state.userIdentity,...action.payload}
       if (action.payload.username && action.payload.username !== state.username) {
         state.username = action.payload.username;

@@ -8,7 +8,7 @@ import "../styles/Profile.scss";
 function Update() {
   const formRef = useRef(null);
   const dispatch = useDispatch();
-  const image = useSelector((state) => state.chatroomReducer.pictureURL);
+  const image = useSelector((state) => state.chatroomReducer.userIdentity.pictureURL);
   const navigateTo = useNavigateTo();
 
   function toMain() {
@@ -80,8 +80,6 @@ function Update() {
       console.log(error);
     }
   };
-
-
 
   return (
     <div className="outerContainer">      

@@ -33,8 +33,7 @@ const AuthProvider = ({ children }) => {
         
         if (!response.ok) throw new Error('Failed to verify user');
         const data = await response.json();
-        
-        dispatch(setUserIdentity(data));
+        dispatch(setUserIdentity(data.userIdentity));
         if (!authStatus || authStatus === null) dispatch(setIsAuth(true)); //! setIsAuth HAS to call before setUser
       } catch (err) {
         console.log(err);
