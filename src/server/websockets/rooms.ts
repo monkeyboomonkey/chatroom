@@ -5,6 +5,7 @@ import { getRosterAndEmit, getUsersInRoom, findUserByUsername, userHasDMRoom, ad
 import { chatrooms, directmessageroom } from "../models/psqlmodels.js";
 import postgres from 'postgres'
 import dotenv from 'dotenv'
+import {redisClient} from "../models/redismodels.js"
 const connectionString = String(process.env.POSTGRES_URI)
 const client = postgres(connectionString)
 const db = drizzle(client);
@@ -66,12 +67,19 @@ export async function insertChatRoom(roomName: string) {
     .values({ chatroom_name: roomName })
     .onConflictDoNothing()
     .returning();
+
+    roomName = roomName.replace(/\s/g, "");
+    console.log(roomName)
+    await redisClient.set(roomName,result[0].chatroom_id)
+
     return result;
   } catch (e) {
     console.log(e);
     return [];
   }
 }
+
+
 
 /**
  * @param directMessageRoomName the name of the direct message room to insert into the database
@@ -83,6 +91,11 @@ export async function insertDirectMessageRoom(directMessageRoomName: string, use
     .values({ directmessageroom_name: directMessageRoomName, user1_id: user1_id, user2_id: user2_id })
     .onConflictDoNothing()
     .returning();
+
+    directMessageRoomName = directMessageRoomName.replace(/\s/g, "");
+    console.log(directMessageRoomName)
+    await redisClient.set(directMessageRoomName,result[0].directmessageroom_id)
+
     return result;
   } catch (e) {
     console.log(e);

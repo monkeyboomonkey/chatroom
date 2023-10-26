@@ -50,6 +50,7 @@ export async function handleDMMessage(io: Server, socket: Socket, message: any) 
   }
 
   //* insert message into directmessages table using chatroom_id and socket.userID
+  await insertChatRoomMessageRedis(socket , message , directmessageroom_id);
   await insertDirectMessage(socket, message, directmessageroom_id);
 
   const response = {

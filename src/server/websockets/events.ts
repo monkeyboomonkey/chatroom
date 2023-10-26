@@ -24,7 +24,6 @@ export async function init(io: Server) {
 
   //* Get all rooms from database
   let allRooms: any = await db.select().from(chatrooms).execute();
-
   //* Map of room names to chatroom_ids  
   const roomIDs = new Map<string, string>();
   allRooms.forEach((room: any) => {
