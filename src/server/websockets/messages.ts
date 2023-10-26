@@ -16,12 +16,23 @@ export async function insertChatRoomMessage(socket: Socket, message: any, chatro
   .onConflictDoNothing();
 }
 
-// export async function insertChatRoomMessageRedis (socket: Socket, message: any, chatroom_id: string, username:string) {
-//   redisClient.ZADD(`chat:room:${room_id}`, timestamp, message_id, (err, response) => {
-//     if (err) throw err;
-//     console.log(response); // prints the number of elements added
-// });
-// }
+export async function insertChatRoomMessageRedis (socket: Socket, message: any, chatroom_id: string) {
+  const redisData = JSON.stringify({
+    username: socket.username,
+    message: message.message,
+  });
+  try {
+    console.log(redisData)
+    await redisClient.lPush(chatroom_id, redisData);
+    const listLen = await redisClient.lLen(chatroom_id);
+    if (listLen > 10) {
+      // If lenght of current chatroom ID is greater than 30, trim the first 5
+      await redisClient.lTrim(chatroom_id, 0, 4);
+    }
+  } catch (e) {
+    console.log("Error pushing to redis database: ", e);
+  }
+}
 
 export async function insertDirectMessage(socket: Socket, message: any, directmessageroom_id: string) {
   await db.insert(directmessages)
@@ -57,8 +68,8 @@ export async function handleChatMessage(io: Server, socket: Socket, message: any
     const chatroom = await chatRoomExists(socket.room);
     chatroom_id = chatroom.chatroom_id;
   }
-  
   //* insert message into chatlogs table using chatroom_id and socket.userID
+  await insertChatRoomMessageRedis(socket , message , chatroom_id);
   await insertChatRoomMessage(socket, message, chatroom_id);
 
   const response = {

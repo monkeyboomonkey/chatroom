@@ -64,7 +64,7 @@ router.get('/getallchatlogs', verifyJWT, getChatHistoryRedis, createJWT, (req: R
 }); // Expecting chatroom_id from frontend
 
 // Getting userID and chatroomID routes
-router.get('/chatroomID', getChatroomID, (req: Request, res: Response): void => {
+router.post('/chatroomID', getChatroomID, (req: Request, res: Response): void => {
   res.status(200).json(res.locals.chatroomID)
 }); // Expecting chatroom_name from request
 

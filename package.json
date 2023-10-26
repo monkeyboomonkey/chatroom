@@ -63,7 +63,7 @@
     "html-webpack-plugin": "^5.5.3",
     "mini-css-extract-plugin": "^2.7.6",
     "nodemon": "^3.0.1",
-    "prettier": "^3.0.3",
+    "prettier": "3.0.3",
     "react-refresh": "^0.14.0",
     "sass": "^1.68.0",
     "sass-loader": "^13.3.2",
