@@ -329,8 +329,17 @@ li {
     align-items: center;
 }
 
-.chatControl > textarea {
+.outerTextContainer {
     width: 100%;
+    height: 100%;
+    resize: both;
+    padding: 5px;
+    overflow: hidden;
+}
+
+#messageInput {
+    width: 100%;
+    height: 100%;
     border-radius: 10px;
     padding: 10px;
     font-size: 1.5rem;
@@ -341,8 +350,9 @@ li {
     transition: border 0.2s;
 }
 
-.chatControl > textarea:active, .chatControl > textarea:focus {
+#messageInput:active, #messageInput:focus {
     border: 2px solid #03BFCB;
+    outline: none;
 }
 
 .chatControl > button {

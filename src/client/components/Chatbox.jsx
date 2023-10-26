@@ -54,6 +54,8 @@ function Chatbox() {
         <div className="innerChatBox">
             <Chatboxheader roomName={roomName} />
             <div className="chatDisplay" ref={chatDisplayRef}>
+                {/* This is where all chat messages from current room are displayed */}
+                {/* if the message is a system message then we append a special kind of message div, otherwise append normal message */}
                 {currentChatroomState.reduce((messages, currMessage, index) => {
                     const chat = currMessage;
                     if (chat.username === 'System') {
@@ -98,15 +100,16 @@ function Chatbox() {
                 }, [])}
             </div>
             <div className="chatControl">
-                <textarea
-                    disabled={roomName === null ? true : false}
-                    type="text"
-                    id="messageInput"
-                    className="messageContent"
-                    onChange={(e) => setUserMessage(e.target.value)}
-                    value={userMessage}
-                />
-                <input type="file" onChange={(e)=>setUserImageMessage(e.target.files[0])}/>
+                <div className="outerTextContainer">
+                    <input
+                        disabled={roomName === null ? true : false}
+                        type="text"
+                        id="messageInput"
+                        className="messageContent"
+                        onChange={(e) => setUserMessage(e.target.value)}
+                        value={userMessage}
+                    />
+                </div>
                 <button
                     disabled={roomName === null ? true : false}
                     className="sendBtn"

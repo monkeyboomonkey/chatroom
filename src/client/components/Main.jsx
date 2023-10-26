@@ -71,7 +71,6 @@ function Main() {
         socket.on('systemMessage', handleSystemMessage); // listen for system messages (when user is added to a new room
         socket.on("rooms", handleRoomsData);
         socket.on("singleRoom", handleSingleRoomData);
-        socket.connect();
     }
     
     /*
@@ -85,7 +84,8 @@ function Main() {
    useEffect(() => {
        //* set up socket listeners here
        if ((authStatus !== null && authStatus !== false) && (!socket.connected && username?.length)) {
-            setListeners();
+           setListeners();
+           socket.connect();
         } else if (authStatus === false) {
             socket.disconnect();
         }

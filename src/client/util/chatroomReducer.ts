@@ -58,10 +58,9 @@ const chatroomSlice = createSlice({
         state.isAuth = action.payload;
       }
     },
-    setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string, pictureURL: string}>) {
+    setUserIdentity (state, action: PayloadAction<{userIdentity: {fn: string, ln: string, email: string, pictureURL: string}, username?: string}>) {
       // state.userIdentity = action.payload;
-      console.log(action.payload)
-      state.userIdentity = {...state.userIdentity,...action.payload}
+      state.userIdentity = {...state.userIdentity, ...action.payload.userIdentity}
       if (action.payload.username && action.payload.username !== state.username) {
         state.username = action.payload.username;
       }
@@ -70,7 +69,7 @@ const chatroomSlice = createSlice({
       state.currentChatroomState.push(action.payload);
     },
   },
-})
+});
 
 export const { 
   setCurrentChatroom, 
