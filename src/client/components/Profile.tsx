@@ -1,14 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigateTo } from './Main';
+import { useNavigateTo } from './Main.tsx';
 import '../styles/Profile.scss'
+import { RootState } from '../util/store.ts';
 
 function Profile() {
     const navigateTo = useNavigateTo();
-    const firstName = useSelector(state => state.chatroomReducer.userIdentity.fn);
-    const lastName = useSelector(state => state.chatroomReducer.userIdentity.ln);
-    const email = useSelector(state => state.chatroomReducer.userIdentity.email);   
-    const image = useSelector((state) => state.chatroomReducer.userIdentity.image);
+    const firstName = useSelector((state: RootState) => state.chatroomReducer.userIdentity.fn);
+    const lastName = useSelector((state: RootState) => state.chatroomReducer.userIdentity.ln);
+    const email = useSelector((state: RootState) => state.chatroomReducer.userIdentity.email);   
+    const image = useSelector((state: RootState) => state.chatroomReducer.userIdentity.pictureURL);
     console.log(firstName, lastName, email, image)
     let fullName = `${firstName} ${lastName}`
     let emailAddress = `${email}`

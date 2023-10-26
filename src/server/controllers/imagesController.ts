@@ -13,13 +13,13 @@ const s3 = new AWS.S3({
 });
 
 export async function getAWSURL(req: Request, res: Response, next: NextFunction): Promise<void>  {
-    const { key } = req.body;
-    const params = {
-        Bucket: "listing-photos-scout",
-        Key: key,
-        Expires: 60,
-    };
     try {
+        const { key } = req.body;
+        const params = {
+            Bucket: "listing-photos-scout",
+            Key: key,
+            Expires: 60,
+        };
         const url = await s3.getSignedUrlPromise("putObject", params);
         res.locals.url = url;
         return next();

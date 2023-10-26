@@ -1,9 +1,10 @@
 import React from "react";
-import Chatroom from "./Chatroom.jsx";
+import Chatroom from "./Chatroom.tsx";
 import { useSelector } from "react-redux";
+import { RootState } from "../util/store.ts";
 
 function Chatcategory() {
-  const categories = useSelector((state) => state.chatroomReducer.categories);
+  const categories = useSelector((state: RootState) => state.chatroomReducer.categories);
   return (
     <div id="outerCategoryContainer">
       <h3>All active rooms</h3>

@@ -1,7 +1,8 @@
-import React, { useContext, createContext, useEffect } from "react";
+import React, { useContext, createContext, useEffect, ReactNode} from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { setUser, setIsAuth,setUserIdentity } from "../util/chatroomReducer.ts";
+import { setIsAuth,setUserIdentity } from "../util/chatroomReducer.ts";
+import { RootState } from "../util/store.ts";
 
 /*
 * Auth Provider wraps the entire app, except for the login and signup pages (not protected routes)
@@ -10,9 +11,13 @@ import { setUser, setIsAuth,setUserIdentity } from "../util/chatroomReducer.ts";
 * If user is not authenticated, set auth status to false and redirect to login page
 */
 
-const AuthContext = createContext();
-const AuthProvider = ({ children }) => {
-  const authStatus = useSelector((state) => state.chatroomReducer.isAuth);
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+const AuthContext = createContext({});
+const AuthProvider = ({children}: AuthProviderProps) => {
+  const authStatus = useSelector((state: RootState) => state.chatroomReducer.isAuth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -32,7 +37,7 @@ const AuthProvider = ({ children }) => {
         });
         if (!response.ok) throw new Error('Failed to verify user');
         const data = await response.json();
-        console.log(data)
+        
         dispatch(setUserIdentity(data));
         if (!authStatus || authStatus === null) dispatch(setIsAuth(true)); //! setIsAuth HAS to call before setUser
       } catch (err) {

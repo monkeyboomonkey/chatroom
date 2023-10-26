@@ -405,17 +405,25 @@ li {
     animation-fill-mode: forwards;
 }
 
-.usernameDisplay {
+.profilePictureDisplay {
+    display: flex;
     background: #eed7da;
     border-radius: 50%;
-    padding: 25px 18px;
+    padding: 5px 5px;
     align-self: flex-start;
     cursor: pointer;
+    width: fit-content;
+    height: fit-content;
     transition: scale 0.2s;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
     &:hover {
         scale: 1.1;
     }
+}
+
+.usernameDisplay {
+    color:#2d9dff;
+    text-decoration: underline;
 }
 
 .messageDisplay {

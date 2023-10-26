@@ -2,12 +2,13 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import * as pkg from '@reduxjs/toolkit';
 const { createSlice } = pkg;
 
-interface Chat {
+export interface Chat {
   username: string;
   message: string;
+  userProfilePic?: string;
 }
 
-interface UserState {
+export interface UserState {
   username: string | null;
   currentChatroomState: Chat[];
   currentChatroom: string | null;
@@ -39,7 +40,7 @@ const chatroomSlice = createSlice({
   name: 'chatroomSlice',
   initialState,
   reducers: {
-    setCurrentChatroom(state, action: PayloadAction<string>) {
+    setCurrentChatroom(state, action: PayloadAction<string | null>) {
       state.currentChatroom = action.payload;
       state.currentChatroomState = [];
     },
@@ -63,7 +64,7 @@ const chatroomSlice = createSlice({
         state.username = action.payload.username;
       }
     },
-    addNewChat(state, action: PayloadAction<{username: string, message: string}>) {
+    addNewChat(state, action: PayloadAction<{username: string, message: string, userProfilePic?: string}>) {
       state.currentChatroomState.push(action.payload);
     },
   },

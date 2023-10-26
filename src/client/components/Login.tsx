@@ -1,21 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { setIsAuth, setUserIdentity } from "../util/chatroomReducer.ts";
 
+interface userData {
+  username: string;
+  userIdentity: {
+    fn: string;
+    ln: string;
+    pictureURL: string;
+    email: string;
+  }
+}
+
 function Login() {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const [username, setUserName] = useState('');
-    const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [username, setUserName] = useState('');
+  const [password, setPassword] = useState('');
 
-    const authenticateUser = (userData) => {
-      if (userData) dispatch(setUserIdentity(userData));
-      dispatch(setIsAuth(true));
-      navigate("/");
-    }
+  const authenticateUser = (userData: userData) => {
+    if (userData) dispatch(setUserIdentity(userData));
+    dispatch(setIsAuth(true));
+    navigate("/");
+  }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => {
     e.preventDefault();
     const loginData = {
       username: username,

@@ -17,6 +17,11 @@ export async function getUsersInRoom(io: Server, socket: Socket) {
   return roster;
 }
 
+/**
+ * 
+ * @param username Username of user to find in Database
+ * @returns User object from database
+ */
 export async function findUserByUsername(username: string) {
   const user = await db.select().from(users).where(eq(users.username, username)).execute();
   return user[0];

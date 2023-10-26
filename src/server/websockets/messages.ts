@@ -36,6 +36,7 @@ export async function handleDMMessage(io: Server, socket: Socket, message: any) 
   const response = {
     username: socket.username,
     message: message?.message,
+    userProfilePic: socket.userProfilePic,
     room: socket.room,
   };
   io.to(socket.room).emit("message", response);
@@ -56,6 +57,7 @@ export async function handleChatMessage(io: Server, socket: Socket, message: any
   const response = {
     username: socket.username,
     message: message?.message,
+    userProfilePic: socket?.userProfilePic,
     room: socket.room,
   };
   io.to(socket.room).emit("message", response);

@@ -5,7 +5,7 @@ module.exports = {
   mode: process.env.NODE_ENV ? process.env.NODE_ENV : "development",
   devtool: "eval-source-map",
   entry: {
-    main: "./src/client/index.js",
+    main: "./src/client/index.tsx",
   },
   output: {
     filename: "[name].bundle.js",

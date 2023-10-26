@@ -1,48 +1,52 @@
-import React from "react";
+import React, { ReactElement, MouseEvent } from "react";
 import { useEffect, useContext, useState, useRef } from "react";
 import '../styles/style.css';
-import Chatboxheader from "./Chatboxheader.jsx";
-import { SocketContext } from "../Context";
+import Chatboxheader from "./Chatboxheader.tsx";
+import { SocketContext } from "../Context.ts";
 import { useSelector } from "react-redux";
+import { Chat } from "../util/chatroomReducer.ts";
+import { RootState } from "../util/store.ts";
 
 function Chatbox() {
     const { socket } = useContext(SocketContext);
     const [userMessage, setUserMessage] = useState(''); //* message input field
-    const chatDisplayRef = useRef(null);
-    const roomName = useSelector(state => state.chatroomReducer.currentChatroom); //* get current room name
-    const currentChatroomState = useSelector(state => state.chatroomReducer.currentChatroomState); //* get current room state, that being all messages in the room
-    const username = useSelector(state => state.chatroomReducer.username); //* get username from redux store
+    const chatDisplayRef = useRef<HTMLDivElement>(null);
+
+    const roomName = useSelector((state: RootState) => state.chatroomReducer.currentChatroom); //* get current room name
+    const currentChatroomState = useSelector((state: RootState) => state.chatroomReducer.currentChatroomState); //* get current room state, that being all messages in the room
+    const username = useSelector((state: RootState) => state.chatroomReducer.username); //* get username from redux store
 
     const handleSendBtnClicked = () => {
         if (userMessage?.length > 0) {
             socket.emit('message', { message: userMessage }); //* send message to server
-            console.log("Socket pushed: ", userMessage);
+            // console.log("Socket pushed: ", userMessage);
             setUserMessage(''); //* clear input field
         }
     }
 
-    const startDM = (e) => {
-        console.log(username)
-        if (e.target.getAttribute('value') === username) {
-            console.log("Cannot DM self");
+    const startDM = (e: MouseEvent<HTMLImageElement>) => {
+        const targetUser = e.currentTarget.getAttribute('data-username'); //* get username of user clicked on, getAttribute comes from React
+        if (targetUser === username) {
+            // console.log("Cannot DM self");
             return; //* if user clicks on their own username, do nothing (cannot DM self)
         }
-        const targetUser = e.target.getAttribute('value'); //* get username of user clicked on, getAttribute comes from React
         // console.log("DM username: ", username);
         socket.emit('startDM', { username: targetUser });
     }
 
     useEffect(() => {
-        chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight; // auto scroll to bottom of chat display
+        if (chatDisplayRef.current) {
+            chatDisplayRef.current.scrollTop = chatDisplayRef.current.scrollHeight; // auto scroll to bottom of chat display
+        }
     }, [currentChatroomState]);
     
     return (
         <div className="innerChatBox">
-            <Chatboxheader roomName={roomName} />
+            <Chatboxheader />
             <div className="chatDisplay" ref={chatDisplayRef}>
                 {/* This is where all chat messages from current room are displayed */}
                 {/* if the message is a system message then we append a special kind of message div, otherwise append normal message */}
-                {currentChatroomState.reduce((messages, currMessage, index) => {
+                {currentChatroomState.reduce((messages: ReactElement[], currMessage: Chat, index: number) => {
                     const chat = currMessage;
                     if (chat.username === 'System') {
                         messages.push(<div key={index} className="systemMessage">{chat.message}</div>)
@@ -50,16 +54,24 @@ function Chatbox() {
                         messages.push(
                             <div key={index} className="userMessage">
                                 <span
-                                    value={chat.username}
-                                    className="usernameDisplay"
-                                    onClick={startDM}
+                                    className="profilePictureDisplay"
                                 >
-                                    {chat.username}
+                                    <img
+                                        data-username={chat.username}
+                                        style={{
+                                            display: 'inline', 
+                                            minWidth: '70px', 
+                                            height: '70px',
+                                            borderRadius: '50%',
+                                        }}
+                                        onClick={startDM}
+                                        src={currMessage.userProfilePic} 
+                                        alt="profile pic"
+                                        className="profilePic" 
+                                    />
                                 </span>
-                                <span
-                                    className="messageDisplay"
-                                >
-                                    {chat.message}
+                                <span className="messageDisplay">
+                                    <span className="usernameDisplay">{chat.username}</span>: {chat.message}
                                 </span>
                             </div>
                         )

@@ -1,8 +1,7 @@
 import { Server, Socket } from "socket.io";
-import { getUsersInRoom, getUsersDirectMessageRooms } from "./users.js";
+import { getUsersInRoom, getUsersDirectMessageRooms, findUserByUsername } from "./users.js";
 import { handleChatRoomJoin, handleDMRoomJoin, handleStartDM } from "./rooms.ts";
-import { users, chatrooms } from "../models/psqlmodels.js";
-import { eq } from "drizzle-orm";
+import { chatrooms } from "../models/psqlmodels.js";
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import dotenv from 'dotenv';
@@ -20,10 +19,10 @@ export async function init(io: Server) {
   */
 
   //* Get all rooms from database
-  let allRooms: any = await db.select().from(chatrooms).execute();
+  let allRooms: any[] = await db.select().from(chatrooms).execute();
 
   //* Map of room names to chatroom_ids  
-  const roomIDs = new Map<string, string>();
+  const roomIDs: Map<string, string> = new Map<string, string>();
   allRooms.forEach((room: any) => {
     roomIDs.set(room.chatroom_name, room.chatroom_id);
   });
@@ -64,9 +63,14 @@ export async function init(io: Server) {
     * State Variables
     */
     socket.username = socket.handshake.query.username?.toString() || "anonymous"; //* default username is anonymous
-    socket.room = "lobby"; //* default room is lobby
+    const user = await findUserByUsername(socket.username); //* get user from database
 
-    socket.userID = (await db.select().from(users).where(eq(users.username, socket.username)))[0]?.userid; //* get userID from database
+    if (user?.pictureURL) {
+      socket.userProfilePic = user.pictureURL;
+    }
+    socket.userID = user?.userid; //* set socket.userID to user's id from database
+    socket.room = "lobby"; //* default room is lobby, room is always a string
+
     socket.directMessages = new Map<string, string>; //* Map of DM rooms, key = room name, value = directmessageroom_id
     //* get all DM rooms for user from database
     (await getUsersDirectMessageRooms(socket)).forEach((room: any) => {
@@ -75,7 +79,7 @@ export async function init(io: Server) {
     });
 
     //? send list of ACTIVE rooms to user
-    // socket.emit('rooms', getActiveRooms(io));
+    // socket.emit('rooms', getActiveRooms(io)); //! dangerous, this will send ALL rooms to the user, including DM rooms
 
     //* send list of ALL rooms to user
     socket.emit('rooms', allRooms.concat(Array.from(socket.directMessages.keys())));

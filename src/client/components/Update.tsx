@@ -1,14 +1,14 @@
-import React, { useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch,useSelector } from "react-redux";
-import { useNavigateTo } from "./Main.jsx";
+import React, { useRef, ChangeEvent, FormEvent } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigateTo } from "./Main.tsx";
 import { setUserIdentity } from "../util/chatroomReducer.ts";
+import { RootState } from '../util/store.ts';
 import "../styles/Profile.scss";
 
-function Update() {
+const Update = () => {
   const formRef = useRef(null);
   const dispatch = useDispatch();
-  const image = useSelector((state) => state.chatroomReducer.pictureURL);
+  const image = useSelector((state: RootState) => state.chatroomReducer.userIdentity.pictureURL);
   const navigateTo = useNavigateTo();
 
   function toMain() {
@@ -19,14 +19,15 @@ function Update() {
   }
 
   const formData = new FormData();
-  const setFormData = (name, value) => {
+  const setFormData = (name: string, value: string) => {
     formData.set(name, value);
   };
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(name, value);
   };
-  const handleIMGChange = async (e) => {
+
+  const handleIMGChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const { name } = e.target;
 
     // Fix this if time, random number generator for Key generation but could potentially generate same number twice rn
@@ -44,25 +45,27 @@ function Update() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key: constructURL.key }),
       });
-      //   if (!presignedURL.ok) throw new Error("Error getting presigned URL");
       const presignedURL = await presignedURLRequest.json();
+
+      if (!e.target.files) throw new Error("No file selected");
       const imgFile = e.target.files[0];
+
       const uploadPicture = await fetch(presignedURL, {
         method: "PUT",
         headers: { "Content-Type": "multipart/form-data" },
         body: imgFile,
       });
-      //   if (!uploadPicture.ok)
-      //     throw new Error("Error uploading image into S3 Bucket");
+
+      if (!uploadPicture.ok) throw new Error("Error uploading image into S3 Bucket");
     } catch (e) {
       console.log(e, "ERROR Uploading image to S3 DB");
     }
 
     const imgLink = `https://listing-photos-scout.s3.us-west-1.amazonaws.com/${randKey}`;
-
     setFormData(name, imgLink);
   };
-  const handleSubmit = async (e) => {
+
+  const handleSubmit = async (e: FormEvent<HTMLElement>) => {
     e.preventDefault();
     const data = Object.fromEntries(formData);
     try {
@@ -71,11 +74,11 @@ function Update() {
         body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" },
       });
-      if (!res.ok) throw new Error(res.status);
+      if (!res.ok) throw new Error(`res.status: ${res.status}`);
       const user = await res.json();
       console.log(user,'userinfo@@@@@@@')
       dispatch(setUserIdentity(user)); //* update redux store with updated user info
-      navigate("/profile");
+      navigateTo("/profile");
     } catch (error) {
       console.log(error);
     }
@@ -91,45 +94,46 @@ function Update() {
         />
         <div className="nuform">
           <form ref={formRef} onSubmit={handleSubmit}>
-          <label>
-            <input
-              type="file"
-              name="profilePicture"
-              placeholder="test"
-              onChange={handleIMGChange}
-            ></input>
-            </label>
             <label>
               <input
-                type="text"
-                name="firstName"
-                placeholder="First Name"
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Last Name"
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                name="email"
-                placeholder="Email"
-                onChange={handleInputChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                onChange={handleInputChange}
-              />
+                type="file"
+                name="profilePicture"
+                placeholder="test"
+                onChange={handleIMGChange}
+              >
+              </input>
+              </label>
+              <label>
+                <input
+                  type="text"
+                  name="firstName"
+                  placeholder="First Name"
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name"
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  name="email"
+                  placeholder="Email"
+                  onChange={handleInputChange}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="Username"
+                  onChange={handleInputChange}
+                />
             </label>
           </form>
         </div>
