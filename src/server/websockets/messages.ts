@@ -64,6 +64,7 @@ export async function handleDMMessage(io: Server, socket: Socket, message: {[key
 
 export async function handleChatMessage(io: Server, socket: Socket, message: {[key: string]: string | ArrayBuffer}, roomIDs: Map<string, string>) {
   let chatroom_id: string;
+  console.log("message:", message)
   const roomID = roomIDs.get(socket.room);
   if (roomID) chatroom_id = roomID;
   else {
@@ -80,5 +81,6 @@ export async function handleChatMessage(io: Server, socket: Socket, message: {[k
     userProfilePic: socket?.userProfilePic,
     room: socket.room,
   };
+
   io.to(socket.room).emit("message", response);
 }

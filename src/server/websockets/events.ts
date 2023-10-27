@@ -1,15 +1,14 @@
 import { Server, Socket } from "socket.io";
 import { getUsersInRoom, getUsersDirectMessageRooms, findUserByUsername } from "./users.js";
 import { handleChatRoomJoin, handleDMRoomJoin, handleStartDM } from "./rooms.js";
-import { users, chatrooms } from "../models/psqlmodels.js";
-import { eq } from "drizzle-orm";
-import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
+import { chatrooms } from "../models/psqlmodels.js";
+
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import dotenv from 'dotenv';
-import {redisClient} from '../models/redismodels.js'
 import { handleChatMessage, handleDMMessage } from "./messages.js";
-const connectionString = String(process.env.POSTGRES_URI)
-const client = postgres(connectionString)
+const connectionString = String(process.env.POSTGRES_URI);
+const client = postgres(connectionString);
 const db = drizzle(client);
 dotenv.config();
 
@@ -170,7 +169,6 @@ export async function init(io: Server) {
       *  message: string
       * }
       */
-     
       if (socket.room.startsWith('DM')) { //! if room is a DM room
         await handleDMMessage(io, socket, message);
       } else { //! if room is a chatroom

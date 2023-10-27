@@ -12,15 +12,14 @@ const db = drizzle(client);
 
 
 
-import {Express, Request, Response, NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 export async function getAllChatlogs(req: Request, res: Response, next: NextFunction): Promise<void> {
   const { chatroom_id } = req.body;
-  try{
+  try {
 
     const chatlogs_in_chatroom = await db.select().from(chatlogs).where(eq(chatlogs.chatroom_id, chatroom_id)).as('chatlogs_in_chatroom');
     // this returns all chat logs from a specific chatroom
-    
 
     // Here we are giving names to username
     const chatlogs_in_chatroom_username = 

@@ -10,8 +10,15 @@ dotenv.config();
 //     }
 // });
 
-export const redisClient = createClient();
+// export const redisClient = createClient();
 
+export const redisClient = createClient({
+    password: '8b4ZqPldW2LwFTRemxQt6N5fO3NmVAk6',
+    socket: {
+        host: 'redis-19617.c9.us-east-1-4.ec2.cloud.redislabs.com',
+        port: 19617
+    }
+});
 
 // client.on('error', err => console.log('Redis Client Error', err));
 // await client.connect();

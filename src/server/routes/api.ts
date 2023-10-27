@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { getAllUsers, registerUser, userLogIn, deleteUser, updateUser } from '../controllers/userControllers.js'
 import { getAllChatrooms, addChatroom } from '../controllers/chatroomControllers.js'
 import { addChatlog } from '../controllers/chatlogControllers.js'
-import {addChatroomLogRedis,getChatHistoryRedis, getChatroomID, getUserID, setUserIDRedis,setChatroomIDRedis}  from "../controllers/chatlogControllerRedis.js"
+import { addChatroomLogRedis, getChatHistoryRedis, getChatroomID, getUserID, setUserIDRedis,setChatroomIDRedis }  from "../controllers/chatlogControllerRedis.js"
 import { createJWT, verifyJWT, deleteJWT } from '../controllers/jwtControllers.js'
 import { getAWSURL } from '../controllers/imagesController.js';
 

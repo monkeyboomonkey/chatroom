@@ -5,7 +5,7 @@ import { getRosterAndEmit, getUsersInRoom, findUserByUsername, userHasDMRoom, ad
 import { chatrooms, directmessageroom } from "../models/psqlmodels.js";
 import postgres from 'postgres'
 import dotenv from 'dotenv'
-import {redisClient} from "../models/redismodels.js"
+import { redisClient } from "../models/redismodels.js"
 const connectionString = String(process.env.POSTGRES_URI)
 const client = postgres(connectionString)
 const db = drizzle(client);
@@ -70,7 +70,7 @@ export async function insertChatRoom(roomName: string) {
 
     roomName = roomName.replace(/\s/g, "");
     console.log(roomName)
-    await redisClient.set(roomName,result[0].chatroom_id)
+    await redisClient.set(roomName, result[0].chatroom_id)
 
     return result;
   } catch (e) {

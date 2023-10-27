@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useContext, useState, useRef, ReactElement, FormEvent } from "react";
+import { useEffect, useContext, useState, useRef, ReactElement, FormEvent, MouseEvent } from "react";
 import "../styles/style.css";
 import Chatboxheader from "./Chatboxheader.tsx";
 import { SocketContext } from "../Context.ts";
@@ -69,6 +69,10 @@ function Chatbox() {
     }
   };
 
+  const openImageUploader = (e: MouseEvent<HTMLElement>) => {
+    imageInputRef.current.click();
+  }
+
   useEffect(() => {
     if (!roomName) return;
     pullChatHistory(roomName);
@@ -128,7 +132,7 @@ function Chatbox() {
                     borderRadius: '50%',
                   }}
                   onClick={startDM}
-                  src={currMessage.userProfilePic} 
+                  src={currMessage.userProfilePic ? currMessage.userProfilePic : "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/2048px-Windows_10_Default_Profile_Picture.svg.png"} 
                   alt="profile pic"
                   className="profilePic" 
                 />
@@ -154,18 +158,27 @@ function Chatbox() {
             onChange={(e) => setUserMessage(e.target.value)}
             value={userMessage}
           />
+          <button 
+            className="material-symbols-outlined" 
+            id="imageInputButton"
+            onClick={(e) => {
+              openImageUploader(e);
+            }}
+          >
+              photo_library
+            </button>
+          <input
+            disabled={roomName === null ? true : false}
+            type="file"
+            id="imageInput"
+            ref={imageInputRef}
+            accept=".png, .jpg, .jpeg"
+            onChange={(e) => {
+              if (!e.target.files || e.target.files.length === 0) return;
+              setUserImage(e.target.files[0]);
+            }}
+          />
         </div>
-        <input
-          disabled={roomName === null ? true : false}
-          type="file"
-          id="imageInput"
-          ref={imageInputRef}
-          accept=".png, .jpg, .jpeg"
-          onChange={(e) => {
-            if (!e.target.files || e.target.files.length === 0) return;
-            setUserImage(e.target.files[0]);
-          }}
-        />
         <button
           disabled={roomName === null ? true : false}
           className="sendBtn"

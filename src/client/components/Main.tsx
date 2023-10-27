@@ -47,7 +47,6 @@ function Main() {
             mainContainerRef.current.classList.remove("animateOut");
         }, 1000);
     }
-    
 
     /**
      * This function will handle the data received from the server when the socket connects and future rooms data

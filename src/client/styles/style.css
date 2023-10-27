@@ -324,6 +324,7 @@ li {
 
 .chatControl {
     margin-top: 10px;
+    position: relative;
     display: flex;
     gap: 15px;
     width: 100%;
