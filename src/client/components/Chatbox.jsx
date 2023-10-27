@@ -163,6 +163,7 @@ function Chatbox() {
     if (userImage.name) {
       socket.emit("message", { message: userImage });
       setUserImage("");
+      document.getElementById("imageInput").value = "";
     }
   };
 
@@ -182,10 +183,7 @@ function Chatbox() {
     return str.replace(/\s/g, "");
   };
 
-  /**
-   * Server request returns 30 most recent chat messages
-   * @param {*} roomName
-   */
+  // Function to pull most recent chat history (30 messages)
   const pullChatHistory = async (roomName) => {
     try {
       const updatedRoomName = removeSpaces(roomName);
@@ -208,6 +206,18 @@ function Chatbox() {
     }
   };
 
+  const arrayBufferToLink = (buf) => {
+    const uint8Array = new Uint8Array(buf);
+    const blob = new Blob([uint8Array]);
+    const srcBlob = URL.createObjectURL(blob);
+    return srcBlob;
+  };
+  const bufferToLink = (buf) => {
+    const blob = new Blob([buf]);
+    const srcBlob = URL.createObjectURL(blob);
+    return srcBlob;
+  };
+
   useEffect(() => {
     if (!roomName) return;
     pullChatHistory(roomName);
@@ -225,20 +235,29 @@ function Chatbox() {
         {/* if the message is a system message then we append a special kind of message div, otherwise append normal message */}
         {currentChatroomState.reduce((messages, currMessage, index) => {
           const chat = currMessage;
-          console.log(chat.message);
+          console.log(typeof chat.message);
           if (chat.username === "System") {
             messages.push(
               <div key={index} className="systemMessage">
                 {chat.message}
               </div>
             );
+            /**
+             * We need to account for two types of binary data here and handle accordingly
+             * 1) ArrayBuffer (from client side)
+             * 2) Buffer (how images are stored)
+             */
           } else if (
             chat.message instanceof ArrayBuffer ||
             chat.message.type === "Buffer"
           ) {
-            console.log("HITS THIS CONDITIONAL?????");
-            const blob = new Blob([chat.message]);
-            const srcBlob = URL.createObjectURL(blob);
+            let srcBlob = null;
+            if (currMessage.message.data) {
+              srcBlob = arrayBufferToLink(currMessage.message.data);
+            } else {
+              console.log("else should hit");
+              srcBlob = bufferToLink(chat.message);
+            }
             messages.push(
               <div key={index} className="userMessage">
                 <span
@@ -285,6 +304,7 @@ function Chatbox() {
           disabled={roomName === null ? true : false}
           type="file"
           id="imageInput"
+          accept=".png, .jpg, .jpeg"
           onChange={(e) => {
             setUserImage(e.target.files[0]);
           }}
