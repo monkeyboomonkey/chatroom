@@ -4,7 +4,7 @@ const { createSlice } = pkg;
 
 export interface Chat {
   username: string;
-  message: string | ArrayBuffer | {type: string, data: string};
+  message: any;
   userProfilePic?: string;
   type?: string;
 }
@@ -65,10 +65,7 @@ const chatroomSlice = createSlice({
         state.username = action.payload.username;
       }
     },
-    addNewChat(state, action: PayloadAction<{username: string, message: string | ArrayBuffer, userProfilePic?: string}>) {
-      if (action.payload.message instanceof ArrayBuffer) {
-        action.payload.message = new TextDecoder().decode(action.payload.message);
-      }
+    addNewChat(state, action: PayloadAction<{username: string, message: string | {type: string, url: string}, userProfilePic?: string}>) {
       state.currentChatroomState.push(action.payload);
     },
   },

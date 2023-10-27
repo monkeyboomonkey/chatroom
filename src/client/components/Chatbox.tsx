@@ -30,7 +30,7 @@ function Chatbox() {
       setUserMessage(""); //* clear input field
     }
 
-    if (userImage?.length > 0) {
+    if (userImage instanceof File) {
       socket.emit("message", { message: userImage });
       setUserImage("");
       chatDisplayRef.current.value = "";
@@ -76,21 +76,6 @@ function Chatbox() {
     }
   };
 
-  const arrayBufferToLink = (buf: ArrayBuffer) => {
-    console.log("arrayBufferToLink");
-    const uint8Array = new Uint8Array(buf);
-    const blob = new Blob([uint8Array]);
-    const srcBlob = URL.createObjectURL(blob);
-    return srcBlob;
-  };
-
-  const bufferToLink = (buf: Buffer) => {
-    console.log("BufferToLink");
-    const blob = new Blob([buf]);
-    const srcBlob = URL.createObjectURL(blob);
-    return srcBlob;
-  };
-
   useEffect(() => {
     if (!roomName) return;
     pullChatHistory(roomName);
@@ -109,6 +94,7 @@ function Chatbox() {
         {/* if the message is a system message then we append a special kind of message div, otherwise append normal message */}
         {currentChatroomState.reduce((messages: ReactElement[], currMessage: Chat, index) => {
           const chat = currMessage;
+          console.log("chat: ", chat)
           if (chat.username === "System" && typeof chat.message === "string") {
             messages.push(
               <div key={index} className="systemMessage">
@@ -120,17 +106,7 @@ function Chatbox() {
              * 1) ArrayBuffer (from client side)
              * 2) Buffer (how images are stored)
              */
-          } else if (
-            chat.message instanceof ArrayBuffer ||
-            Buffer.isBuffer(chat.message)
-          ) {
-            let srcBlob = null;
-            if (chat.message instanceof ArrayBuffer) {
-              srcBlob = arrayBufferToLink(chat.message);
-            } else {
-              console.log("else should hit");
-              srcBlob = bufferToLink(chat.message);
-            }
+          } else if (typeof chat.message === "object" && chat.message.type === "img") {
             messages.push(
               <div key={index} className="userMessage">
                 <span
@@ -141,7 +117,7 @@ function Chatbox() {
                   {chat.username}
                 </span>
                 <span className="messageDisplay">
-                  <img className="chatImage" src={srcBlob}></img>
+                  <img style={{ maxWidth: '250px', maxHeight: '250px' }} className="chatImage" src={chat.message.url}></img>
                 </span>
               </div>
             );

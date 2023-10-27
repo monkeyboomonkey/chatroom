@@ -58,9 +58,34 @@ function Main() {
         dispatch(setCurrentCategories(data));
     };
 
+    const arrayBufferToLink = (buf: ArrayBuffer) => {
+        const uint8Array = new Uint8Array(buf);
+        const blob = new Blob([uint8Array]);
+        const srcBlob = URL.createObjectURL(blob);
+        return srcBlob;
+    };
+
+    const bufferToLink = (buf: Buffer) => {
+        const blob = new Blob([buf]);
+        const srcBlob = URL.createObjectURL(blob);
+        return srcBlob;
+    };
+
     const handleReceiveMessage = (data: UserData) => {
         const { username, message, userProfilePic } = data;
-        // console.log("Socket pulled", data)
+        console.log("Socket pulled", data)
+        const msg: any = message;
+        if (msg instanceof ArrayBuffer || msg?.type === "Buffer") {
+            if (msg instanceof ArrayBuffer) {
+                const url = arrayBufferToLink(msg);
+                dispatch(addNewChat({ username, message: {type: 'img', url}, userProfilePic }));
+                return;
+            } else {
+                const url = bufferToLink(msg.data);
+                dispatch(addNewChat({ username, message: url as string, userProfilePic }));
+                return;
+            }
+        }
         dispatch(addNewChat({ username, message, userProfilePic }));
     }
 
