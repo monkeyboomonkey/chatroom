@@ -15,6 +15,7 @@ function Chatbox() {
     const roomName = useSelector((state: RootState) => state.chatroomReducer.currentChatroom); //* get current room name
     const currentChatroomState = useSelector((state: RootState) => state.chatroomReducer.currentChatroomState); //* get current room state, that being all messages in the room
     const username = useSelector((state: RootState) => state.chatroomReducer.username); //* get username from redux store
+    const defaultProfilePic = 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/2048px-Windows_10_Default_Profile_Picture.svg.png'
 
     const handleSendBtnClicked = () => {
         if (userMessage?.length > 0) {
@@ -48,7 +49,11 @@ function Chatbox() {
                 {/* if the message is a system message then we append a special kind of message div, otherwise append normal message */}
                 {currentChatroomState.reduce((messages: ReactElement[], currMessage: Chat, index: number) => {
                     const chat = currMessage;
-                    if (chat.username === 'System') {
+                    
+                    if (chat.message instanceof ArrayBuffer) {
+                      chat.message = chat.message.toString();
+                      messages.push(<img key={index} src={chat.message} alt="image" />)
+                    } else if (chat.username === 'System') {
                         messages.push(<div key={index} className="systemMessage">{chat.message}</div>)
                     } else {
                         messages.push(
@@ -65,7 +70,7 @@ function Chatbox() {
                                             borderRadius: '50%',
                                         }}
                                         onClick={startDM}
-                                        src={currMessage.userProfilePic} 
+                                        src={currMessage.userProfilePic ? currMessage.userProfilePic : defaultProfilePic} 
                                         alt="profile pic"
                                         className="profilePic" 
                                     />

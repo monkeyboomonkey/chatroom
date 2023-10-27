@@ -24,7 +24,9 @@ function Profile() {
     return (
         <div className='outerContainer'>
             <div className="card-container">
-                <img 
+                <img
+                    width={"200"}
+                    hieght={"200"}
                     className="round" 
                     src={image}
                     alt="user" 

@@ -1,21 +1,25 @@
 import { Server, Socket } from "socket.io";
 import { getUsersInRoom, getUsersDirectMessageRooms, findUserByUsername } from "./users.js";
-import { handleChatRoomJoin, handleDMRoomJoin, handleStartDM } from "./rooms.ts";
-import { chatrooms } from "../models/psqlmodels.js";
+import { handleChatRoomJoin, handleDMRoomJoin, handleStartDM } from "./rooms.js";
+import { users, chatrooms } from "../models/psqlmodels.js";
+import { eq } from "drizzle-orm";
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import dotenv from 'dotenv';
-import { handleChatMessage, handleDMMessage } from "./messages.ts";
+import {redisClient} from '../models/redismodels.js'
+import { handleChatMessage, handleDMMessage } from "./messages.js";
 const connectionString = String(process.env.POSTGRES_URI)
 const client = postgres(connectionString)
 const db = drizzle(client);
 dotenv.config();
 
+
+
 export async function init(io: Server) {
   /*
-   * Socket.io events
-   * https://socket.io/docs/v3/emitting-events/
-   * https://socket.io/docs/v3/server-api/
+  * Socket.io events
+  * https://socket.io/docs/v3/emitting-events/
+  * https://socket.io/docs/v3/server-api/
   */
 
   //* Get all rooms from database
@@ -36,7 +40,7 @@ export async function init(io: Server) {
 
   //* Add lobby to allRooms array
   if (!allRooms.includes("lobby")) allRooms.push("lobby"); //! add lobby to allRooms array, if it doesn't exist
-
+  
   io.on("connection", async (socket: Socket) => {
     /*
     * Event types:
@@ -112,20 +116,20 @@ export async function init(io: Server) {
       //* pass username.username
       await handleStartDM(username.username, io, socket);
     });
-
+    
     /*
-     * User joins a room
-     * Event: "joinRoom"
-     * Request args:
-     *  1. user - user display name
-     *  2. room - name of room to join
+    * User joins a room
+    * Event: "joinRoom"
+    * Request args:
+    *  1. user - user display name
+    *  2. room - name of room to join
     */
-    socket.on("joinRoom", async (room: string) => {
-      //* grab last 20 messages from db for that room
-      //* Broadcast to room that a user has joined
-      try {
-        if (!room) {
-          throw Error("No room provided");
+   socket.on("joinRoom", async (room: string) => {
+     //* grab last 20 messages from db for that room
+     //* Broadcast to room that a user has joined
+     try {
+       if (!room) {
+         throw Error("No room provided");
         }
         if (room.startsWith('DM')) { //? if room is a DM room
           //* check if roomID exists in socket.directMessages map
@@ -152,34 +156,52 @@ export async function init(io: Server) {
      *  message: string
      * }
     */
-    socket.on("message", async (message: {[key: string]: string}) => {
+    socket.on("message", async (message: {[key: string]: string | ArrayBuffer}) => {
       /*
-      * Check if roomID exists in roomIDs map
-      * If it does, use it
-      * If it doesn't, query the database for the chatroom_id
+      * Chat message
+      * User sends a message to lobby or a specific room
+      * Event: "message"
+      * Args:
+      *  1. message - text of message to send to room
+      *  2. room - optional, room to send message to
+      * Returns: event "message"
+      * Object {
+      *  username: string,
+      *  message: string
+      * }
       */
+     
       if (socket.room.startsWith('DM')) { //! if room is a DM room
         await handleDMMessage(io, socket, message);
       } else { //! if room is a chatroom
         await handleChatMessage(io, socket, message, roomIDs);
       }
     });
-
+    
     /*
-     * Leave room
-     * Event: "leaveRoom"
-     * Args:
-     *  1. room - name of room to leave
+    * Leave room
+    * Event: "leaveRoom"
+    * Args:
+    *  1. room - name of room to leave
     */
-    socket.on("leaveRoom", async () => {
-      socket.broadcast
-      .to(socket.room)
-      .emit("systemMessage", {message: `${socket.username} has left the chat`});
-      socket.leave(socket.room);
-
-      //* send list of connected users in room
-      const roster = await getUsersInRoom(io, socket);
-      io.to(socket.room).emit("roomUsers", roster);
+   socket.on("leaveRoom", async () => {
+     socket.broadcast
+     .to(socket.room)
+     .emit("systemMessage", {message: `${socket.username} has left the chat`});
+     socket.leave(socket.room);
+     
+     //* send list of connected users in room
+     const roster = await getUsersInRoom(io, socket);
+     io.to(socket.room).emit("roomUsers", roster);
     });
   });
 }
+// const addChatroomLogRedis = async (timestamp:string,chatroom_id:string,username:string,message_id:string) =>{
+ 
+//   try {
+//     await redisClient.ZADD(`chat:room:${chatroom_id}`, timestamp, message_id);
+    
+//   } catch (e) {
+//     console.log("Error pushing to redis database: ", e);
+//   }
+// }

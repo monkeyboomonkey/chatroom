@@ -56,16 +56,10 @@ router.post('/addchatlog', verifyJWT, addChatlog, addChatroomLogRedis, createJWT
   res.status(200).json(res.locals.chatlog)
 });
 
-// Can probably delete line 32 route since we have Redis route now
-// router.get('/getallchatlogs', verifyJWT, getAllChatlogs, createJWT, (req: Request, res: Response): void => { res.status(200).json(res.locals.chatlogs_in_chatroom) });
-// Adding a new redis route for getting chat history
-router.get('/getallchatlogs', verifyJWT, getChatHistoryRedis, createJWT, (req: Request, res: Response): void => {
-  res.status(200).json(res.locals.redisQueryResult)
-}); // Expecting chatroom_id from frontend
 
 // Getting userID and chatroomID routes
-router.get('/chatroomID', getChatroomID, (req: Request, res: Response): void => {
-  res.status(200).json(res.locals.chatroomID)
+router.post('/getChatHistory', getChatroomID, getChatHistoryRedis,  (req: Request, res: Response): void => {
+  res.status(200).json(res.locals.redisQueryResult)
 }); // Expecting chatroom_name from request
 
 router.get('/userID', getUserID , (req: Request, res: Response): void => {

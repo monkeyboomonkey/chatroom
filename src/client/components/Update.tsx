@@ -88,6 +88,8 @@ const Update = () => {
     <div className="outerContainer">      
       <div className="card-container">
         <img
+          width={"200"}
+          height={"200"}
           className="round"
           src={image}
           alt="user"
