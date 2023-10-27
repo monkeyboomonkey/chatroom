@@ -54,7 +54,6 @@ function Main() {
      * @param {Array} data - array of strings, each string is a room name
     */
     const handleRoomsData = (data: string[]) => {
-        // console.log("Rooms Data:", data);
         dispatch(setCurrentCategories(data));
     };
 
@@ -73,7 +72,6 @@ function Main() {
 
     const handleReceiveMessage = (data: UserData) => {
         const { username, message, userProfilePic } = data;
-        console.log("Socket pulled", data)
         const msg: any = message;
         if (msg instanceof ArrayBuffer || msg?.type === "Buffer") {
             if (msg instanceof ArrayBuffer) {

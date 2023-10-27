@@ -26,7 +26,6 @@ function Chatbox() {
   const handleSendBtnClicked = () => {
     if (userMessage?.length > 0) {
       socket.emit("message", { message: userMessage }); //* send message to server
-      console.log("Socket pushed: ", userMessage);
       setUserMessage(""); //* clear input field
     }
 
@@ -38,13 +37,8 @@ function Chatbox() {
   };
 
   const startDM = (e: FormEvent<HTMLElement>) => {
-    console.log(username);
-    if (e.currentTarget.getAttribute("data-value") === username) {
-      console.log("Cannot DM self");
-      return; //* if user clicks on their own username, do nothing (cannot DM self)
-    }
+    if (e.currentTarget.getAttribute("data-value") === username) return; //* if user clicks on their own username, do nothing (cannot DM self)
     const targetUser = e.currentTarget.getAttribute("data-value"); //* get username of user clicked on, getAttribute comes from React
-    // console.log("DM username: ", username);
     socket.emit("startDM", { username: targetUser });
   };
 
@@ -66,7 +60,6 @@ function Chatbox() {
       const chatHistoryResults = await chatHistoryRequest.json();
       for (let i = chatHistoryResults.length - 1; i >= 0; i--) {
         const parsedChat = JSON.parse(chatHistoryResults[i]);
-        console.log(parsedChat);
         const username = parsedChat.username;
         const message = parsedChat.message;
         dispatch(addNewChat({ username, message }));
@@ -94,7 +87,6 @@ function Chatbox() {
         {/* if the message is a system message then we append a special kind of message div, otherwise append normal message */}
         {currentChatroomState.reduce((messages: ReactElement[], currMessage: Chat, index) => {
           const chat = currMessage;
-          console.log("chat: ", chat)
           if (chat.username === "System" && typeof chat.message === "string") {
             messages.push(
               <div key={index} className="systemMessage">
@@ -125,15 +117,27 @@ function Chatbox() {
             messages.push(
               <div key={index} className="userMessage">
                 <span
-                  data-value={chat.username}
-                  className="usernameDisplay"
-                  onClick={startDM}
+                  className="profilePictureDisplay"
                 >
-                  {chat.username}
+                <img
+                  data-value={chat.username}
+                  style={{
+                    display: 'inline', 
+                    minWidth: '70px', 
+                    height: '70px',
+                    borderRadius: '50%',
+                  }}
+                  onClick={startDM}
+                  src={currMessage.userProfilePic} 
+                  alt="profile pic"
+                  className="profilePic" 
+                />
                 </span>
-                <span className="messageDisplay">{chat.message}</span>
+                <span className="messageDisplay">
+                  <span className="usernameDisplay">{chat.username}</span>: {chat.message}
+                </span>
               </div>
-            );
+            )
           } else {
             throw new Error("Invalid message type");
           }
