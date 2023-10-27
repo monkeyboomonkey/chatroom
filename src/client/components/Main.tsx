@@ -3,19 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { Outlet } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { io } from "socket.io-client";
-import { SocketContext } from "../Context.js";
+import { SocketContext } from "../Context.ts";
 import { setCurrentCategories, addNewChat, setCurrentChatroom, addCategory } from "../util/chatroomReducer.ts";
+import { RootState } from "../util/store.ts";
 import "../styles/Main.scss"
 
-const mainContainerContext = createContext();
+interface UserData {
+    username: string, 
+    message: string, 
+    userProfilePic?: string
+}
+
+interface DirectMessageData {
+    roomName: string, 
+    users: string[]
+}
+
+const mainContainerContext = createContext({navigateTo: (path: string, cb?: Function): void => {}});
 function Main() {
-    const username = useSelector((state) => state.chatroomReducer.username);
-    console.log(username)
+    const username = useSelector((state: RootState) => state.chatroomReducer.username);
+
     const dispatch = useDispatch();
     const socket = io("ws://localhost:3001", { autoConnect: false, query: { username: username || "anon" }, reconnection: false });
     const navigate = useNavigate();
-    const authStatus = useSelector((state) => state.chatroomReducer.isAuth);
-    const mainContainerRef = useRef(null);
+    
+    const authStatus = useSelector((state: RootState) => state.chatroomReducer.isAuth);
+    const mainContainerRef = useRef<HTMLDivElement>(null);
 
     /**
      * This function will navigate to the path passed in, and run the callback function passed in after navigating
@@ -24,11 +37,13 @@ function Main() {
      * 
      * @returns {void}
      */
-    const navigateTo = (path, cb) => {
+    const navigateTo = (path: string, cb?: Function) => {
+        if (!mainContainerRef.current) return;
         mainContainerRef.current.classList.add("animateOut");
         setTimeout(() => {
             navigate(path);
             if (cb) cb();
+            if (!mainContainerRef.current) return;
             mainContainerRef.current.classList.remove("animateOut");
         }, 1000);
     }
@@ -38,30 +53,30 @@ function Main() {
      * This function will handle the data received from the server when the socket connects and future rooms data
      * @param {Array} data - array of strings, each string is a room name
     */
-    const handleRoomsData = (data) => {
-        console.log("Rooms Data:", data);
+    const handleRoomsData = (data: string[]) => {
+        // console.log("Rooms Data:", data);
         dispatch(setCurrentCategories(data));
     };
 
-    const handleReceiveMessage = (data) => {
-        const { username, message } = data;
-        console.log("Socket pulled", data)
-        dispatch(addNewChat({ username, message }));
+    const handleReceiveMessage = (data: UserData) => {
+        const { username, message, userProfilePic } = data;
+        // console.log("Socket pulled", data)
+        dispatch(addNewChat({ username, message, userProfilePic }));
     }
 
-    const handleSingleRoomData = (data) => {
-        console.log("Single Room Data:", data);
+    const handleSingleRoomData = (data: string) => {
+        // console.log("Single Room Data:", data);
         dispatch(addCategory(data));
     }
 
-    const handleDMStarted = (data) => {
+    const handleDMStarted = (data: DirectMessageData) => {
         const { roomName, users } = data;
-        console.log(roomName, users);
+        // console.log(roomName, users);
         dispatch(setCurrentChatroom(roomName));
     }
 
-    const handleSystemMessage = (data) => {
-        console.log(data)
+    const handleSystemMessage = (data: UserData) => {
+        // console.log(data)
         dispatch(addNewChat({ username: 'System', message: data.message }));
     }
 

@@ -1,29 +1,33 @@
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import { createServer } from "http";
 import express from "express";
 import cors from "cors";
 import cookieParser from 'cookie-parser';
-declare module "socket.io" {
-  interface Socket {
-    username: string;
-    room: string;
-    directMessages: Map<string, string>;
-    userID: any;
-  }
-}
 import path from "path";
 import { fileURLToPath } from "url";
 import { router } from "./routes/api.js";
 import { errorHandler } from "./controllers/userControllers.js";
 import * as chatServer from "./websockets/events.js"; // import object of exported functions from events, named chatServer
+declare module "socket.io" { //* declare module to add custom properties to Socket from socket.io
+  interface Socket { //* Add custom properties to Socket from socket.io
+    username: string;
+    room: string;
+    directMessages: Map<string, string>;
+    userID: any;
+    userProfilePic: string;
+  }
+}
+
 const app = express();
 app.use(express.json());
+
 const whitelist = [
   undefined,
   "http://localhost:8080",
   "http://localhost:3000",
   "http://localhost:3001",
 ];
+
 const corsOptions = {
   credentials: true, // This is important.
   origin: (origin: any, callback: any) => {
@@ -31,8 +35,8 @@ const corsOptions = {
     callback(new Error("Not allowed by CORS"));
   },
 };
-app.use(express.urlencoded({ extended: true }));
 
+app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions))
 app.use(cookieParser());
 const __filename = fileURLToPath(import.meta.url);

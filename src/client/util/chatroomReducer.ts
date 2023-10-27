@@ -2,14 +2,15 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import * as pkg from '@reduxjs/toolkit';
 const { createSlice } = pkg;
 
-interface Chat {
+export interface Chat {
   username: string;
-  message: string | ArrayBuffer;
-
+  message: string | ArrayBuffer | {type: string, data: string};
+  userProfilePic?: string;
+  type?: string;
 }
 
 
-interface UserState {
+export interface UserState {
   username: string | null;
   currentChatroomState: Chat[];
   currentChatroom: string | null;
@@ -41,7 +42,7 @@ const chatroomSlice = createSlice({
   name: 'chatroomSlice',
   initialState,
   reducers: {
-    setCurrentChatroom(state, action: PayloadAction<string>) {
+    setCurrentChatroom(state, action: PayloadAction<string | null>) {
       state.currentChatroom = action.payload;
       state.currentChatroomState = [];
     },
@@ -59,13 +60,15 @@ const chatroomSlice = createSlice({
       }
     },
     setUserIdentity (state, action: PayloadAction<{userIdentity: {fn: string, ln: string, email: string, pictureURL: string}, username?: string}>) {
-      // state.userIdentity = action.payload;
       state.userIdentity = {...state.userIdentity, ...action.payload.userIdentity}
       if (action.payload.username && action.payload.username !== state.username) {
         state.username = action.payload.username;
       }
     },
-    addNewChat(state, action: PayloadAction<{username: string, message: string | ArrayBuffer}>) {
+    addNewChat(state, action: PayloadAction<{username: string, message: string | ArrayBuffer, userProfilePic?: string}>) {
+      if (action.payload.message instanceof ArrayBuffer) {
+        action.payload.message = new TextDecoder().decode(action.payload.message);
+      }
       state.currentChatroomState.push(action.payload);
     },
   },

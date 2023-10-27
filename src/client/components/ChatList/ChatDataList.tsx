@@ -1,12 +1,11 @@
-import React, { useContext, useState } from "react";
-import { SocketContext } from "../../Context";
-import { useSelector } from "react-redux";
+import React, { useContext, useState, FormEvent } from "react";
+import { SocketContext } from "../../Context.ts";
 
 export function ChatDataList() {
   const { socket } = useContext(SocketContext);
   const [newRoomName, setNewRoomName] = useState(""); // to be used for creating new room
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLElement>) => {
     e.preventDefault();
     const newRoom = newRoomName;
     setNewRoomName("");

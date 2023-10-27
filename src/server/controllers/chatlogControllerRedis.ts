@@ -44,6 +44,7 @@ export async function addChatroomLogRedis (req: Request, res: Response, next: Ne
 export async function getChatHistoryRedis (req: Request, res: Response, next: NextFunction): Promise<void>  {
   const { chatroomID } = res.locals
   try {
+    console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGG")
     const redisQueryResult = await redisClient.LRANGE(chatroomID, 0, -1); // this returns all items in list
     res.locals.redisQueryResult = redisQueryResult
     // Clean data and store into res.locals to send back to client side
@@ -105,6 +106,7 @@ export async function getChatroomID (req: Request, res: Response, next: NextFunc
   const { chatroom_name } = req.body;
   try {
     const chatroomID = await redisClient.get(chatroom_name);
+    console.log("chatroomID", chatroomID)
     res.locals.chatroomID = chatroomID;
     return next();
   } catch (e) {

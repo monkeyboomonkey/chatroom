@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { directmessageroom, chatlogs, directmessages } from "../models/psqlmodels.js";
+import { chatlogs, directmessages } from "../models/psqlmodels.js";
 import { chatRoomExists, directMessageRoomExists } from "./rooms.ts";
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
@@ -40,7 +40,7 @@ export async function insertDirectMessage(socket: Socket, message: any, directme
   .onConflictDoNothing();
 }
 
-export async function handleDMMessage(io: Server, socket: Socket, message: any) {
+export async function handleDMMessage(io: Server, socket: Socket, message: {[key: string]: string | ArrayBuffer}) {
   let directmessageroom_id: string;
   const roomID = socket.directMessages.get(socket.room); //* check if roomID exists in socket.directMessages map
   if (roomID) directmessageroom_id = roomID; //* if it does, use it
@@ -56,12 +56,13 @@ export async function handleDMMessage(io: Server, socket: Socket, message: any) 
   const response = {
     username: socket.username,
     message: message?.message,
+    userProfilePic: socket.userProfilePic,
     room: socket.room,
   };
   io.to(socket.room).emit("message", response);
 }
 
-export async function handleChatMessage(io: Server, socket: Socket, message: any, roomIDs: Map<string, string>) {
+export async function handleChatMessage(io: Server, socket: Socket, message: {[key: string]: string | ArrayBuffer}, roomIDs: Map<string, string>) {
   let chatroom_id: string;
   const roomID = roomIDs.get(socket.room);
   if (roomID) chatroom_id = roomID;
@@ -76,6 +77,7 @@ export async function handleChatMessage(io: Server, socket: Socket, message: any
   const response = {
     username: socket.username,
     message: message?.message,
+    userProfilePic: socket?.userProfilePic,
     room: socket.room,
   };
   io.to(socket.room).emit("message", response);
