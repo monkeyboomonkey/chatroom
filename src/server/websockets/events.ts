@@ -150,7 +150,7 @@ export async function init(io: Server) {
      *  message: string
      * }
     */
-    socket.on("message", async (message: {[key: string]: string}) => {
+    socket.on("message", async (message: {[key: string]: string | ArrayBuffer}) => {
       /*
       * Chat message
       * User sends a message to lobby or a specific room
@@ -164,6 +164,7 @@ export async function init(io: Server) {
       *  message: string
       * }
       */
+     
       if (socket.room.startsWith('DM')) { //! if room is a DM room
         await handleDMMessage(io, socket, message);
       } else { //! if room is a chatroom

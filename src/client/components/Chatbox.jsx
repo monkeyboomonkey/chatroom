@@ -143,6 +143,7 @@ import { addNewChat, setCurrentChatroom } from "../util/chatroomReducer";
 function Chatbox() {
   const { socket } = useContext(SocketContext);
   const [userMessage, setUserMessage] = useState(""); //* message input field
+  const [userImage, setUserImage] = useState("");
   const chatDisplayRef = useRef(null);
   const dispatch = useDispatch();
   const roomName = useSelector(
@@ -158,6 +159,10 @@ function Chatbox() {
       socket.emit("message", { message: userMessage }); //* send message to server
       console.log("Socket pushed: ", userMessage);
       setUserMessage(""); //* clear input field
+    }
+    if (userImage.name) {
+      socket.emit("message", { message: userImage });
+      setUserImage("");
     }
   };
 
@@ -220,13 +225,18 @@ function Chatbox() {
         {/* if the message is a system message then we append a special kind of message div, otherwise append normal message */}
         {currentChatroomState.reduce((messages, currMessage, index) => {
           const chat = currMessage;
+          console.log(chat.message);
           if (chat.username === "System") {
             messages.push(
               <div key={index} className="systemMessage">
                 {chat.message}
               </div>
             );
-          } else if (chat.message instanceof ArrayBuffer) {
+          } else if (
+            chat.message instanceof ArrayBuffer ||
+            chat.message.type === "Buffer"
+          ) {
+            console.log("HITS THIS CONDITIONAL?????");
             const blob = new Blob([chat.message]);
             const srcBlob = URL.createObjectURL(blob);
             messages.push(
@@ -271,6 +281,14 @@ function Chatbox() {
             value={userMessage}
           />
         </div>
+        <input
+          disabled={roomName === null ? true : false}
+          type="file"
+          id="imageInput"
+          onChange={(e) => {
+            setUserImage(e.target.files[0]);
+          }}
+        />
         <button
           disabled={roomName === null ? true : false}
           className="sendBtn"
