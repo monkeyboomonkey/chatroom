@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigateTo } from './Main.tsx';
+import { useNavigateTo } from './Main';
 import '../styles/Profile.scss'
-import { RootState } from '../util/store.ts';
+import { RootState } from '../util/store';
 
 function Profile() {
     const navigateTo = useNavigateTo();
@@ -26,7 +26,7 @@ function Profile() {
             <div className="card-container">
                 <img
                     width={"200"}
-                    hieght={"200"}
+                    height={"200"}
                     className="round" 
                     src={image}
                     alt="user" 

@@ -1,13 +1,13 @@
 import React from 'react';
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-import Main from "./components/Main.tsx";
-import Login from "./components/Login.tsx";
-import Signup from "./components/Signup.tsx";
-import Profile from "./components/Profile.tsx";
-import Update from "./components/Update.tsx";
+import Main from "./components/Main";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import Profile from "./components/Profile";
+import Update from "./components/Update";
 import './styles/App.scss'
-import AuthProvider from './components/AuthProvider.tsx';
-import Chatboard from './components/Chatboard.tsx';
+import AuthProvider from './components/AuthProvider';
+import Chatboard from './components/Chatboard';
 
 
 function App() {

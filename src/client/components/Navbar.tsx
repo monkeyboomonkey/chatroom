@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { setIsAuth } from "../util/chatroomReducer.ts";
-import { useNavigateTo } from "./Main.tsx";
+import { setIsAuth } from "../util/chatroomReducer";
+import { useNavigateTo } from "./Main";
 
 function Navbar() {
     const dispatch = useDispatch();

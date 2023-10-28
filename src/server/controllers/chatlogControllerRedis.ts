@@ -13,7 +13,7 @@ const client = postgres(connectionString);
 const db = drizzle(client);
 
 redisClient.on("error", (err) => console.log("Redis Client Error", err));
-await redisClient.connect();
+redisClient.connect().then(() => console.log("Redis Client Connected"));
 
 
 

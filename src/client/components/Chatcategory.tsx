@@ -1,7 +1,7 @@
 import React from "react";
-import Chatroom from "./Chatroom.tsx";
+import Chatroom from "./Chatroom";
 import { useSelector } from "react-redux";
-import { RootState } from "../util/store.ts";
+import { RootState } from "../util/store";
 
 function Chatcategory() {
   const categories = useSelector((state: RootState) => state.chatroomReducer.categories);

@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { chatlogs, directmessages } from "../models/psqlmodels.js";
-import { chatRoomExists, directMessageRoomExists } from "./rooms.ts";
+import { chatRoomExists, directMessageRoomExists } from "./rooms.js";
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import dotenv from 'dotenv';

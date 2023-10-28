@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
-import { eq, lt, gte, ne, and, or } from "drizzle-orm";
+import { eq, ne, and, or } from "drizzle-orm";
 
 import postgres from 'postgres'
 import { users } from '../models/psqlmodels.js'
@@ -14,9 +14,7 @@ const client = postgres(connectionString)
 const db = drizzle(client);
 const result = await db.select().from(users);
 
-import { Express, Request, Response, NextFunction } from 'express';
-import { current } from '@reduxjs/toolkit';
-import { profile } from 'console';
+import { Request, Response, NextFunction } from 'express';
 
 export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   const { firstName, lastName, email, username, profilePicture } = req.body;

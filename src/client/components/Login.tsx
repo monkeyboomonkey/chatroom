@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import { setIsAuth, setUserIdentity } from "../util/chatroomReducer.ts";
+import { setIsAuth, setUserIdentity } from "../util/chatroomReducer";
 
 interface userData {
   username: string;

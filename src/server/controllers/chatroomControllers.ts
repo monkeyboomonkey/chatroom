@@ -1,6 +1,5 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
-import { eq, lt, gte, ne, and } from "drizzle-orm";
-
+import { eq } from "drizzle-orm";
 import postgres from 'postgres'
 import { chatrooms } from '../models/psqlmodels.js'
 import dotenv from 'dotenv'; 

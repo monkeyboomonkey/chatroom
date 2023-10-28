@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
-import { setCurrentChatroom } from "../util/chatroomReducer.ts";
-import { SocketContext } from "../Context.ts";
+import { setCurrentChatroom } from "../util/chatroomReducer";
+import { SocketContext } from "../Context";
 
 interface ChatroomProps {
     id: string;

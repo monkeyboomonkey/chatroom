@@ -1,5 +1,5 @@
 import React, { useContext, useState, FormEvent } from "react";
-import { SocketContext } from "../../Context.ts";
+import { SocketContext } from "../../Context";
 
 export function ChatDataList() {
   const { socket } = useContext(SocketContext);

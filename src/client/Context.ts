@@ -6,5 +6,5 @@ import { createContext } from "react";
 */
 
 // Socket Context
-export const SocketContext = createContext({});
+export const SocketContext = createContext<any>({});
 export const UserContext = createContext({});

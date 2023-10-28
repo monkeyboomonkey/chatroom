@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCurrentChatroom } from "../util/chatroomReducer.ts";
-import { SocketContext } from '../Context.ts';
-import { RootState } from '../util/store.ts';
+import { setCurrentChatroom } from "../util/chatroomReducer";
+import { SocketContext } from '../Context';
+import { RootState } from '../util/store';
 import '../styles/style.css';
 
 const Chatboxheader = () => {

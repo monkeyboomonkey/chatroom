@@ -1,8 +1,8 @@
 import React, { useContext, createContext, useEffect, ReactNode} from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { setIsAuth,setUserIdentity } from "../util/chatroomReducer.ts";
-import { RootState } from "../util/store.ts";
+import { setIsAuth,setUserIdentity } from "../util/chatroomReducer";
+import { RootState } from "../util/store";
 
 /*
 * Auth Provider wraps the entire app, except for the login and signup pages (not protected routes)

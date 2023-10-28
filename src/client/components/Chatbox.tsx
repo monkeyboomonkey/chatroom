@@ -1,11 +1,11 @@
 import React from "react";
 import { useEffect, useContext, useState, useRef, ReactElement, FormEvent, MouseEvent } from "react";
 import "../styles/style.css";
-import Chatboxheader from "./Chatboxheader.tsx";
-import { SocketContext } from "../Context.ts";
+import Chatboxheader from "./Chatboxheader";
+import { SocketContext } from "../Context";
 import { useSelector, useDispatch } from "react-redux";
-import { Chat, addNewChat } from "../util/chatroomReducer.ts";
-import { RootState } from "../util/store.ts";
+import { Chat, addNewChat } from "../util/chatroomReducer";
+import { RootState } from "../util/store";
 
 function Chatbox() {
   const { socket } = useContext(SocketContext);

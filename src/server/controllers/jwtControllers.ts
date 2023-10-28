@@ -1,5 +1,5 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import { Express, Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 
 // next 8 lines just for createJWT to access data base

@@ -1,11 +1,11 @@
 import React from "react";
-import Chatcategory from "./Chatcategory.tsx";
-import Chatbox from "./Chatbox.tsx";
+import Chatcategory from "./Chatcategory";
+import Chatbox from "./Chatbox";
 import "../styles/style.css";
-import { ChatDataList } from "./ChatList/ChatDataList.tsx";
-import Navbar from "./Navbar.tsx";
+import { ChatDataList } from "./ChatList/ChatDataList";
+import Navbar from "./Navbar";
 import { useSelector } from "react-redux";
-import { RootState } from '../util/store.ts'
+import { RootState } from '../util/store'
 
 function Chatboard() {
   const currentChatroom = useSelector((state: RootState) => state.chatroomReducer.currentChatroom);

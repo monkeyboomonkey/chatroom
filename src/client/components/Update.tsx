@@ -1,8 +1,8 @@
 import React, { useRef, ChangeEvent, FormEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigateTo } from "./Main.tsx";
-import { setUserIdentity } from "../util/chatroomReducer.ts";
-import { RootState } from '../util/store.ts';
+import { useNavigateTo } from "./Main";
+import { setUserIdentity } from "../util/chatroomReducer";
+import { RootState } from '../util/store';
 import "../styles/Profile.scss";
 
 const Update = () => {

@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Outlet } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { io } from "socket.io-client";
-import { SocketContext } from "../Context.ts";
-import { setCurrentCategories, addNewChat, setCurrentChatroom, addCategory } from "../util/chatroomReducer.ts";
-import { RootState } from "../util/store.ts";
+import { SocketContext } from "../Context";
+import { setCurrentCategories, addNewChat, setCurrentChatroom, addCategory } from "../util/chatroomReducer";
+import { RootState } from "../util/store";
 import "../styles/Main.scss"
 
 interface UserData {
