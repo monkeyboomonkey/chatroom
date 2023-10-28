@@ -143,7 +143,7 @@ function Chatbox() {
               </div>
             )
           } else {
-            throw new Error("Invalid message type");
+            console.log("Error: message type not recognized", chat.message);
           }
           return messages;
         }, [])}
