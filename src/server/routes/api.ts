@@ -99,3 +99,5 @@ router.get('/verify', verifyJWT,
     );
   }
 );
+
+// export default router;
