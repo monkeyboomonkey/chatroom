@@ -12,17 +12,14 @@ const app = express();
 app.use(express.json());
 const whitelist = [
     undefined,
+    "https://chaxolotl.onrender.com",
     "http://localhost:8080",
     "http://localhost:3000",
     "http://localhost:3001",
 ];
 const corsOptions = {
     credentials: true,
-    origin: (origin, callback) => {
-        if (whitelist.includes(origin))
-            return callback(null, true);
-        callback(new Error("Not allowed by CORS"));
-    },
+    origin: "*"
 };
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
