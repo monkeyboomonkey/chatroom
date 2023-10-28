@@ -9,8 +9,15 @@ import "../styles/Main.scss";
 const mainContainerContext = createContext({ navigateTo: (path, cb) => { } });
 function Main() {
     const username = useSelector((state) => state.chatroomReducer.username);
+    let url = "";
+    if (window.location.origin.includes("localhost")) {
+        url = "ws://localhost:3001";
+    }
+    else {
+        url = "ws://" + window.location.host;
+    }
     const dispatch = useDispatch();
-    const socket = io("ws://localhost:3001", { autoConnect: false, query: { username: username || "anon" }, reconnection: false });
+    const socket = io(url, { autoConnect: false, query: { username: username || "anon" }, reconnection: false });
     const navigate = useNavigate();
     const authStatus = useSelector((state) => state.chatroomReducer.isAuth);
     const mainContainerRef = useRef(null);

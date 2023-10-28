@@ -23,8 +23,15 @@ const mainContainerContext = createContext({navigateTo: (path: string, cb?: Func
 function Main() {
     const username = useSelector((state: RootState) => state.chatroomReducer.username);
 
+    let url: string = "";
+    if (window.location.origin.includes("localhost")) {
+        url = "ws://localhost:3001";
+        
+    } else {
+        url = "ws://" + window.location.host;
+    }
     const dispatch = useDispatch();
-    const socket = io("ws://localhost:3001", { autoConnect: false, query: { username: username || "anon" }, reconnection: false });
+    const socket = io(url, { autoConnect: false, query: { username: username || "anon" }, reconnection: false });
     const navigate = useNavigate();
     
     const authStatus = useSelector((state: RootState) => state.chatroomReducer.isAuth);
