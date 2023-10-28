@@ -19,6 +19,33 @@ interface DirectMessageData {
     users: string[]
 }
 
+//* These functions do the same thing, but one takes an ArrayBuffer and the other takes a Buffer, you could probably combine them into one function but I'm too lazy to do that right now
+export const arrayBufferToLink = (buf: ArrayBuffer) => {
+    // Convert the Array Buffer to a Uint8Array
+    const uint8Array = new Uint8Array(buf);
+
+    // Create a Blob from the Uint8Array
+    const blob = new Blob([uint8Array]);
+
+    // Create a URL for the Blob
+    const srcBlob = URL.createObjectURL(blob);
+
+    return srcBlob;
+};
+
+export const bufferToLink = (buf: Buffer) => {
+    // Convert the Buffer to a Uint8Array
+    const uint8Array = new Uint8Array(buf);
+
+    // Create a Blob from the Uint8Array
+    const blob = new Blob([uint8Array]);
+
+    // Create a URL for the Blob
+    const srcBlob = URL.createObjectURL(blob);
+
+    return srcBlob;
+};
+
 const mainContainerContext = createContext({navigateTo: (path: string, cb?: Function): void => {}});
 function Main() {
     const username = useSelector((state: RootState) => state.chatroomReducer.username);
@@ -37,7 +64,7 @@ function Main() {
     
     const authStatus = useSelector((state: RootState) => state.chatroomReducer.isAuth);
     const mainContainerRef = useRef<HTMLDivElement>(null);
-
+    
     /**
      * This function will navigate to the path passed in, and run the callback function passed in after navigating
      * @param {string} path - path to navigate to
@@ -64,18 +91,6 @@ function Main() {
         dispatch(setCurrentCategories(data));
     };
 
-    const arrayBufferToLink = (buf: ArrayBuffer) => {
-        const uint8Array = new Uint8Array(buf);
-        const blob = new Blob([uint8Array]);
-        const srcBlob = URL.createObjectURL(blob);
-        return srcBlob;
-    };
-
-    const bufferToLink = (buf: Buffer) => {
-        const blob = new Blob([buf]);
-        const srcBlob = URL.createObjectURL(blob);
-        return srcBlob;
-    };
 
     const handleReceiveMessage = (data: UserData) => {
         const { username, message, userProfilePic } = data;
@@ -87,7 +102,7 @@ function Main() {
                 return;
             } else {
                 const url = bufferToLink(msg.data);
-                dispatch(addNewChat({ username, message: url as string, userProfilePic }));
+                dispatch(addNewChat({ username, message: {type: 'img', url}, userProfilePic }));
                 return;
             }
         }

@@ -6,6 +6,7 @@ import { SocketContext } from "../Context";
 import { useSelector, useDispatch } from "react-redux";
 import { Chat, addNewChat } from "../util/chatroomReducer";
 import { RootState } from "../util/store";
+import { bufferToLink, arrayBufferToLink } from "./Main";
 
 function Chatbox() {
   const { socket } = useContext(SocketContext);
@@ -61,15 +62,28 @@ function Chatbox() {
       for (let i = chatHistoryResults.length - 1; i >= 0; i--) {
         const parsedChat = JSON.parse(chatHistoryResults[i]);
         const username = parsedChat.username;
+
+        const userProfilePic = parsedChat?.userProfilePic;
         const message = parsedChat.message;
-        dispatch(addNewChat({ username, message }));
+
+        if (typeof message === "string") {
+          dispatch(addNewChat({ username, message }));
+        } else if (message instanceof ArrayBuffer) {
+          const url = arrayBufferToLink(message);
+          dispatch(addNewChat({ username, message: {type: 'img', url}, userProfilePic }));
+          return;
+        } else {
+          const url = bufferToLink(message.data);
+          dispatch(addNewChat({ username, message: {type: 'img', url}, userProfilePic }));
+          return;
+        }
       }
     } catch (e) {
       console.log("Unable to pull chat history due to ", e);
     }
   };
 
-  const openImageUploader = (e: MouseEvent<HTMLElement>) => {
+  const openImageUploader = (_e: MouseEvent<HTMLElement>) => {
     imageInputRef.current.click();
   }
 

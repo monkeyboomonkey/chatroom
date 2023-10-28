@@ -5,6 +5,7 @@ import Chatboxheader from "./Chatboxheader";
 import { SocketContext } from "../Context";
 import { useSelector, useDispatch } from "react-redux";
 import { addNewChat } from "../util/chatroomReducer";
+import { bufferToLink, arrayBufferToLink } from "./Main";
 function Chatbox() {
     const { socket } = useContext(SocketContext);
     const [userMessage, setUserMessage] = useState(""); //* message input field
@@ -49,15 +50,28 @@ function Chatbox() {
             for (let i = chatHistoryResults.length - 1; i >= 0; i--) {
                 const parsedChat = JSON.parse(chatHistoryResults[i]);
                 const username = parsedChat.username;
+                const userProfilePic = parsedChat === null || parsedChat === void 0 ? void 0 : parsedChat.userProfilePic;
                 const message = parsedChat.message;
-                dispatch(addNewChat({ username, message }));
+                if (typeof message === "string") {
+                    dispatch(addNewChat({ username, message }));
+                }
+                else if (message instanceof ArrayBuffer) {
+                    const url = arrayBufferToLink(message);
+                    dispatch(addNewChat({ username, message: { type: 'img', url }, userProfilePic }));
+                    return;
+                }
+                else {
+                    const url = bufferToLink(message.data);
+                    dispatch(addNewChat({ username, message: { type: 'img', url }, userProfilePic }));
+                    return;
+                }
             }
         }
         catch (e) {
             console.log("Unable to pull chat history due to ", e);
         }
     };
-    const openImageUploader = (e) => {
+    const openImageUploader = (_e) => {
         imageInputRef.current.click();
     };
     useEffect(() => {

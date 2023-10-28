@@ -29,6 +29,7 @@
     "aws-s3": "^2.0.5",
     "aws-sdk": "^2.1478.0",
     "bcrypt-ts": "^4.0.0",
+    "buffer-to-data-url": "^1.0.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

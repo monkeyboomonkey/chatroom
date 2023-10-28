@@ -6,6 +6,25 @@ import { io } from "socket.io-client";
 import { SocketContext } from "../Context";
 import { setCurrentCategories, addNewChat, setCurrentChatroom, addCategory } from "../util/chatroomReducer";
 import "../styles/Main.scss";
+//* These functions do the same thing, but one takes an ArrayBuffer and the other takes a Buffer, you could probably combine them into one function but I'm too lazy to do that right now
+export const arrayBufferToLink = (buf) => {
+    // Convert the Array Buffer to a Uint8Array
+    const uint8Array = new Uint8Array(buf);
+    // Create a Blob from the Uint8Array
+    const blob = new Blob([uint8Array]);
+    // Create a URL for the Blob
+    const srcBlob = URL.createObjectURL(blob);
+    return srcBlob;
+};
+export const bufferToLink = (buf) => {
+    // Convert the Buffer to a Uint8Array
+    const uint8Array = new Uint8Array(buf);
+    // Create a Blob from the Uint8Array
+    const blob = new Blob([uint8Array]);
+    // Create a URL for the Blob
+    const srcBlob = URL.createObjectURL(blob);
+    return srcBlob;
+};
 const mainContainerContext = createContext({ navigateTo: (path, cb) => { } });
 function Main() {
     const username = useSelector((state) => state.chatroomReducer.username);
@@ -49,17 +68,6 @@ function Main() {
     const handleRoomsData = (data) => {
         dispatch(setCurrentCategories(data));
     };
-    const arrayBufferToLink = (buf) => {
-        const uint8Array = new Uint8Array(buf);
-        const blob = new Blob([uint8Array]);
-        const srcBlob = URL.createObjectURL(blob);
-        return srcBlob;
-    };
-    const bufferToLink = (buf) => {
-        const blob = new Blob([buf]);
-        const srcBlob = URL.createObjectURL(blob);
-        return srcBlob;
-    };
     const handleReceiveMessage = (data) => {
         const { username, message, userProfilePic } = data;
         const msg = message;
@@ -71,7 +79,7 @@ function Main() {
             }
             else {
                 const url = bufferToLink(msg.data);
-                dispatch(addNewChat({ username, message: url, userProfilePic }));
+                dispatch(addNewChat({ username, message: { type: 'img', url }, userProfilePic }));
                 return;
             }
         }
