@@ -23,6 +23,7 @@ app.use(express.json());
 
 const whitelist = [
   undefined,
+  "https://chaxolotl.onrender.com",
   "http://localhost:8080",
   "http://localhost:3000",
   "http://localhost:3001",
