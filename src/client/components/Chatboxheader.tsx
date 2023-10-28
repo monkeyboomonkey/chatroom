@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentChatroom } from "../util/chatroomReducer.ts";
-import { SocketContext } from '../Context';
+import { SocketContext } from '../Context.ts';
+import { RootState } from '../util/store.ts';
 import '../styles/style.css';
 
-function Chatboxheader() {
+const Chatboxheader = () => {
     const dispatch = useDispatch();
     const { socket } = useContext(SocketContext);
-    const roomName = useSelector(state => state.chatroomReducer.currentChatroom); // get current room name
+    const roomName = useSelector((state: RootState) => state.chatroomReducer.currentChatroom); // get current room name
     const roomActive = roomName?.length || roomName !== null ? true : false; // check if room is active
 
     const handleLeaveRoom = () => {

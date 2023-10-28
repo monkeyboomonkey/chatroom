@@ -1,35 +1,45 @@
 import { Server, Socket } from "socket.io";
-import { getUsersInRoom } from "./users.js";
-import { users, chatlogs, chatrooms } from "../models/psqlmodels.js";
-import { eq, lt, gte, ne } from "drizzle-orm";
-import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
+import { getUsersInRoom, getUsersDirectMessageRooms, findUserByUsername } from "./users.js";
+import { handleChatRoomJoin, handleDMRoomJoin, handleStartDM } from "./rooms.js";
+import { chatrooms } from "../models/psqlmodels.js";
+
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import dotenv from 'dotenv';
-const connectionString = String(process.env.POSTGRES_URI)
-const client = postgres(connectionString)
+import { handleChatMessage, handleDMMessage } from "./messages.js";
+const connectionString = String(process.env.POSTGRES_URI);
+const client = postgres(connectionString);
 const db = drizzle(client);
-// import { getActiveRooms } from "./rooms.js";
 dotenv.config();
+
+
 
 export async function init(io: Server) {
   /*
-   * Socket.io events
-   * https://socket.io/docs/v3/emitting-events/
-   * https://socket.io/docs/v3/server-api/
+  * Socket.io events
+  * https://socket.io/docs/v3/emitting-events/
+  * https://socket.io/docs/v3/server-api/
   */
 
-  //* Map of room names to chatroom_ids  
-  const roomIDs = new Map<string, string>();
-
   //* Get all rooms from database
-  let allRooms: any = await db.select().from(chatrooms).execute();
+  let allRooms: any[] = await db.select().from(chatrooms).execute();
+
+  //* Map of room names to chatroom_ids  
+  const roomIDs: Map<string, string> = new Map<string, string>();
+  allRooms.forEach((room: any) => {
+    roomIDs.set(room.chatroom_name, room.chatroom_id);
+  });
+
+  //* Array of all room names (except DM rooms)
   allRooms = allRooms.map((room: any) => {
     return room.chatroom_name
   }).filter((room: any) => {
     return !room.startsWith('DM')
   });
-  if (!allRooms.includes("lobby")) allRooms.push("lobby"); //! add lobby to allRooms array, if it doesn't exist
 
+  //* Add lobby to allRooms array
+  if (!allRooms.includes("lobby")) allRooms.push("lobby"); //! add lobby to allRooms array, if it doesn't exist
+  
   io.on("connection", async (socket: Socket) => {
     /*
     * Event types:
@@ -50,18 +60,34 @@ export async function init(io: Server) {
     */
 
     console.log(`a user connected with socket id: ${socket.id}`);
-    console.log(allRooms)
+    console.log('All Rooms', allRooms)
   
     /*
     * State Variables
     */
-    socket.username = socket.handshake.query.username?.toString() || "anonymous";
-    socket.room = "lobby";
-    socket.userID = (await db.select().from(users).where(eq(users.username, socket.username)))[0]?.userid; //* get userID from database
+    socket.username = socket.handshake.query.username?.toString() || "anonymous"; //* default username is anonymous
+    const user = await findUserByUsername(socket.username); //* get user from database
 
-    // socket.emit('rooms', getActiveRooms(io)); //* send list of ACTIVE rooms to user
-    socket.emit('rooms', allRooms); //* send list of ALL rooms to user
+    if (user?.pictureURL) {
+      socket.userProfilePic = user.pictureURL;
+    }
+    socket.userID = user?.userid; //* set socket.userID to user's id from database
+    socket.room = "lobby"; //* default room is lobby, room is always a string
 
+    socket.directMessages = new Map<string, string>; //* Map of DM rooms, key = room name, value = directmessageroom_id
+    //* get all DM rooms for user from database
+    (await getUsersDirectMessageRooms(socket)).forEach((room: any) => {
+      //! add DM rooms to socket.directMessages map
+      socket.directMessages.set(room.directmessageroom_name, room.directmessageroom_id);
+    });
+
+    //? send list of ACTIVE rooms to user
+    // socket.emit('rooms', getActiveRooms(io)); //! dangerous, this will send ALL rooms to the user, including DM rooms
+
+    //* send list of ALL rooms to user
+    socket.emit('rooms', allRooms.concat(Array.from(socket.directMessages.keys())));
+
+    //* On disconnect, remove user from all rooms
     socket.on("disconnect", () => {
       console.log(`user disconnected with socket id: ${socket.id}`);
       socket.disconnect(true);
@@ -85,97 +111,32 @@ export async function init(io: Server) {
      * Args:
      *  1. username - user to start DM with
     */
-   //! This needs to be adapted to add the DM room to the database
     socket.on("startDM", async (username: any) => {
-      //* find socket that matches username
-      //* io.sockets.sockets is a Map of all sockets connected to the server
-      //* Array.from(io.sockets.sockets.values())[0].username) -> username of first socket in the list
-      username = username.username;
-      const targetSocket = Array.from(io.sockets.sockets.values()).find(
-        (s) => s.username === username
-      );
-      if (!targetSocket) {
-        //* If the target user is not found, emit an error message to the sender
-        socket.emit("systemMessage", `User ${username} not found`);
-        return;
-      }
-
-      //* create room name with both usernames
-      let roomName = [socket.username, targetSocket.username].sort().join("-");
-      roomName = `DM-${roomName}`;
-      
-      //* join room
-      socket.leave(socket.room);
-      socket.join(roomName);
-      socket.room = roomName;
-
-      targetSocket.leave(targetSocket.room);
-      targetSocket.join(roomName);
-      targetSocket.room = roomName;
-
-      //* send message to room that DM has started
-      io.to(roomName).emit(
-        "startDM",
-        { roomName, 
-          users: [socket.username, targetSocket.username] } //! index zero is the initiator of the DM
-      );
+      //* pass username.username
+      await handleStartDM(username.username, io, socket);
     });
-
+    
     /*
-     * User joins a room
-     * Event: "joinRoom"
-     * Request args:
-     *  1. user - user display name
-     *  2. room - name of room to join
+    * User joins a room
+    * Event: "joinRoom"
+    * Request args:
+    *  1. user - user display name
+    *  2. room - name of room to join
     */
-    socket.on("joinRoom", async (room: string) => {
-      //* grab last 20 messages from db for that room
-      //* Broadcast to room that a user has joined
-      try {
-        if (!room) {
-          throw Error("No room provided");
-        } else if (room.startsWith("DM")) {
-          throw Error("Cannot join DMs through joinRoom");
+   socket.on("joinRoom", async (room: string) => {
+     //* grab last 20 messages from db for that room
+     //* Broadcast to room that a user has joined
+     try {
+       if (!room) {
+         throw Error("No room provided");
         }
-
-        //* leave lobby or previous room
-        socket.leave(socket.room);
-        if (socket.room !== "lobby") {
-          const roster = await getUsersInRoom(io, socket);
-          socket.broadcast.to(socket.room).emit("roomUsers", roster);
-        }
-
-        //* check if room exists, if not, create it
-        let chatroom_id: string;
-        const chatroom = await db.select().from(chatrooms).where(eq(chatrooms.chatroom_name, room)).execute();
-        if (!chatroom.length) {
-          const result = await db.insert(chatrooms).values({chatroom_name: room}).returning();
-          chatroom_id = result[0].chatroom_id;
+        if (room.startsWith('DM')) { //? if room is a DM room
+          //* check if roomID exists in socket.directMessages map
+          await handleDMRoomJoin(io, socket, room);
         } else {
-          chatroom_id = chatroom[0].chatroom_id;
+          await handleChatRoomJoin(io, socket, room, roomIDs, allRooms);
         }
 
-        //* Set roomID to chatroom_id in roomIDs map
-        if (!roomIDs.has(room)) roomIDs.set(room, chatroom_id); //! -> roomIDs = { 'lobby' => postgres chatroom_id }
-
-        //* join new room
-        socket.room = room;
-        socket.join(socket.room);
-        
-        //* tell room that user has joined
-        socket.broadcast
-        .to(socket.room)
-        .emit(
-          "systemMessage",
-          {message: `${socket.username} has joined the chat`}
-        );
-
-        //* send list of connected users in room
-        const roster = await getUsersInRoom(io, socket);
-        io.to(socket.room).emit("roomUsers", roster);
-
-        //* send updated list of rooms to all users as an array
-        io.emit('rooms', allRooms);
       } catch (e) {
         console.log(e.message);
       }
@@ -194,55 +155,51 @@ export async function init(io: Server) {
      *  message: string
      * }
     */
-    socket.on("message", async (message: {[key: string]: string}) => {
+    socket.on("message", async (message: {[key: string]: string | ArrayBuffer}) => {
       /*
-      * Check if roomID exists in roomIDs map
-      * If it does, use it
-      * If it doesn't, query the database for the chatroom_id
+      * Chat message
+      * User sends a message to lobby or a specific room
+      * Event: "message"
+      * Args:
+      *  1. message - text of message to send to room
+      *  2. room - optional, room to send message to
+      * Returns: event "message"
+      * Object {
+      *  username: string,
+      *  message: string
+      * }
       */
-      let chatroom_id: string;
-      const roomID = roomIDs.get(socket.room);
-      if (roomID) chatroom_id = roomID;
-      else {
-        const chatroom = await db.select().from(chatrooms).where(eq(chatrooms.chatroom_name, socket.room)).execute();
-        chatroom_id = chatroom[0].chatroom_id;
+      if (socket.room.startsWith('DM')) { //! if room is a DM room
+        await handleDMMessage(io, socket, message);
+      } else { //! if room is a chatroom
+        await handleChatMessage(io, socket, message, roomIDs);
       }
-
-      //* insert message into chatlogs table using chatroom_id and socket.userID
-      await db.insert(chatlogs).values({chatroom_id: chatroom_id, userid: socket.userID, message: message?.message});
-      const response = {
-        username: socket.username,
-        message: message?.message,
-        room: socket.room,
-      };
-      io.to(socket.room).emit("message", response);
     });
-
+    
     /*
-     * Leave room
-     * Event: "leaveRoom"
-     * Args:
-     *  1. room - name of room to leave
+    * Leave room
+    * Event: "leaveRoom"
+    * Args:
+    *  1. room - name of room to leave
     */
-    socket.on("leaveRoom", async () => {
-      socket.broadcast
-      .to(socket.room)
-      .emit("systemMessage", {message: `${socket.username} has left the chat`});
-      socket.leave(socket.room);
-
-      //* send list of connected users in room
-      const roster = await getUsersInRoom(io, socket);
-      io.to(socket.room).emit("roomUsers", roster);
+   socket.on("leaveRoom", async () => {
+     socket.broadcast
+     .to(socket.room)
+     .emit("systemMessage", {message: `${socket.username} has left the chat`});
+     socket.leave(socket.room);
+     
+     //* send list of connected users in room
+     const roster = await getUsersInRoom(io, socket);
+     io.to(socket.room).emit("roomUsers", roster);
     });
-  });
-
-  /*
-  * Server event listener for creating a new room
-  * Event: "create_room"
-  * Args: room name
-  * Functionality: add room to allRooms array
-  */
-  io.on("create_room", async (room: string) => {
-    if (!allRooms.includes(room)) allRooms.push(room); //! add room to allRooms array
   });
 }
+// const addChatroomLogRedis = async (timestamp:string,chatroom_id:string,username:string,message_id:string) =>{
+ 
+//   try {
+//     await redisClient.ZADD(`chat:room:${chatroom_id}`, timestamp, message_id);
+    
+//   } catch (e) {
+//     console.log("Error pushing to redis database: ", e);
+//   }
+// }

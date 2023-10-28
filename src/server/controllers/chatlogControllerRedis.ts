@@ -1,11 +1,10 @@
-import { nextTick } from "process";
 import { redisClient } from "../models/redismodels.js";
 import { drizzle } from "drizzle-orm/postgres-js";
-import { eq, lt, gte, ne, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import postgres from "postgres";
 import { users, chatlogs,chatrooms } from '../models/psqlmodels.js'
 import dotenv from "dotenv";
-import {Express, Request, Response, NextFunction} from 'express';
+import { Request, Response, NextFunction} from 'express';
 
 dotenv.config();
 
@@ -42,9 +41,10 @@ export async function addChatroomLogRedis (req: Request, res: Response, next: Ne
 };
 
 export async function getChatHistoryRedis (req: Request, res: Response, next: NextFunction): Promise<void>  {
-  const { chatroom_id } = req.body;
+  const { chatroomID } = res.locals
   try {
-    const redisQueryResult = await redisClient.LRANGE(chatroom_id, 0, -1); // this returns all items in list
+    console.log(chatroomID)
+    const redisQueryResult = await redisClient.LRANGE(chatroomID, 0, -1); // this returns all items in list
     res.locals.redisQueryResult = redisQueryResult
     // Clean data and store into res.locals to send back to client side
     return next();
@@ -86,7 +86,7 @@ export async function getUserID (req: Request, res: Response, next: NextFunction
   }
 };
 
-export async function  setChatroomIDRedis (req: Request, res: Response, next: NextFunction): Promise<void>  {
+export async function setChatroomIDRedis (req: Request, res: Response, next: NextFunction): Promise<void>  {
   const { chatroom_name } = res.locals;
   try {
     const chatroomID = await db

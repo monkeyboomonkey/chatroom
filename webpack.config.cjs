@@ -5,9 +5,7 @@ module.exports = {
   mode: process.env.NODE_ENV ? process.env.NODE_ENV : "development",
   devtool: "eval-source-map",
   entry: {
-    main: "./src/client/index.js",
-    // login: "./src/client/login.js",
-    // profile: "./src/client/profile.js"
+    main: "./src/client/index.tsx",
   },
   output: {
     filename: "[name].bundle.js",
@@ -64,18 +62,6 @@ module.exports = {
       chunks: ["main"],
       // inject: false
     }),
-    // new HtmlWebpackPlugin({
-    //   filename: 'login.html',
-    //   template: "src/client/login.html",
-    //   chunks: ['login'],
-    //   // inject: false
-    // }),
-    // new HtmlWebpackPlugin({
-    //   filename: 'profile.html',
-    //   template: "src/client/profile.html",
-    //   chunks: ['profile'],
-    //   // inject: false
-    // })
   ],
   resolve: {
     extensions: ["", ".ts", ".tsx", ".js", ".jsx", ".scss"],

@@ -28,6 +28,7 @@ export const directmessageroom = pgTable("directmessageroom", {
 	user2_id: uuid("user2_id").notNull().references(() => users.userid, { onDelete: "cascade", onUpdate: "cascade" }),
 	directmessageroom_id: uuid("directmessageroom_id").defaultRandom().primaryKey().notNull(),
 	timestamp: timestamp("timestamp", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	directmessageroom_name: varchar("directmessageroom_name"),
 });
 
 export const directmessages = pgTable("directmessages", {

@@ -68,6 +68,23 @@ $gray: #92959E;
 }
 
 .innerContainerMain {
-    width: 100%;
     height: fit-content;
+}
+
+#imageInput {
+    display: none;
+    color: transparent;
+    overflow: hidden;
+}
+
+#imageInputButton {
+    position: absolute;
+    bottom: 15%;
+    left: 2%;
+    scale: 1.1;
+    border: none;
+    background-color: transparent;
+    color:#46daff;
+    text-shadow: 0px 0px 2px #000000;
+    cursor: pointer;
 }
