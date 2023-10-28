@@ -14,7 +14,8 @@ function Main() {
         url = "ws://localhost:3001";
     }
     else {
-        url = "ws://" + window.location.host;
+        // url = "ws://" + window.location.host;
+        url = "wss://chaxolotl.onrender.com";
     }
     const dispatch = useDispatch();
     const socket = io(url, { autoConnect: false, query: { username: username || "anon" }, reconnection: false });
