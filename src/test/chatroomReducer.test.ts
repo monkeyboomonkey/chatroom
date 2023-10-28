@@ -1,6 +1,6 @@
 import chatroomReducer from "../client/util/chatroomReducer.ts";
 import { initialState } from "../client/util/chatroomReducer.ts";
-import { setUser, setCurrentChatroom, 
+import { setCurrentChatroom, 
          setCurrentCategories, 
          addCategory, 
          setIsAuth, 
@@ -12,16 +12,14 @@ import { setUser, setCurrentChatroom,
 
 test('actions test', ()=> {
 
-    const state = initialState;
-    const actionSetUser = setUser('Emma');
-    expect(reducer(state, actionSetUser).username).toEqual('Emma');
+const state = initialState;
 
-    const actionSetCurrentChatroom = setCurrentChatroom('1');
+ const actionSetCurrentChatroom = setCurrentChatroom('1');
     expect(reducer(state, actionSetCurrentChatroom).currentChatroom).toEqual('1');
 
     const actionAddCategory = addCategory('codesmith');
 
-    expect(reducer(state, actionAddCategory).categories[1]).toBe('codesmith');
+    expect(reducer(state, actionAddCategory).categories[0]).toBe('codesmith');
 
     const actionSetCurrentCategories = setCurrentCategories(['test', 'avatar']);
 
@@ -30,9 +28,10 @@ test('actions test', ()=> {
     const actionSetIsAuth = setIsAuth(true);
     expect(reducer(state, actionSetIsAuth).isAuth).toEqual(!false);
 
-    const actionSetUserIdentity = setUserIdentity({fn : "Terry" , ln: "Mcginnis" , email: "terryMcginnis@gmail.com" , username: 'terry Mcginnis'})
+    const userDetails = {fn: "Terry" , ln: "Mcginnis" , email: "terryMcginnis@gmail.com" , username: 'terry Mcginnis', pictureURL: 'test'};
+    const actionSetUserIdentity = setUserIdentity(userDetails);
 
-    expect(reducer(state, actionSetUserIdentity).userIdentity).toEqual({fn : "Terry" , ln: "Mcginnis" , email: "terryMcginnis@gmail.com", username: 'terry Mcginnis'});
+    expect(reducer(state, actionSetUserIdentity).userIdentity).toEqual(userDetails);
 
     const actionAddNewChat = addNewChat({username : 'Terry', message : 'hi'});
 

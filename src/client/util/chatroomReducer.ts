@@ -1,6 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import * as pkg from '@reduxjs/toolkit';
-import { type } from 'os';
 const { createSlice } = pkg;
 
 interface Chat {
@@ -18,6 +17,7 @@ interface UserState {
     fn: string;
     ln: string;
     email: string;
+    pictureURL: string;
   }
 }
 
@@ -25,12 +25,13 @@ export const  initialState: UserState = {
   username: null,
   currentChatroomState: [],
   currentChatroom: null,
-  categories: ['lobby'],
+  categories: [],
   isAuth: null,
   userIdentity: {
     fn: '',
     ln: '',
-    email: ''
+    email: '',
+    pictureURL:"",
   },
 };
 
@@ -38,15 +39,9 @@ const chatroomSlice = createSlice({
   name: 'chatroomSlice',
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<string>) {
-      state.username = action.payload;
-    },
     setCurrentChatroom(state, action: PayloadAction<string>) {
       state.currentChatroom = action.payload;
-      state.currentChatroomState = [{
-        username: state.username!,
-        message: 'joined the chatroom'
-      }];
+      state.currentChatroomState = [];
     },
     setCurrentCategories(state, action: PayloadAction<string[]>) {
       state.categories = action.payload;
@@ -61,9 +56,10 @@ const chatroomSlice = createSlice({
         state.isAuth = action.payload;
       }
     },
-    setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string}>) {
-      state.userIdentity = action.payload;
-      if (action.payload.username) {
+    setUserIdentity (state, action: PayloadAction<{fn: string, ln: string, email: string, username?: string, pictureURL: string}>) {
+      // state.userIdentity = action.payload;
+      state.userIdentity = {...state.userIdentity,...action.payload}
+      if (action.payload.username && action.payload.username !== state.username) {
         state.username = action.payload.username;
       }
     },
@@ -74,7 +70,6 @@ const chatroomSlice = createSlice({
 })
 
 export const { 
-  setUser, 
   setCurrentChatroom, 
   setCurrentCategories, 
   addCategory, 

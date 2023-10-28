@@ -6,13 +6,11 @@ module.exports = {
   devtool: "eval-source-map",
   entry: {
     main: "./src/client/index.js",
-    // login: "./src/client/login.js",
-    // profile: "./src/client/profile.js"
   },
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "dist", "client"),
-    publicPath: '/' // needs to be project root for HtmlWebpackPlugin, ./ does not work
+    publicPath: "/", // needs to be project root for HtmlWebpackPlugin, ./ does not work
   },
   module: {
     rules: [
@@ -33,7 +31,7 @@ module.exports = {
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         use: {
-          loader: 'url-loader',
+          loader: "url-loader",
         },
       },
     ],
@@ -59,25 +57,13 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: 'index.html',
+      filename: "index.html",
       template: "src/client/index.html",
-      chunks: ['main'],
+      chunks: ["main"],
       // inject: false
     }),
-    // new HtmlWebpackPlugin({
-    //   filename: 'login.html',
-    //   template: "src/client/login.html",
-    //   chunks: ['login'],
-    //   // inject: false
-    // }),
-    // new HtmlWebpackPlugin({
-    //   filename: 'profile.html',
-    //   template: "src/client/profile.html",
-    //   chunks: ['profile'],
-    //   // inject: false
-    // })
   ],
   resolve: {
-  extensions: ['', '.ts', '.tsx', '.js', '.jsx', '.scss'],
- },
+    extensions: ["", ".ts", ".tsx", ".js", ".jsx", ".scss"],
+  },
 };

@@ -14,17 +14,15 @@ const db = drizzle(client);
 import {Express, Request, Response, NextFunction} from 'express';
 
 export function getAllChatrooms(req: Request, res: Response, next: NextFunction): void {
-  const chats = {1: "test", 2 : "test"};
 
-  return chats;
-  // db.select().from(chatrooms)
-  // .then(data => {
-  //   res.locals.allChatrooms = data
-  //   return next();
-  // })
-  // .catch(e => {
-  //   return next('failed to getAllChatrooms');
-  // })
+  db.select().from(chatrooms)
+  .then(data => {
+    res.locals.allChatrooms = data
+    return next();
+  })
+  .catch(e => {
+    return next('failed to getAllChatrooms');
+  })
 }
 
 export async function addChatroom(req: Request, res: Response, next: NextFunction): Promise<void> {
