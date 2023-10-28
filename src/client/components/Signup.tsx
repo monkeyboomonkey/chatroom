@@ -18,7 +18,7 @@ function Signup() {
     e.preventDefault();
     const data = Object.fromEntries(formData);
     try {
-      await fetch("http://localhost:3001/api/registeruser", {
+      await fetch("api/registeruser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
