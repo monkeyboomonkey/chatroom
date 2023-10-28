@@ -87,18 +87,15 @@ function Main() {
     }
 
     const handleSingleRoomData = (data: string) => {
-        // console.log("Single Room Data:", data);
         dispatch(addCategory(data));
     }
 
     const handleDMStarted = (data: DirectMessageData) => {
         const { roomName, users } = data;
-        // console.log(roomName, users);
         dispatch(setCurrentChatroom(roomName));
     }
 
     const handleSystemMessage = (data: UserData) => {
-        // console.log(data)
         dispatch(addNewChat({ username: 'System', message: data.message }));
     }
 

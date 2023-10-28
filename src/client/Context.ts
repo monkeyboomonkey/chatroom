@@ -1,5 +1,4 @@
 import { createContext } from "react";
-import { io, Socket } from "socket.io-client";
 
 /* function
 * takes parameter of username
@@ -7,5 +6,5 @@ import { io, Socket } from "socket.io-client";
 */
 
 // Socket Context
-export const SocketContext = createContext({socket: io()});
+export const SocketContext = createContext({});
 export const UserContext = createContext({});

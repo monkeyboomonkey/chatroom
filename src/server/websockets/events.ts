@@ -194,12 +194,3 @@ export async function init(io: Server) {
     });
   });
 }
-// const addChatroomLogRedis = async (timestamp:string,chatroom_id:string,username:string,message_id:string) =>{
- 
-//   try {
-//     await redisClient.ZADD(`chat:room:${chatroom_id}`, timestamp, message_id);
-    
-//   } catch (e) {
-//     console.log("Error pushing to redis database: ", e);
-//   }
-// }
