@@ -31,10 +31,7 @@ const whitelist = [
 
 const corsOptions = {
   credentials: true, // This is important.
-  origin: (origin: any, callback: any) => {
-    if (whitelist.includes(origin)) return callback(null, true);
-    callback(new Error("Not allowed by CORS"));
-  },
+  origin: "*"
 };
 
 app.use(express.urlencoded({ extended: true }));
