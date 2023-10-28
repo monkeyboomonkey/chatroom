@@ -13,7 +13,8 @@
     "tailwind": "tailwindcss build src/client/Login.scss -o src/public/style.scss",
     "start": "webpack && nodemon --exec node --loader ts-node/esm src/server/server.ts",
     "prod": "webpack && node --loader ts-node/esm src/server/server.ts",
-    "generatedrizzle": "drizzle-kit introspect:pg --config=drizzle.config.ts"
+    "generatedrizzle": "drizzle-kit introspect:pg --config=drizzle.config.ts",
+    "vercel-build": "echo running app"
   },
   "keywords": [],
   "author": "",
