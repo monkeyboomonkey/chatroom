@@ -114,14 +114,17 @@ export async function handleDMRoomJoin(io: Server, socket: Socket, room: string)
   const roomID = socket.directMessages.get(room);
   if (roomID) { //* if it does, use it
     socket.room = room;
+
     socket.join(socket.room);
     getRosterAndEmit(io, socket);
     return;
   } else { //* if it doesn't, query the database for the directmessageroom_id
     const dmRoom = await directMessageRoomExists(room);
     if (!dmRoom) throw Error("DM room not found");
+
     socket.directMessages.set(room, dmRoom.directmessageroom_id); //! add DM room to socket.directMessages map
     socket.room = room;
+
     socket.join(socket.room);
     getRosterAndEmit(io, socket);
     return;
@@ -190,36 +193,65 @@ export async function handleStartDM(username: string, io: Server, socket: Socket
   //* find socket that matches username
   //* io.sockets.sockets is a Map of all sockets connected to the server
   //* Array.from(io.sockets.sockets.values())[0].username) -> username of first socket in the list
-  username = username;
-  const targetSocket = Array.from(io.sockets.sockets.values()).find(
+  let targetIsOffline = false;
+  let targetSocket: any = Array.from(io.sockets.sockets.values()).find(
     (s) => s.username === username
   );
 
   if (!targetSocket) {
-    //* If the target user is not found, emit an error message to the sender
-    socket.emit("systemMessage", {message: `User ${username} not found`});
-    return;
-  }
-  //* insert DM room into directmessages table
-  const user2_id = (await findUserByUsername(username)).userid;
-  const user1_id = socket.userID;
-  let directmessageroom_name = [socket.username, targetSocket.username].sort().join('-'); //! create DM room name from usernames, sorted alphabetically];
+    //* if targetSocket is not found, they are probably offline
+    targetIsOffline = true;
+    //* if targetSocket is not found, check the database for the user
+    targetSocket = (await findUserByUsername(username));
     
+    //* If the target user is not found, emit an error message to the sender
+    if (!targetSocket) {
+      socket.emit("systemMessage", {message: `User ${username} not found`});
+      return;
+    }
+
+    //* If the target user is found, create a pseudo-socket object, user is probably offline
+    targetSocket = {
+      userID: targetSocket.userid,
+      username: targetSocket.username
+    }
+  }
+
+  const user2_id = targetSocket?.userID;
+  const user1_id = socket?.userID;
+  let directmessageroom_name = [socket.username, targetSocket.username].sort().join('-'); //! create DM room name from usernames, sorted alphabetically];
+  
   directmessageroom_name = `DM-${directmessageroom_name}`;
   if (userHasDMRoom(socket, directmessageroom_name) || userHasDMRoom(targetSocket, directmessageroom_name)) {
-    socket.emit("systemMessage", {message: `DM room already exists`});
+    try {
+      const exists = (await directMessageRoomExists(directmessageroom_name));
+      if (exists) throw new Error('DM room already exists');
+      socket.emit("systemMessage", {message: `DM room already exists`});
+      return;
+    } catch (e) {
+      console.warn(e);
+      return;
+    }
+  }
+  
+  //* insert DM room into directmessages table
+  try {
+    const result = await insertDirectMessageRoom(directmessageroom_name, user1_id, user2_id);
+    console.log("result:", result);
+  
+    //* join DM room
+    addDMRoomToUser(socket, directmessageroom_name, result[0].directmessageroom_id); //! add DM room to socket.directMessages map
+
+    if (!targetIsOffline) {
+      addDMRoomToUser(targetSocket, directmessageroom_name, result[0].directmessageroom_id); //! add DM room to targetSocket.directMessages map
+      targetSocket.join(directmessageroom_name);
+      io.to(targetSocket.id).emit("systemMessage", {message: `${socket.username} started a DM with you`});
+    }
+    
+    socket.join(directmessageroom_name);
+    io.to(directmessageroom_name).emit("singleRoom", directmessageroom_name); //! add DM room to allRooms array
+  } catch (e) {
+    console.warn(e);
     return;
   }
-
-  const result = await insertDirectMessageRoom(directmessageroom_name, user1_id, user2_id);
-  console.log("result:", result)
-
-  addDMRoomToUser(socket, directmessageroom_name, result[0].directmessageroom_id) //! add DM room to socket.directMessages map
-  addDMRoomToUser(targetSocket, directmessageroom_name, result[0].directmessageroom_id) //! add DM room to targetSocket.directMessages map
-
-  //* join DM room
-  socket.join(directmessageroom_name);
-  targetSocket.join(directmessageroom_name);
-  io.to(directmessageroom_name).emit("singleRoom", directmessageroom_name); //! add DM room to allRooms array
-  io.to(targetSocket.id).emit("systemMessage", {message: `${socket.username} started a DM with you`});
 }

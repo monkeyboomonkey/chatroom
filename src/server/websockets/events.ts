@@ -132,6 +132,7 @@ export async function init(io: Server) {
         }
         if (room.startsWith('DM')) { //? if room is a DM room
           //* check if roomID exists in socket.directMessages map
+          console.log('DM room', room);
           await handleDMRoomJoin(io, socket, room);
         } else {
           await handleChatRoomJoin(io, socket, room, roomIDs, allRooms);
