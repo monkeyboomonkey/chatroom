@@ -45,7 +45,15 @@ export function getRosterAndEmit(io, socket) {
     io.to(socket.room).emit("roomUsers", roster);
 }
 export function userHasDMRoom(socket, dmRoomName) {
-    return socket.directMessages.has(dmRoomName);
+    try {
+        if (!socket || !socket.directMessages)
+            throw new Error('Non-Fatal error in userHasDMRoom: Targeted User is probably offline');
+        return socket.directMessages.has(dmRoomName);
+    }
+    catch (e) {
+        console.warn(e);
+        return false;
+    }
 }
 export function addDMRoomToUser(socket, dmRoomName, dmRoomID) {
     socket.directMessages.set(dmRoomName, dmRoomID);
