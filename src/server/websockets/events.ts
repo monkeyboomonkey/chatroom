@@ -25,17 +25,20 @@ export async function init(io: Server) {
   let allRooms: any[] = await db.select().from(chatrooms).execute();
 
   //* Map of room names to chatroom_ids  
+  //? Refactored to use only one loop to get all rooms without DMs and roomIDs into a map, this is more efficient
   const roomIDs: Map<string, string> = new Map<string, string>();
-  allRooms.forEach((room: any) => {
-    roomIDs.set(room.chatroom_name, room.chatroom_id);
-  });
-
+  allRooms = allRooms.reduce((rooms: string[], room: any) => {
+    roomIDs.set(room.chatroom_name, room.chatroom_id); //! add room to roomIDs map
+    if (!room.chatroom_name.startsWith('DM')) rooms.push(room.chatroom_name); //! add room to rooms array, if it's not a DM room
+    return rooms;
+  }, []);
+  
   //* Array of all room names (except DM rooms)
-  allRooms = allRooms.map((room: any) => {
-    return room.chatroom_name
-  }).filter((room: any) => {
-    return !room.startsWith('DM')
-  });
+  // allRooms = allRooms.map((room: any) => {
+  //   return room.chatroom_name
+  // }).filter((room: any) => {
+  //   return !room.startsWith('DM')
+  // });
 
   //* Add lobby to allRooms array
   if (!allRooms.includes("lobby")) allRooms.push("lobby"); //! add lobby to allRooms array, if it doesn't exist
